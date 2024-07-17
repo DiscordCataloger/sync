@@ -1,0 +1,48 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80px;
+    height: 100%;
+    background-color: #0080ff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+    border-top-right-radius: 40px;
+    border-bottom-right-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .button {
+    margin: 20px 0;
+  }
+  
+  .icon {
+    color: white;
+  }
+  
+  .notification {
+    margin-bottom: 40px;
+  }
+  
+  .profile {
+    margin-top: auto;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  
+  .profileImage {
+    border-radius: 50%;
+  }
+  
+  .status {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    width: 10px;
+    height: 10px;
+    background-color: green;
+    border: 2px solid white;
+    border-radius: 50%;
+  }

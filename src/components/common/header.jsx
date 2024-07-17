@@ -4,7 +4,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import Typography from "@/components/ui/typography";
-import { MenuIcon, X } from "lucide-react";
+import { Pacifico } from "next/font/google";
+
+const pacifico = Pacifico({ subsets: ["latin"], weight: ["400"] });
 
 export function Header({ className }) {
   const pathname = usePathname();
@@ -82,7 +84,9 @@ export function Header({ className }) {
       <div className="w-full md:px-16 px-6 max-w-[1500px]">
         {/* Desktop */}
         <div className="flex items-center gap-x-8 w-full">
-          <div className="md:flex-0 min-w-fit flex-1">{getLogo()}</div>
+          <div className={`md:flex-0 min-w-fit flex-1 ${pacifico.className}`}>
+            {getLogo()}
+          </div>
           <div className="md:flex flex items-center w-full">
             <div className="flex items-center gap-x-8 flex-1">
               {getHeaderItems()}

@@ -1,0 +1,132 @@
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import Typography from "@/components/ui/typography";
+import Link from "next/link";
+import Feature from "@/components/ui/Feature";
+import { Users, MessageCircleHeart, Handshake } from "lucide-react";
+
+export default function Home() {
+  return (
+    <div
+      className="flex flex-col h-full md:py-36 pt-11 pb-24
+        w-full items-center gap-12 text-center"
+    >
+      <div className="flex flex-col md:flex-row gap-6 justify-between items-center md:text-left w-full md:px-16 px-6 max-w-[1500px]">
+        <div className="flex flex-col gap-10 md:items-start">
+          <Typography className="max-w-2xl" variant="h1">
+            Simple Chat Platform for easy Work and Gaming
+          </Typography>
+          <Typography className="max-w-2xl" variant="h5">
+            Sync makes it easy to connect, share and interact with your friends
+            and team.
+          </Typography>
+          <Link href="#" target="_blank">
+            <Button size="lg" variant="default">
+              {`Start Chatting`}
+            </Button>
+          </Link>
+        </div>
+        <Image
+          width={500}
+          height={500}
+          alt="Robot.dev robot image"
+          src="/robot.png"
+        />
+      </div>
+
+      <div className="flex flex-col md:pt-24 md:gap-36 gap-24 items-center w-full">
+        <div className="flex flex-col gap-12 items-center justify-center w-full py-24 md:px-16 px-6 text-white bg-blue-500">
+          <Typography className="max-w-2xl" variant="h1">
+            Quick conversation
+            <br />
+            Less stress
+          </Typography>
+          <div className="flex md:flex-row flex-col gap-12">
+            <Feature
+              icon={<MessageCircleHeart size={24} />}
+              headline="Chat"
+              description="Exchange messages, share files, and engage in lively discussions."
+            />
+            <Feature
+              icon={<Handshake size={24} />}
+              headline="Friends"
+              description="Personalize a vibrant network of trusted contacts, from work colleagues to gaming enthusiasts."
+            />
+            <Feature
+              icon={<Users size={24} />}
+              headline="Community"
+              description="Create an engaging experience for work teams and gaming communities."
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-col justify-between md:flex-row gap-6 items-center md:text-left w-full md:px-16 px-6 max-w-[1500px]">
+          <div className="flex-col w-xl lg:ml-24 md:hidden flex mb-5">
+            <Typography className="max-w-2xl" variant="h2">
+              Instant chat with anyone
+            </Typography>
+            <Typography className="max-w-2xl" variant="h5">
+              Click on direct messages and find someone you know to chat with.
+            </Typography>
+          </div>
+          <Image
+            width={800}
+            height={600}
+            alt="Sync.dev feature image"
+            src="/home_feature.png"
+            layout="responsive"
+            sizes="400px"
+            className="rounded-[36px]"
+          />
+          <div className="flex-col w-xl lg:ml-24 md:flex hidden">
+            <Typography className="max-w-2xl" variant="h2">
+              Instant chat with anyone
+            </Typography>
+            <Typography className="max-w-2xl" variant="h5">
+              Click on direct messages and find someone you know to chat with.
+            </Typography>
+          </div>
+        </div>
+
+        <div className="rounded-[64px] bg-blue-500 flex flex-col justify-between md:flex-row gap-6 items-center md:text-left w-[95%] p-5 border-white border-8 max-w-[1500px]">
+          <div className="flex-col w-xl m-5 text-white">
+            <Typography className="max-w-2xl" variant="h2">
+              Chat in the community
+            </Typography>
+            <Typography className="max-w-2xl" variant="h5">
+              Join servers and participate in group chats.
+            </Typography>
+          </div>
+          <Image
+            width={800}
+            height={600}
+            alt="Sync.dev feature image"
+            src="/home_feature_2.png"
+            layout="responsive"
+            sizes="400px"
+            className="rounded-[36px] max-w-[900px]"
+          />
+        </div>
+
+        <div className="flex flex-col lg:flex-row items-center">
+          <Image
+            width={600}
+            height={600}
+            alt="Sync.dev chat image"
+            src="/chat_icon.gif"
+            className="max-w-[900px] lg:mb-0 lg:mr-10 lg:w-[600px] md:w-[480px] w-[360px] mb-10 mr-0"
+          />
+          <Link href="#" target="_blank">
+            <Button
+              size="round"
+              variant="solid"
+              className="text-blue-600 text-xl"
+            >
+              {`Start Chatting Now`}
+            </Button>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}

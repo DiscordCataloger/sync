@@ -1,5 +1,4 @@
 import "./switch.css";
-import { useState } from "react";
 
 const Switch = ({ isOn, handleToggle, onColor }) => {
   return (

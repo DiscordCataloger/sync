@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Switch from "./switch";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -57,12 +58,13 @@ export default function Login() {
           ></input>
         </div>
         <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
-          <button
-            type="submit"
+          <Button
+            size="default"
+            variants="default"
             className="text-[12px] md:text-[16px] bg-[#1D33A8] text-[#F5F5F5] rounded-md h-[25px] md:h-[40px] w-full"
           >
             Sign In
-          </button>
+          </Button>
           <div className="flex justify-start items-center mt-[24px]">
             <Switch
               isOn={isOn}

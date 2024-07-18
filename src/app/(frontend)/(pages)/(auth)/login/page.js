@@ -7,7 +7,7 @@ export default function LoginPage() {
   return (
     <div>
       <div className="flex flex-col md:flex-row md:justify-between">
-        <h1 className="md:text-6xl text-[#A8A8FF] font-bold md:my-[200px] md:w-[607px] md:h-[130px] text-md my-[24px] w-[300px] h-[10px]">
+        <h1 className="mr-[200px] md:text-6xl text-[#A8A8FF] font-bold md:my-[200px] md:w-[607px] md:h-[130px] text-md my-[24px] w-[300px] h-[10px]">
           <Typewriter
             options={{ loop: true }}
             onInit={(typewriter) => {

@@ -16,7 +16,7 @@ const Authlayout = ({ children }) => {
           className="mr-3 w-10 h-10 md:w-16 md:h-16"
         />
         <h1
-          className={`${kanit.className} text-[30px] md:text-[41px] font-medium`}
+          className={`${kanit.className} text-[#EBEBFF] text-[30px] md:text-[41px] font-medium`}
         >
           Sync
         </h1>

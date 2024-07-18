@@ -34,7 +34,7 @@ export default function Login() {
             name="email"
             type="email"
             placeholder="Email"
-            className="text-[12px] pl-2 text-gray-950 rounded-md md:h-[40px] h-[25px] w-full border-2 border-[#B3B3B3]"
+            className="text-[12px] md:text-[16px] pl-2 text-gray-950 rounded-md md:h-[40px] h-[25px] w-full border-2 border-[#B3B3B3]"
             value={email}
             onChange={emailOnChange}
           ></input>

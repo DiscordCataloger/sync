@@ -60,7 +60,7 @@ export default function Login() {
         <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
           <Button
             size="default"
-            variants="default"
+            variant="default"
             className="text-[12px] md:text-[16px] bg-[#1D33A8] text-[#F5F5F5] rounded-md h-[25px] md:h-[40px] w-full"
           >
             Sign In

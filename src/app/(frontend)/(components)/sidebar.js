@@ -1,6 +1,7 @@
 import { AiFillMessage } from "react-icons/ai";
 import { FaComments, FaPinterest, FaLinkedin, FaPlusCircle, FaBell } from 'react-icons/fa';
-import styles from "./components/Sidebar.css";
+import styles from "@/app/(frontend)/(components)/sidebar.module.css";
+import Image from "next/image";
 
 const Sidebar = () => {
   return (

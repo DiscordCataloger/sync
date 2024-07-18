@@ -13,9 +13,13 @@ const Authlayout = ({ children }) => {
           alt="background"
           width={64}
           height={64}
-          className="mr-3 w-16 h-16"
+          className="mr-3 w-10 h-10 md:w-16 md:h-16"
         />
-        <h1 className={`${kanit.className} text-[41px] font-medium`}>Sync</h1>
+        <h1
+          className={`${kanit.className} text-[30px] md:text-[41px] font-medium`}
+        >
+          Sync
+        </h1>
       </div>
       <div className="bg-[url('/nightsky.jpg')] bg-cover bg-no-repeat bg-center bg-fixed h-screen flex justify-center items-center">
         {children}

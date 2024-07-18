@@ -78,28 +78,31 @@ export default function Login() {
       <div className="mx-[24px] flex justify-between items-center">
         <div className="h-0 w-20 md:w-48 border border-gray-300"></div>
         <div className="text-gray-300 text-[13px] md:text-[16px]">
-          or login with
+          or log in with
         </div>
         <div className="h-0 w-20 md:w-48 border border-gray-300"></div>
       </div>
-      <div className="mx-[80px] mt-[24px] flex justify-between items-center">
+      <div className="mx-[80px] mt-[24px] flex md:justify-between justify-center items-center">
         <Image
           src="/googleicon.png"
           width={50}
           height={50}
           alt="Google login"
+          className="mx-4 md:mx-0"
         />
         <Image
           src="/facebookicon.png"
           width={50}
           height={50}
           alt="Google login"
+          className="mx-4 md:mx-0"
         />
         <Image
           src="/githubicon.png"
           width={50}
           height={50}
           alt="Google login"
+          className="mx-4 md:mx-0"
         />
       </div>
       <div className="mx-[24px] mt-[20px] mb-[10px] text-[10px] md:text-[13px] flex justify-between items-center">

@@ -2,12 +2,27 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import "./register.css";
 
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const router = useRouter();
+  const [slideIn, setSlideIn] = useState(false);
+
+  function slideInAnimation() {
+    setSlideIn(true);
+  }
+
+  function handleBack() {
+    slideInAnimation();
+    setTimeout(() => {
+      router.push("/login");
+    }, 500); // Wait for the animation to complete before changing the URL
+  }
 
   function emailOnChange(e) {
     setEmail(e.target.value);
@@ -36,11 +51,37 @@ export default function Register() {
   }
 
   return (
-    <div className="bg-[#F6F6F6] w-[300px] h-[550px] md:h-[648px] md:w-[550px] pt-[24px] rounded-l-lg mt-[15%] md:mt-[10%]">
+    <div
+      className={`bg-[#F6F6F6] w-[300px] h-[550px] md:h-[648px] md:w-[550px] pt-[24px] rounded-l-lg mt-[15%] md:mt-[10%] ${
+        slideIn ? "slide-in" : ""
+      }`}
+    >
+      <button onClick={handleBack}>
+        <svg
+          class="w-[24px] md:w-[36px] md:h-[36px] text-gray-800 dark:text-white inline"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="m14 8-4 4 4 4"
+          />
+        </svg>
+
+        <span className="text-[12px] md:text-[16px]">Back</span>
+      </button>
+
       <form onSubmit={registerSubmit}>
-        <span className="mx-[24px] text-[12px] md:text-[16px] text-[#1E1E1E] text-center">
+        <p className="mx-[24px] -mt-[22px] md:-mt-[30px] text-[12px] md:text-[16px] text-[#1E1E1E] text-center">
           Start your journey today!
-        </span>
+        </p>
 
         <div className="grid place-content-center">
           <button className="opacity-0 -mt-[120px] relative top-[120px] rounded-[50%] w-[120px] h-[120px] hover:opacity-100 hover:bg-[#134B70]/[0.65] text-center flex flex-col items-center justify-center">

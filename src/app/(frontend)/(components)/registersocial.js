@@ -3,13 +3,13 @@ import Image from "next/image";
 
 export default function RegisterSocial() {
   return (
-    <div className="flex h-[550px] md:h-[648px]">
-      <div className="flex flex-col justify-center items-center bg-[#F6F6F6] w-[20px] md:w-[100px]">
+    <div className="flex h-[550px] md:h-[648px] mt-[15%] md:mt-[10%]">
+      <div className="flex flex-col justify-center items-center bg-[#F6F6F6] w-[20px] py-6 md:w-[100px]">
         <div className="border border-l-1 h-[250px]"></div>
         <p className="my-2 text-[12px] md:text-[16px]">OR</p>
         <div className="border border-l-1 h-[250px]"></div>
       </div>
-      <div className="flex flex-col items-center justify-center bg-[#F6F6F6] rounded-r-lg px-[10px] md:px-[100px]">
+      <div className="flex flex-col items-center justify-center bg-[#F6F6F6] rounded-r-lg px-[30px] md:px-[100px]">
         <Button
           size="default"
           variant="default"

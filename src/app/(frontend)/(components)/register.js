@@ -36,7 +36,7 @@ export default function Register() {
   }
 
   return (
-    <div className="bg-[#F6F6F6] w-[300px] h-[550px] md:h-[648px] md:w-[550px] pt-[24px] rounded-l-lg">
+    <div className="bg-[#F6F6F6] w-[300px] h-[550px] md:h-[648px] md:w-[550px] pt-[24px] rounded-l-lg mt-[15%] md:mt-[10%]">
       <form onSubmit={registerSubmit}>
         <span className="mx-[24px] text-[12px] md:text-[16px] text-[#1E1E1E] text-center">
           Start your journey today!

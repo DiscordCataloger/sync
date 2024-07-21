@@ -4,6 +4,7 @@ import Switch from "./switch";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -22,7 +23,7 @@ export default function Login() {
   }
 
   return (
-    <div className="bg-[#FFFFFF] w-[300px] md:w-[550px] pt-[24px] rounded-lg">
+    <div className="bg-[#F6F6F6] w-[300px] md:w-[550px] pt-[24px] rounded-lg">
       <form onSubmit={loginSubmit}>
         <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
           <label
@@ -113,11 +114,11 @@ export default function Login() {
         <p className="text-[#1E1E1E] underline underline-offset-4">
           Forget email or password?
         </p>
-        <a onClick={() => router.replace("/register")}>
+        <Link href="/register" onClick={() => router.push("/register")}>
           <p className="text-[#1E1E1E] underline underline-offset-4">
             Need an account?
           </p>
-        </a>
+        </Link>
       </div>
     </div>
   );

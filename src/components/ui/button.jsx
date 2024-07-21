@@ -22,8 +22,11 @@ const buttonVariants = cva(
         solid:
           "bg-white border-2 border-blue-500 hover:border-blue-500 transition-all hover:shadow-md hover:shadow-sky-200 duration-200",
         black:
-          "bg-black text-primary-foreground transition-all hover:shadow-md hover:shadow-gray-400 duration-200",
-        red: "bg-red-500 text-primary-foreground transition-all hover:shadow-md hover:shadow-red-400 duration-200",
+          "bg-gray-500 text-primary-foreground transition-all hover:shadow-md hover:shadow-gray-400 duration-200",
+        red: "bg-red-400 text-primary-foreground transition-all hover:shadow-md hover:shadow-red-400 duration-200",
+        unset: "hover:bg-sky-400 hover:text-white",
+        active:
+          "bg-indigo-500 text-primary-foreground transition-all duration-200",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -31,6 +34,7 @@ const buttonVariants = cva(
         lg: "h-11 rounded-md px-8",
         round: "h-12 rounded-3xl px-8 hover:h-16",
         icon: "h-10 w-10",
+        friend: "px-3 py-1 md:text-base text-sm",
       },
     },
     defaultVariants: {

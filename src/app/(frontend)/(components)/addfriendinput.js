@@ -17,24 +17,29 @@ export default function AddFriendInput({ placeholder }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center w-full relative">
-      <input
-        id="input"
-        type="text"
-        placeholder={placeholder}
-        value={value}
-        onChange={handleChange}
-        className="w-full lg:text-sm text-xs rounded-2xl shadow-5 p-5 border-2 h-13 shadow-md shadow-sky-300/50 focus:outline-none"
-      />
-      <Button
-        variant="default"
-        size="sm"
-        className="absolute right-3 rounded-xl h-10 text-xs"
+    <>
+      <form
+        onSubmit={handleSubmit}
+        className="flex items-center w-full relative"
       >
-        Send Friend Request
-        {/* <input type="submit" /> */}
-      </Button>
+        <input
+          id="input"
+          type="text"
+          placeholder={placeholder}
+          value={value}
+          onChange={handleChange}
+          className="w-full lg:text-sm text-xs rounded-2xl shadow-5 p-5 border-2 h-13 shadow-md shadow-sky-300/50 focus:outline-none"
+        />
+        <Button
+          variant="default"
+          size="sm"
+          className="absolute right-3 rounded-xl h-10 md:text-sm text-xs"
+        >
+          Send Friend Request
+          {/* <input type="submit" /> */}
+        </Button>
+      </form>
       {submiValue && <p>{submiValue}</p>}
-    </form>
+    </>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 import FriendListItem from "./friendlistitem";
+import Image from "next/image";
 
 export default function PendingFriends() {
   const buttons = ["Accept", "Decline", "Block"];
@@ -28,6 +29,17 @@ export default function PendingFriends() {
             buttons={buttons}
           />
         ))}
+        {friendArr.length === 0 && (
+          <div className="flex flex-col items-center justify-center w-full">
+            <Image
+              width={300}
+              height={300}
+              alt="Sync.dev friend image"
+              src="/no_pending.png"
+            />
+            <div>OOPS, no one finds you yet.</div>
+          </div>
+        )}
       </div>
     </div>
   );

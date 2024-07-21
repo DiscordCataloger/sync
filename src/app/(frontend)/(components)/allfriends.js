@@ -1,5 +1,6 @@
 "use client";
 import FriendListItem from "./friendlistitem";
+import Image from "next/image";
 
 export default function AllFriends() {
   const buttons = ["Delete Friend"];
@@ -28,6 +29,17 @@ export default function AllFriends() {
             buttons={buttons}
           />
         ))}
+        {friendArr.length === 0 && (
+          <div className="flex flex-col items-center justify-center w-full">
+            <Image
+              width={300}
+              height={300}
+              alt="Sync.dev friend image"
+              src="/no_friend.png"
+            />
+            <div>OOPS, you yet have any friends.</div>
+          </div>
+        )}
       </div>
     </div>
   );

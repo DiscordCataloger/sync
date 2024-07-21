@@ -1,5 +1,6 @@
 "use client";
 import FriendListItem from "./friendlistitem";
+import Image from "next/image";
 
 export default function BlockedUsers() {
   const buttons = ["Unblock"];
@@ -28,6 +29,17 @@ export default function BlockedUsers() {
             buttons={buttons}
           />
         ))}
+        {blockArr.length === 0 && (
+          <div className="flex flex-col items-center justify-center w-full">
+            <Image
+              width={300}
+              height={300}
+              alt="Sync.dev friend image"
+              src="/no_blocked.png"
+            />
+            <div>WOW, seems you are pleased with everyone here.</div>
+          </div>
+        )}
       </div>
     </div>
   );

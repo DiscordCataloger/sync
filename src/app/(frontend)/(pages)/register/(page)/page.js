@@ -3,7 +3,7 @@ import RegisterSocial from "@/app/(frontend)/(components)/registersocial";
 
 export default function RegisterPage() {
   return (
-    <div className="flex justify-center items-center mt-[5%]">
+    <div className="flex justify-center items-center mt-[5%] bg-[url('/nightsky.jpg')]">
       <Register />
       <RegisterSocial />
     </div>

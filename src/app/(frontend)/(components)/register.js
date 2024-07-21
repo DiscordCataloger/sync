@@ -36,9 +36,12 @@ export default function Register() {
   }
 
   return (
-    <div className="bg-[#FFFFFF] w-[300px] md:w-[550px] pt-[24px] rounded-lg">
+    <div className="bg-[#F6F6F6] w-[300px] h-[550px] md:h-[648px] md:w-[550px] pt-[24px] rounded-l-lg">
       <form onSubmit={registerSubmit}>
-        <p className="mx-[24px] text-[#1E1E1E]">Sign Up</p>
+        <span className="mx-[24px] text-[12px] md:text-[16px] text-[#1E1E1E] text-center">
+          Start your journey today!
+        </span>
+
         <div className="grid place-content-center">
           <button className="opacity-0 -mt-[120px] relative top-[120px] rounded-[50%] w-[120px] h-[120px] hover:opacity-100 hover:bg-[#134B70]/[0.65] text-center flex flex-col items-center justify-center">
             <p className="text-xl text-[#E1EBE6]">Add</p>
@@ -128,7 +131,7 @@ export default function Register() {
           <Button
             size="default"
             variant="default"
-            className="my-[24px] text-[12px] md:text-[16px] bg-[#1D33A8] text-[#F5F5F5] rounded-md h-[25px] md:h-[40px] w-full"
+            className="my-[24px] text-[12px] md:text-[16px] bg-[#1D33A8] text-[#F5F5F5] rounded-md h-[25px] md:h-[40px] w-full hover:bg-[#1D33A8]/50"
           >
             Sign Up
           </Button>

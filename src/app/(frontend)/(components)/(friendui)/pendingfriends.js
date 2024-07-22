@@ -37,7 +37,7 @@ export default function PendingFriends() {
               alt="Sync.dev friend image"
               src="/no_pending.png"
             />
-            <div>OOPS, no one finds you yet.</div>
+            <div className="text-gray-400">OOPS, no one finds you yet.</div>
           </div>
         )}
       </div>

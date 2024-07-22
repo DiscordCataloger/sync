@@ -37,7 +37,7 @@ export default function AllFriends() {
               alt="Sync.dev friend image"
               src="/no_friend.png"
             />
-            <div>OOPS, you yet have any friends.</div>
+            <div className="text-gray-400">OOPS, you yet have any friends.</div>
           </div>
         )}
       </div>

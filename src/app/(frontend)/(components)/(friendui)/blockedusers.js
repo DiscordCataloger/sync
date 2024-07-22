@@ -37,7 +37,9 @@ export default function BlockedUsers() {
               alt="Sync.dev friend image"
               src="/no_blocked.png"
             />
-            <div>WOW, seems you are pleased with everyone here.</div>
+            <div className="text-gray-400">
+              WOW, seems you are pleased with everyone here.
+            </div>
           </div>
         )}
       </div>

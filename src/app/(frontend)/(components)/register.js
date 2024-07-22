@@ -5,24 +5,12 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import "./register.css";
 
-export default function Register() {
+export default function Register({ handleBack }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const router = useRouter();
-  const [slideIn, setSlideIn] = useState(false);
-
-  function slideInAnimation() {
-    setSlideIn(true);
-  }
-
-  function handleBack() {
-    slideInAnimation();
-    setTimeout(() => {
-      router.push("/login");
-    }, 500); // Wait for the animation to complete before changing the URL
-  }
 
   function emailOnChange(e) {
     setEmail(e.target.value);
@@ -52,9 +40,7 @@ export default function Register() {
 
   return (
     <div
-      className={`bg-[#F6F6F6] w-[300px] h-[550px] md:h-[648px] md:w-[550px] pt-[24px] rounded-l-lg mt-[15%] md:mt-[10%] ${
-        slideIn ? "slide-in" : ""
-      }`}
+      className={`bg-[#F6F6F6] min-w-[270px] min-h-[300px] md:min-h-[400px] md:w-[550px] pt-[24px] rounded-l-lg mt-[70px] md:mt-[30px]`}
     >
       <button onClick={handleBack}>
         <svg
@@ -98,7 +84,7 @@ export default function Register() {
           />
         </div>
 
-        <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
+        <div className="flex flex-col justify-start items-start mx-[24px] my-[12px]">
           <label
             for="email"
             className="text-[12px] md:text-[16px] pb-1 text-[#1E1E1E]"
@@ -116,7 +102,7 @@ export default function Register() {
           ></input>
         </div>
 
-        <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
+        <div className="flex flex-col justify-start items-start mx-[24px] my-[12px]">
           <label
             for="password"
             className="text-[12px] md:text-[16px] pb-1 text-[#1E1E1E]"
@@ -134,7 +120,7 @@ export default function Register() {
           ></input>
         </div>
 
-        <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
+        <div className="flex flex-col justify-start items-start mx-[24px] my-[12px]">
           <label
             for
             password="password"
@@ -153,7 +139,7 @@ export default function Register() {
           ></input>
         </div>
 
-        <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
+        <div className="flex flex-col justify-start items-start mx-[24px] my-[12px]">
           <label
             for="repeat-password"
             className="text-[12px] md:text-[16px] pb-1 text-[#1E1E1E]"
@@ -172,7 +158,7 @@ export default function Register() {
           <Button
             size="default"
             variant="default"
-            className="my-[24px] text-[12px] md:text-[16px] bg-[#1D33A8] text-[#F5F5F5] rounded-md h-[25px] md:h-[40px] w-full hover:bg-[#1D33A8]/50"
+            className="my-[8px] text-[12px] md:text-[16px] bg-[#1D33A8] text-[#F5F5F5] rounded-md h-[25px] md:h-[40px] w-full hover:bg-[#1D33A8]/50"
           >
             Sign Up
           </Button>

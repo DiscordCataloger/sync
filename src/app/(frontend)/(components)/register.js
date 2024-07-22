@@ -2,8 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import "./register.css";
-import Link from "next/link";
+import "./slide.css";
 
 export default function Register({ handleBack }) {
   const [email, setEmail] = useState("");
@@ -41,7 +40,7 @@ export default function Register({ handleBack }) {
     <div
       className={`bg-[#F6F6F6] min-w-[270px] min-h-[300px] md:min-h-[400px] md:w-[550px] pt-[24px] rounded-l-lg mt-[70px] md:mt-[30px]`}
     >
-      <Link href="/login" onClick={handleBack}>
+      <button onClick={handleBack}>
         <svg
           class="w-[24px] md:w-[36px] md:h-[36px] text-gray-800 dark:text-white inline"
           aria-hidden="true"
@@ -61,7 +60,7 @@ export default function Register({ handleBack }) {
         </svg>
 
         <span className="text-[12px] md:text-[16px]">Back</span>
-      </Link>
+      </button>
 
       <form onSubmit={registerSubmit}>
         <p className="mx-[24px] -mt-[22px] md:-mt-[30px] text-[12px] md:text-[16px] text-[#1E1E1E] text-center">

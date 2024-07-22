@@ -1,24 +1,54 @@
 "use client";
 import Register from "@/app/(frontend)/(components)/register";
 import RegisterSocial from "@/app/(frontend)/(components)/registersocial";
-import "@/app/(frontend)/(components)/register.css";
-import { useState } from "react";
+import "@/app/(frontend)/(components)/slide.css";
+// import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { slideReducer } from "../(slide)/slide";
+import SlideProvider, { useSlide } from "../(slide)/slideProvider";
+import { useReducer } from "react";
+import "@/app/(frontend)/(components)/slide.css";
 
-export default function RegisterPage() {
-  const [slideOut, setSlideOut] = useState(false);
+export function RegisterPageComponent() {
+  const router = useRouter();
+  const {
+    slideLeftState,
+    slideRightState,
+    slideLeftDispatch,
+    slideRightDispatch,
+  } = useSlide();
 
-  function handleBacktoLogin() {
-    setSlideOut(true);
+  let className = `flex justify-center items-center`;
+  const registerButtonClicked = localStorage.getItem("registerButtonClicked");
+  if (!!registerButtonClicked) {
+    className += " slide-from-right";
+    setTimeout(() => localStorage.removeItem("registerButtonClicked"), 50);
+  }
+
+  const slidetoRight = () => {
+    slideRightDispatch({ type: "SLIDETORIGHT" });
+    setTimeout(() => {
+      router.push("/login");
+    }, 400);
+    localStorage.setItem("backButtonClicked", "true");
+  };
+
+  if (slideRightState.slideRight) {
+    className += " slide-to-right";
   }
 
   return (
-    <div
-      className={`flex justify-center items-center ${
-        slideOut ? "slide-in" : ""
-      }`}
-    >
-      <Register handleBack={handleBacktoLogin} />
+    <div className={className}>
+      <Register handleBack={slidetoRight} />
       <RegisterSocial />
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <SlideProvider>
+      <RegisterPageComponent />
+    </SlideProvider>
   );
 }

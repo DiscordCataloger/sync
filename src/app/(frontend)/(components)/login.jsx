@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-export default function Login({ handleLogin }) {
+export default function Login({ handleRegister }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isOn, setIsOn] = useState(false);
@@ -21,7 +21,7 @@ export default function Login({ handleLogin }) {
   }
 
   return (
-    <div className="bg-[#F6F6F6] w-[300px] md:w-[550px] pt-[24px] rounded-lg">
+    <div className="bg-[#F6F6F6] md:mt-8 md:mr-6 w-[300px] md:w-[550px] pt-[24px] rounded-lg">
       <form onSubmit={loginSubmit}>
         <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
           <label
@@ -112,11 +112,11 @@ export default function Login({ handleLogin }) {
         <p className="text-[#1E1E1E] underline underline-offset-4">
           Forget email or password?
         </p>
-        <Link href="/register" onClick={handleLogin}>
+        <button onClick={handleRegister}>
           <p className="text-[#1E1E1E] underline underline-offset-4">
             Need an account?
           </p>
-        </Link>
+        </button>
       </div>
     </div>
   );

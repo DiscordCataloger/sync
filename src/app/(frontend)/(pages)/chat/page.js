@@ -1,10 +1,10 @@
 "use client";
-import Friend from "../../(components)/friend";
+import FriendUI from "../../(components)/FriendUI";
 
 export default function Page() {
   return (
     <div className="bg-blue-100 h-screen">
-      <Friend />
+      <FriendUI />
     </div>
   );
 }

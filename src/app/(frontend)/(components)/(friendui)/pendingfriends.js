@@ -1,5 +1,5 @@
 "use client";
-import FriendListItem from "./friendlistitem";
+import FriendListItem from "./FriendListItem";
 import Image from "next/image";
 
 export default function PendingFriends() {

@@ -3,9 +3,14 @@ import { useState } from "react"; // Hook
 import { Button } from "@/components/ui/button";
 // import style from "./Form.module.css";
 
-export default function AddFriendInput({ placeholder }) {
+export default function Search({
+  placeholder,
+  buttonName,
+  submitValue,
+  setSubmitValue,
+}) {
   const [value, setValue] = useState("");
-  const [submiValue, setSubmitValue] = useState("");
+  // const [submitValue, setSubmitValue] = useState("");
 
   function handleChange(event) {
     setValue(event.target.value);
@@ -35,11 +40,9 @@ export default function AddFriendInput({ placeholder }) {
           size="sm"
           className="absolute right-3 rounded-xl h-10 md:text-sm text-xs"
         >
-          Send Friend Request
-          {/* <input type="submit" /> */}
+          {buttonName}
         </Button>
       </form>
-      {submiValue && <p>{submiValue}</p>}
     </>
   );
 }

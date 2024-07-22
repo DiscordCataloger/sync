@@ -1,11 +1,11 @@
 "use client";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import AddFriend from "./(friendui)/addfriend";
-import OnlineFriend from "./(friendui)/onlinefriend";
-import AllFriends from "./(friendui)/allfriends";
-import PendingFriends from "./(friendui)/pendingfriends";
-import BlockedUsers from "./(friendui)/blockedusers";
+import AddFriend from "./(friendui)/AddFriend";
+import OnlineFriends from "./(friendui)/OnlineFriends";
+import AllFriends from "./(friendui)/AllFriends";
+import PendingFriends from "./(friendui)/PendingFriends";
+import BlockedUsers from "./(friendui)/BlockedUsers";
 
 export default function Topbar({ icon, name, category }) {
   const [currentCategory, setCurrentCategory] = useState("Add Friend");
@@ -35,7 +35,7 @@ export default function Topbar({ icon, name, category }) {
         </div>
       </div>
 
-      {currentCategory === "Online" && <OnlineFriend />}
+      {currentCategory === "Online" && <OnlineFriends />}
       {currentCategory === "All" && <AllFriends />}
       {currentCategory === "Pending" && <PendingFriends />}
       {currentCategory === "Blocked" && <BlockedUsers />}

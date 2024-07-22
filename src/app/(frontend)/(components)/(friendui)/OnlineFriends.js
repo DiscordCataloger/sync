@@ -1,8 +1,8 @@
 "use client";
-import FriendListItem from "./friendlistitem";
+import FriendListItem from "./FriendListItem";
 import Image from "next/image";
 
-export default function OnlineFriend() {
+export default function OnlineFriends() {
   const buttons = ["DM"];
   const friendArr = [
     // {

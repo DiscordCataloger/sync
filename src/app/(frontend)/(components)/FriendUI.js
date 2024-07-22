@@ -2,7 +2,7 @@
 import Topbar from "./topbar";
 import { Github } from "lucide-react";
 
-export default function Friend() {
+export default function FriendUI() {
   const name = "Friends";
   const category = ["Online", "All", "Pending", "Blocked", "Add Friend"];
 

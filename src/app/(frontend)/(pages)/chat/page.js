@@ -6,7 +6,7 @@ export default function Page() {
     {
       icon: "/chat_bot.png",
       name: "Chuuthiya",
-      status: "Online",
+      status: "Offline",
       lastSeen: "Today, 2:31pm",
     },
   ];

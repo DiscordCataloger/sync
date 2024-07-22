@@ -1,5 +1,4 @@
-import { Poppins } from "next/font/google";
-import { Kanit } from "next/font/google";
+import { Poppins, Kanit } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
 

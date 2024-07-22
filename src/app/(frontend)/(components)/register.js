@@ -156,7 +156,7 @@ export default function Register({ handleBack }) {
           <Button
             size="default"
             variant="default"
-            className="my-[8px] text-[12px] md:text-[16px] bg-[#1D33A8] text-[#F5F5F5] rounded-md h-[25px] md:h-[40px] w-full hover:bg-[#1D33A8]/50"
+            className="my-[8px] text-[12px] md:text-[16px] bg-[#1D33A8] text-[#F5F5F5] rounded-md h-[25px] md:h-[40px] w-full"
           >
             Sign Up
           </Button>

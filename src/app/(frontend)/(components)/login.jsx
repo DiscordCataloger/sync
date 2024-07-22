@@ -3,14 +3,12 @@ import { useState } from "react";
 import Switch from "./switch";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-export default function Login() {
+export default function Login({ handleLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isOn, setIsOn] = useState(false);
-  const router = useRouter();
 
   function emailOnChange(e) {
     setEmail(e.target.value);
@@ -114,7 +112,7 @@ export default function Login() {
         <p className="text-[#1E1E1E] underline underline-offset-4">
           Forget email or password?
         </p>
-        <Link href="/register" onClick={() => router.push("/register")}>
+        <Link href="/register" onClick={handleLogin}>
           <p className="text-[#1E1E1E] underline underline-offset-4">
             Need an account?
           </p>

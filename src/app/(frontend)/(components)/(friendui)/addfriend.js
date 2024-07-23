@@ -4,7 +4,7 @@ import Search from "../Search";
 import Image from "next/image";
 
 export default function AddFriend() {
-  // Search
+  // Search.js
   const [submitValue, setSubmitValue] = useState("");
 
   return (

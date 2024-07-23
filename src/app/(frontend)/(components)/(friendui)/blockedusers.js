@@ -4,6 +4,7 @@ import Image from "next/image";
 
 export default function BlockedUsers() {
   const buttons = ["Unblock"];
+  // Demo
   const blockArr = [
     {
       icon: "/chat_bot.png",

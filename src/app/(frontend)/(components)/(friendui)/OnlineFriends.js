@@ -5,16 +5,16 @@ import Image from "next/image";
 export default function OnlineFriends() {
   const buttons = ["DM"];
   const friendArr = [
-    // {
-    //   icon: "/chat_bot.png",
-    //   name: "Daniel",
-    //   status: "Online",
-    // },
-    // {
-    //   icon: "/chat_bot.png",
-    //   name: "Daniel",
-    //   status: "Online",
-    // },
+    {
+      icon: "/chat_bot.png",
+      name: "Daniel",
+      status: "Online",
+    },
+    {
+      icon: "/chat_bot.png",
+      name: "Daniel",
+      status: "Online",
+    },
   ];
   return (
     <div className="flex flex-col gap-5 p-5 mt-5">

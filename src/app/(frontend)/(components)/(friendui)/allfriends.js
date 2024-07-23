@@ -3,7 +3,7 @@ import FriendListItem from "./FriendListItem";
 import Image from "next/image";
 
 export default function AllFriends() {
-  const buttons = ["Delete Friend"];
+  const buttons = ["DM", "Delete Friend"];
   const friendArr = [
     {
       icon: "/chat_bot.png",

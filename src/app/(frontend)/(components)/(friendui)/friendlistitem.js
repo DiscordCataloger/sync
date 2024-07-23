@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 
 export default function FriendListItem({ icon, name, status, buttons }) {
+  // Friend list Template
   return (
     <div className="flex w-full items-center justify-between bg-white rounded-xl p-3 hover:bg-blue-50">
       <div className="flex items-center">

@@ -162,7 +162,7 @@ export default function LoginPageComponent() {
     slideRightDispatch,
   } = useSlide();
   const backButtonClicked = window.localStorage.getItem("backButtonClicked");
-  let className = `flex flex-col md:flex-row md:justify-center items-center`;
+  let className = `flex flex-col md:flex-row md:justify-around items-center ml-[2%]`;
   if (!!backButtonClicked) {
     className += " slide-from-left";
     setTimeout(() => window.localStorage.removeItem("backButtonClicked"), 100);

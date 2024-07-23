@@ -1,3 +1,4 @@
+"use client";
 import { useReducer, useContext } from "react";
 import { slideReducer } from "./slide";
 import { SlideContext } from "./slideContext";

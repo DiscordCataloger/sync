@@ -4,9 +4,7 @@ import RegisterSocial from "@/app/(frontend)/(components)/registersocial";
 import "@/app/(frontend)/(components)/slide.css";
 // import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { slideReducer } from "../(slide)/slide";
 import SlideProvider, { useSlide } from "../(slide)/slideProvider";
-import { useReducer } from "react";
 import "@/app/(frontend)/(components)/slide.css";
 
 export function RegisterPageComponent() {
@@ -22,15 +20,17 @@ export function RegisterPageComponent() {
   const registerButtonClicked = localStorage.getItem("registerButtonClicked");
   if (!!registerButtonClicked) {
     className += " slide-from-right";
-    setTimeout(() => localStorage.removeItem("registerButtonClicked"), 50);
+    setTimeout(
+      () => window.localStorage.removeItem("registerButtonClicked"),
+      50
+    );
   }
-
   const slidetoRight = () => {
     slideRightDispatch({ type: "SLIDETORIGHT" });
     setTimeout(() => {
       router.push("/login");
     }, 400);
-    localStorage.setItem("backButtonClicked", "true");
+    window.localStorage.setItem("backButtonClicked", "true");
   };
 
   if (slideRightState.slideRight) {

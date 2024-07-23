@@ -3,9 +3,21 @@ import { useState } from "react";
 import Switch from "./switch";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import Typewriter from "typewriter-effect";
+import SlideProvider, {
+  useSlide,
+} from "../(pages)/(auth)/(slide)/slideProvider";
 
-export default function Login({ handleRegister }) {
+export function Login() {
+  const {
+    slideLeftState,
+    slideRightState,
+    slideLeftDispatch,
+    slideRightDispatch,
+  } = useSlide();
+
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isOn, setIsOn] = useState(false);
@@ -19,6 +31,21 @@ export default function Login({ handleRegister }) {
   function loginSubmit(e) {
     e.preventDefault();
   }
+  function handleRegister() {
+    slideLeftDispatch({ type: "SLIDETOLEFT" });
+    setTimeout(() => {
+      router.push("/register");
+    }, 400);
+    window.localStorage.setItem("registerButtonClicked", "true");
+  }
+
+  const handleForget = () => {
+    slideLeftDispatch({ type: "SLIDETOLEFT" });
+    setTimeout(() => {
+      router.push("/forget_credentials");
+    }, 400);
+    window.localStorage.setItem("forgetButtonClicked", "true");
+  };
 
   return (
     <div className="bg-[#F6F6F6] md:mt-8 md:mr-6 w-[300px] md:w-[550px] pt-[24px] rounded-lg">
@@ -109,14 +136,65 @@ export default function Login({ handleRegister }) {
         />
       </div>
       <div className="mx-[24px] mt-[20px] mb-[10px] text-[10px] md:text-[13px] flex justify-between items-center">
-        <p className="text-[#1E1E1E] underline underline-offset-4">
-          Forget email or password?
-        </p>
-        <button onClick={handleRegister}>
-          <p className="text-[#1E1E1E] underline underline-offset-4">
-            Need an account?
-          </p>
+        <button
+          onClick={handleForget}
+          className="text-[#1E1E1E] underline underline-offset-4"
+        >
+          Forget password?
         </button>
+        <button
+          onClick={handleRegister}
+          className="text-[#1E1E1E] underline underline-offset-4"
+        >
+          Need an account?
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default function LoginPageComponent() {
+  const {
+    slideLeftState,
+    slideRightState,
+    slideLeftDispatch,
+    slideRightDispatch,
+  } = useSlide();
+  const backButtonClicked = window.localStorage.getItem("backButtonClicked");
+  let className = `flex flex-col md:flex-row md:justify-center items-center`;
+  if (!!backButtonClicked) {
+    className += " slide-from-left";
+    setTimeout(() => window.localStorage.removeItem("backButtonClicked"), 100);
+  }
+
+  if (slideLeftState.slideLeft) {
+    className += " slide-to-left";
+  }
+  return (
+    <div>
+      <div className={className}>
+        <h1 className="md:ml-4 mt-11 md:text-6xl text-[#A8A8FF] font-bold md:my-[200px] md:w-[700px] md:h-[130px] text-md my-[24px] w-[300px] h-[10px]">
+          <Typewriter
+            options={{ loop: true }}
+            onInit={(typewriter) => {
+              typewriter
+                .typeString("Start Your Chat Journey Here!")
+                .pauseFor(1000)
+                .deleteChars(18)
+                .typeString("Social Life Here!")
+                .pauseFor(1000)
+                .deleteChars(17)
+                .typeString("Gaming Experience Here!")
+                .pauseFor(1000)
+                .deleteChars(23)
+                .typeString("Work Life Here!")
+                .pauseFor(1000)
+                .deleteAll()
+                .start();
+            }}
+          />
+        </h1>
+        <Login />
       </div>
     </div>
   );

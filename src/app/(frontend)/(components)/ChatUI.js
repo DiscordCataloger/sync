@@ -9,7 +9,7 @@ import {
 import style from "./ChatUI.module.css";
 
 export default function ChatUI({ icon, name, status, lastSeen }) {
-  const [messages, setMessages] = useState([
+  const [allMessages, setAllMessages] = useState([
     { from: "other", text: "Hey There!", time: "20:30" },
     { from: "other", text: "How are you?", time: "20:30" },
     { from: "me", text: "Hello!", time: "20:33" },
@@ -20,7 +20,37 @@ export default function ChatUI({ icon, name, status, lastSeen }) {
       time: "20:36",
     },
     { from: "me", text: "Yes Sure!", time: "20:58" },
+    { from: "other", text: "Hey There!", time: "20:30" },
+    { from: "other", text: "How are you?", time: "20:30" },
+    { from: "me", text: "Hello!", time: "20:33" },
+    { from: "me", text: "I am fine and how are you?", time: "20:34" },
+    {
+      from: "other",
+      text: "I am doing well, Can we meet tomorrow?",
+      time: "20:36",
+    },
+    { from: "me", text: "Yes Sure!", time: "20:58" },
+    { from: "other", text: "Hey There!", time: "20:30" },
+    { from: "other", text: "How are you?", time: "20:30" },
+    { from: "me", text: "Hello!", time: "20:33" },
+    { from: "me", text: "I am fine and how are you?", time: "20:34" },
+    {
+      from: "other",
+      text: "I am doing well, Can we meet tomorrow?",
+      time: "20:36",
+    },
+    { from: "me", text: "Yes Sure!", time: "20:58" },
+    { from: "me", text: "Yes Sure!", time: "20:58" },
+    { from: "me", text: "Yes Sure!", time: "20:58" },
+    { from: "me", text: "Yes Sure!", time: "20:58" },
+    { from: "me", text: "Yes Sure!", time: "20:58" },
+    { from: "me", text: "Yes Sure!", time: "20:58" },
+    { from: "me", text: "Yes Sure!", time: "20:58" },
+    { from: "me", text: "Yes Sure!", time: "20:58" },
   ]);
+
+  // limit display only 20 messages
+  const [messages, setMessages] = useState(allMessages.slice(-20));
   const [input, setInput] = useState("");
   const bottomRef = useRef(null);
 
@@ -30,13 +60,18 @@ export default function ChatUI({ icon, name, status, lastSeen }) {
       const formattedTime = `${currentTime.getHours()}:${String(
         currentTime.getMinutes()
       ).padStart(2, "0")}`;
-      setMessages([
-        ...messages,
+      setAllMessages([
+        ...allMessages,
         { from: "me", text: input, time: formattedTime },
       ]);
       setInput("");
     }
   };
+
+  // limit display only 20 messages
+  useEffect(() => {
+    setMessages(allMessages.slice(-20));
+  }, [allMessages]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -100,6 +135,7 @@ export default function ChatUI({ icon, name, status, lastSeen }) {
                   }`}
                 >
                   {msg.text}
+                  {index}
                 </div>
                 <div className="text-xs text-gray-400 mt-1 px-2">
                   {msg.time}

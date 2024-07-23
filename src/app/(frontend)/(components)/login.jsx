@@ -174,7 +174,7 @@ export default function LoginPageComponent() {
   return (
     <div>
       <div className={className}>
-        <h1 className="md:ml-4 mt-[10%] text-md md:text-6xl text-[#A8A8FF] font-bold md:mt-[10%] md:w-[700px] md:h-[130px] text-md w-[300px] min-h-[55px]">
+        <h1 className="mt-[10%] text-md md:text-6xl text-[#A8A8FF] font-bold md:mt-[10%] md:w-[700px] md:h-[130px] text-md w-[300px] min-h-[55px]">
           <Typewriter
             options={{ loop: true }}
             onInit={(typewriter) => {

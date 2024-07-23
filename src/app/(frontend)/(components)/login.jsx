@@ -21,6 +21,7 @@ export function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isOn, setIsOn] = useState(false);
+  const [required, setRequired] = useState(false);
 
   function emailOnChange(e) {
     setEmail(e.target.value);
@@ -106,13 +107,13 @@ export function Login() {
         </div>
       </form>
       <div className="mx-[24px] flex justify-between items-center">
-        <div className="h-0 w-20 md:w-40 border border-gray-300"></div>
-        <div className="text-gray-300 text-[13px] md:text-[16px] text-[#aeb5bf] font-extrabold">
+        <div className="h-0 w-16 md:w-44 border border-gray-300"></div>
+        <span className="text-gray-300 min-w-[100px] text-[13px] md:text-[13px] text-[#aeb5bf] font-bold">
           or log in with
-        </div>
-        <div className="h-0 w-20 md:w-40 border border-gray-300"></div>
+        </span>
+        <div className="h-0 w-16 md:w-44 border border-gray-300"></div>
       </div>
-      <div className="mx-[80px] mt-[24px] flex md:justify-between justify-center items-center">
+      <div className="mx-[80px] mt-[10px] flex md:justify-between justify-center items-center">
         <Image
           src="/googleicon.png"
           width={50}
@@ -135,12 +136,12 @@ export function Login() {
           className="mx-4 md:mx-0"
         />
       </div>
-      <div className="mx-[24px] mt-[20px] mb-[10px] text-[10px] md:text-[13px] flex justify-between items-center">
+      <div className="mx-[24px] my-[15px] md:my-[20px] text-[10px] md:text-[13px] flex justify-between items-center">
         <button
           onClick={handleForget}
           className="text-[#1E1E1E] underline underline-offset-4"
         >
-          Forget password?
+          Forgot password?
         </button>
         <button
           onClick={handleRegister}
@@ -173,7 +174,7 @@ export default function LoginPageComponent() {
   return (
     <div>
       <div className={className}>
-        <h1 className="md:ml-4 mt-[70px] md:text-6xl text-[#A8A8FF] font-bold md:my-[200px] md:w-[700px] md:h-[130px] text-md my-[24px] w-[300px] h-[10px]">
+        <h1 className="md:ml-4 mt-[70px] text-md md:text-6xl text-[#A8A8FF] font-bold md:my-[200px] md:w-[700px] md:h-[130px] text-md w-[300px] min-h-[55px]">
           <Typewriter
             options={{ loop: true }}
             onInit={(typewriter) => {

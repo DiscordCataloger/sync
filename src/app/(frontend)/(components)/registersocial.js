@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function RegisterSocial() {
   return (
-    <div className="flex mt-[70px] md:mt-[30px] h-[454px] md:h-[564px]">
+    <div className="flex mt-0 md:mt-[10px] h-[454px] md:h-[551px]">
       <div className="flex flex-col justify-center items-center py-5 bg-[#F6F6F6]">
         <div className="border border-l-1 h-[180px] border-[#aeb5bf]"></div>
         <p className="my-2 text-[12px] md:text-[16px] text-[#aeb5bf] font-extrabold">

@@ -5,7 +5,6 @@ import Link from "next/link";
 const poppins = Poppins({ subsets: ["latin"], weight: ["500"] });
 const kanit = Kanit({ subsets: ["latin"], weight: ["500"] });
 
-
 export default function RootLayout({ children }) {
   return (
     <div

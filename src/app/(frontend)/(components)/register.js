@@ -41,7 +41,7 @@ export default function Register({ handleBack }) {
 
   return (
     <div
-      className={`bg-[#F6F6F6] min-w-[270px] min-h-[300px] md:min-h-[400px] md:w-[550px] pt-[24px] rounded-l-lg mt-[70px] md:mt-[30px]`}
+      className={`bg-[#F6F6F6] min-w-[270px] min-h-[300px] md:min-h-[400px] md:w-[550px] pt-[24px] rounded-l-lg mt-[20px] md:mt-[10px]`}
     >
       <button onClick={handleBack} className="mb-[2px] md:mb-[0px] md:mt-[2px]">
         <svg
@@ -85,7 +85,7 @@ export default function Register({ handleBack }) {
           />
         </div>
 
-        <div className="flex flex-col justify-start items-start mx-[24px] my-[12px]">
+        <div className="flex flex-col justify-start items-start mx-[24px]">
           <label
             for="email"
             className="text-[12px] md:text-[16px] pb-1 text-[#1E1E1E]"
@@ -159,7 +159,7 @@ export default function Register({ handleBack }) {
           <Button
             size="default"
             variant="default"
-            className="my-[8px] text-[12px] md:text-[16px] bg-[#1D33A8] text-[#F5F5F5] rounded-md h-[25px] md:h-[40px] w-full"
+            className="mt-[15px] text-[12px] md:text-[16px] bg-[#1D33A8] text-[#F5F5F5] rounded-md h-[25px] md:h-[40px] w-full"
           >
             Sign Up
           </Button>

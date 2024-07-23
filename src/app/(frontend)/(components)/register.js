@@ -3,6 +3,9 @@ import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import "./slide.css";
+import RegisterSocial from "./registersocial";
+import { useRouter } from "next/navigation";
+import { useSlide } from "../(pages)/(auth)/(slide)/slideProvider";
 
 export default function Register({ handleBack }) {
   const [email, setEmail] = useState("");
@@ -40,7 +43,7 @@ export default function Register({ handleBack }) {
     <div
       className={`bg-[#F6F6F6] min-w-[270px] min-h-[300px] md:min-h-[400px] md:w-[550px] pt-[24px] rounded-l-lg mt-[70px] md:mt-[30px]`}
     >
-      <button onClick={handleBack}>
+      <button onClick={handleBack} className="mb-[2px] md:mb-[0px] md:mt-[2px]">
         <svg
           class="w-[24px] md:w-[36px] md:h-[36px] text-gray-800 dark:text-white inline"
           aria-hidden="true"
@@ -162,6 +165,44 @@ export default function Register({ handleBack }) {
           </Button>
         </div>
       </form>
+    </div>
+  );
+}
+
+export function RegisterPageComponent() {
+  const router = useRouter();
+  const {
+    slideLeftState,
+    slideRightState,
+    slideLeftDispatch,
+    slideRightDispatch,
+  } = useSlide();
+
+  let className = `flex flex-col md:flex-row justify-center items-center`;
+  const registerButtonClicked = localStorage.getItem("registerButtonClicked");
+  if (!!registerButtonClicked) {
+    className += " slide-from-right";
+    setTimeout(
+      () => window.localStorage.removeItem("registerButtonClicked"),
+      50
+    );
+  }
+  const slidetoRight = () => {
+    slideRightDispatch({ type: "SLIDETORIGHT" });
+    setTimeout(() => {
+      router.push("/login");
+    }, 400);
+    window.localStorage.setItem("backButtonClicked", "true");
+  };
+
+  if (slideRightState.slideRight) {
+    className += " slide-to-right";
+  }
+
+  return (
+    <div className={className}>
+      <Register handleBack={slidetoRight} />
+      <RegisterSocial />
     </div>
   );
 }

@@ -3,8 +3,8 @@ import "@/app/(frontend)/(components)/slide.css";
 import SlideProvider from "../(slide)/slideProvider";
 
 export const metadata = {
-  title: "Account Recovery",
-  description: "Account Recovery on Sync",
+  title: "Sign In to Sync",
+  description: "Account Sign-in",
 };
 
 export default function LoginPage() {

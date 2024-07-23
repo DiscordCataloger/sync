@@ -1,4 +1,5 @@
-import Forget from "../../../(components)/forget";
+import ForgetPageComponent from "@/app/(frontend)/(components)/forget";
+import SlideProvider from "../(slide)/slideProvider";
 
 export const metadata = {
   title: "Account Recovery",
@@ -7,8 +8,8 @@ export const metadata = {
 
 export default function ForgetCreds() {
   return (
-    <div>
-      <Forget />
-    </div>
+    <SlideProvider>
+      <ForgetPageComponent />
+    </SlideProvider>
   );
 }

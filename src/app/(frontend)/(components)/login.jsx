@@ -107,7 +107,7 @@ export function Login() {
       </form>
       <div className="mx-[24px] flex justify-between items-center">
         <div className="h-0 w-20 md:w-40 border border-gray-300"></div>
-        <div className="text-gray-300 text-[13px] md:text-[16px]">
+        <div className="text-gray-300 text-[13px] md:text-[16px] text-[#aeb5bf] font-extrabold">
           or log in with
         </div>
         <div className="h-0 w-20 md:w-40 border border-gray-300"></div>
@@ -173,7 +173,7 @@ export default function LoginPageComponent() {
   return (
     <div>
       <div className={className}>
-        <h1 className="md:ml-4 mt-11 md:text-6xl text-[#A8A8FF] font-bold md:my-[200px] md:w-[700px] md:h-[130px] text-md my-[24px] w-[300px] h-[10px]">
+        <h1 className="md:ml-4 mt-[70px] md:text-6xl text-[#A8A8FF] font-bold md:my-[200px] md:w-[700px] md:h-[130px] text-md my-[24px] w-[300px] h-[10px]">
           <Typewriter
             options={{ loop: true }}
             onInit={(typewriter) => {

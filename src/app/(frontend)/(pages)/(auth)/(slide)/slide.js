@@ -6,10 +6,6 @@ export const slideReducer = (state, action) => {
       return { ...state, slideLeft: true };
     case "SLIDETORIGHT":
       return { ...state, slideRight: true };
-    case "SLIDETOLEFTFINISH":
-      return { ...state, slideLeft: false };
-    case "SLIDETORIGHTFINISH":
-      return { ...state, slideRight: false };
     default:
       throw new Error("Unknown action type");
   }

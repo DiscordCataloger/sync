@@ -16,7 +16,7 @@ export function Forget({ handleBack }) {
 
   return (
     <div
-      className={`bg-[#F6F6F6] mt-[15%] md:mr-6 w-[300px] md:w-[550px] py-[20px] rounded-lg`}
+      className={`bg-[#F6F6F6] mt-[10%] md:mr-6 w-[300px] md:w-[550px] py-[20px] rounded-lg`}
     >
       <button onClick={handleBack} className="mb-[1px] md:mb-0 md:mt-[4px]">
         <svg

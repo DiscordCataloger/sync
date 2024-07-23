@@ -41,7 +41,7 @@ export default function Register({ handleBack }) {
 
   return (
     <div
-      className={`bg-[#F6F6F6] min-w-[270px] min-h-[300px] md:min-h-[400px] md:w-[550px] pt-[24px] rounded-l-lg mt-[20%] md:mt-[10%]`}
+      className={`bg-[#F6F6F6] min-w-[270px] min-h-[300px] md:min-h-[400px] md:w-[550px] pt-[24px] rounded-l-lg mt-[20%] md:mt-[5%]`}
     >
       <button onClick={handleBack} className="mb-[2px] md:mb-[0px] md:mt-[2px]">
         <svg

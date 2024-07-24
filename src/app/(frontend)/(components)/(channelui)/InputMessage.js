@@ -1,13 +1,46 @@
 "use client";
+import { useState, useRef, useEffect } from "react";
 import { Paperclip, Laugh, SendHorizontal } from "lucide-react";
+import EmojiPicker from "emoji-picker-react";
 
 export default function InputMessage({ input, setInput, sendMessage }) {
+  const [isEmoji, setIsEmoji] = useState(false);
+  const inputRef = useRef(null);
+  const emojiPickerRef = useRef(null);
+  const emojiIconRef = useRef(null);
+
+  const toggleEmoji = () => {
+    setIsEmoji(!isEmoji);
+  };
+
+  const handleClickOutside = (event) => {
+    if (
+      emojiPickerRef.current &&
+      !emojiPickerRef.current.contains(event.target) &&
+      !emojiIconRef.current.contains(event.target)
+    ) {
+      setIsEmoji(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isEmoji) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isEmoji]);
+
   return (
-    <div className="p-8 flex gap-5 justify-center items-center">
+    <div className="p-4 flex gap-4 justify-center items-center relative">
       <div className="relative w-full">
         <Laugh
           className="text-blue-500 absolute left-4 top-1/2 transform -translate-y-1/2 cursor-pointer hover:text-blue-600"
-          onClick={null}
+          onClick={() => toggleEmoji()}
+          ref={emojiIconRef}
         />
         <input
           type="text"
@@ -16,6 +49,7 @@ export default function InputMessage({ input, setInput, sendMessage }) {
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
           className="w-full px-12 p-3 border rounded-2xl focus:outline-none bg-blue-50 text-black"
           placeholder="Type your message here..."
+          ref={inputRef}
         />
         <Paperclip
           className="text-blue-500 absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer hover:text-blue-600"
@@ -28,6 +62,23 @@ export default function InputMessage({ input, setInput, sendMessage }) {
       >
         <SendHorizontal />
       </div>
+      {isEmoji && (
+        <div
+          ref={emojiPickerRef}
+          className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-10"
+        >
+          <EmojiPicker
+            onEmojiClick={(emoji) => {
+              setInput((prevInput) => `${prevInput}${emoji.emoji}`);
+              setIsEmoji(false);
+              inputRef.current.focus();
+            }}
+            disableSearchBar
+            disableAutoFocus
+            emojiStyle="twitter"
+          />
+        </div>
+      )}
     </div>
   );
 }

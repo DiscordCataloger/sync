@@ -6,7 +6,7 @@ export default function ChannelHeader({ name }) {
     <>
       <div className="flex justify-between items-center px-10 py-8 pb-5">
         <div className="flex items-center">
-          <Hash className="mr-3 w-6 h-6" />
+          <Hash className="mr-3 w-6 h-6 text-black" />
           <div className="flex flex-col text-lg font-bold text-black">
             {name}
           </div>

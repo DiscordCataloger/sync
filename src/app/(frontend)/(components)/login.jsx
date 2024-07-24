@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Switch from "./switch";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -8,8 +8,10 @@ import Typewriter from "typewriter-effect";
 import SlideProvider, {
   useSlide,
 } from "../(pages)/(auth)/(slide)/slideProvider";
+import Required from "./required";
 
 export function Login() {
+  // usereducer for sliding animations
   const {
     slideLeftState,
     slideRightState,
@@ -17,21 +19,65 @@ export function Login() {
     slideRightDispatch,
   } = useSlide();
 
-  const router = useRouter();
+  const router = useRouter(); // URL changing function
+
+  // various useStates
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isOn, setIsOn] = useState(false);
-  const [required, setRequired] = useState(false);
+  const [emailRequired, setEmailRequired] = useState(false);
+  const [passwordRequired, setPassWordRequired] = useState(false);
+  const [emailValidate, setEmailValidate] = useState(false);
+  const [clicked, setClicked] = useState(false);
 
+  // Event value change of email field
   function emailOnChange(e) {
     setEmail(e.target.value);
   }
+
+  // Event value change of password field
   function passwordOnChange(e) {
     setPassword(e.target.value);
   }
+
+  // Submitting the login form
   function loginSubmit(e) {
     e.preventDefault();
+    if (!emailRequired && !passwordRequired) {
+    }
   }
+
+  // Functions for when a user input either email or password
+  function onEmailKeyPress(e) {
+    if (!e.target.value) {
+      setEmailRequired(true);
+    }
+    if (!!e.target.value) {
+      setEmailRequired(false);
+    }
+  }
+  function onPasswordKeyPress(e) {
+    if (!e.target.value) {
+      setPassWordRequired(true);
+    }
+    if (!!e.target.value) {
+      setPassWordRequired(false);
+    }
+  }
+
+  // Validating email before submission
+  const ref = useRef(null);
+
+  function emailValidation(e) {
+    const re = `/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/`;
+    if (!e.target.value.match(re)) {
+      setEmailValidate(true);
+    } else {
+      setEmailValidate(false);
+    }
+  }
+
+  // Function for login page sliding to the left to make room for register page
   function handleRegister() {
     slideLeftDispatch({ type: "SLIDETOLEFT" });
     setTimeout(() => {
@@ -40,6 +86,7 @@ export function Login() {
     window.localStorage.setItem("registerButtonClicked", "true");
   }
 
+  // Function for login page sliding to the left to make room for forget_credentials page
   const handleForget = () => {
     slideLeftDispatch({ type: "SLIDETOLEFT" });
     setTimeout(() => {
@@ -50,13 +97,14 @@ export function Login() {
 
   return (
     <div className="bg-[#F6F6F6] md:mt-[5%] md:mr-6 w-[300px] md:w-[550px] pt-[24px] rounded-lg">
-      <form onSubmit={loginSubmit}>
+      <form method="POST  " noValidate onSubmit={loginSubmit}>
         <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
           <label
             for="email"
             className="text-[12px] md:text-[16px] pb-1 text-[#1E1E1E]"
           >
             Email
+            {emailRequired ? <Required error={`Required`} /> : ""}
           </label>
           <input
             id="email"
@@ -66,6 +114,7 @@ export function Login() {
             className="text-[12px] md:text-[16px] pl-2 text-gray-950 rounded-md md:h-[40px] h-[25px] w-full border-2 border-[#B3B3B3]"
             value={email}
             onChange={emailOnChange}
+            onKeyUp={(e) => onEmailKeyPress(e)}
           ></input>
         </div>
         <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
@@ -75,7 +124,9 @@ export function Login() {
             className="text-[12px] md:text-[16px] pb-1 text-[#1E1E1E]"
           >
             Password
+            {passwordRequired ? <Required error={`Required`} /> : ""}
           </label>
+
           <input
             id="password"
             name="password"
@@ -84,6 +135,7 @@ export function Login() {
             className="text-[12px] md:text-[16px] pl-2 text-gray-950 rounded-md h-[25px] md:h-[40px] w-full border-2 border-[#B3B3B3]"
             value={password}
             onChange={passwordOnChange}
+            onKeyUp={(e) => onPasswordKeyPress(e)}
           ></input>
         </div>
         <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
@@ -108,7 +160,7 @@ export function Login() {
       </form>
       <div className="mx-[24px] flex justify-between items-center">
         <div className="h-0 w-16 md:w-44 border border-gray-300"></div>
-        <span className="text-gray-300 min-w-[100px] text-[13px] md:text-[13px] text-[#aeb5bf] font-bold">
+        <span className="min-w-[100px] text-[13px] md:text-[13px] text-[#aeb5bf] font-bold">
           or log in with
         </span>
         <div className="h-0 w-16 md:w-44 border border-gray-300"></div>
@@ -174,7 +226,7 @@ export default function LoginPageComponent() {
   return (
     <div>
       <div className={className}>
-        <h1 className="mt-[10%] text-md md:text-6xl text-[#A8A8FF] font-bold md:mt-[10%] md:w-[700px] md:h-[130px] text-md w-[300px] min-h-[55px]">
+        <h1 className="mt-[10%] text-md md:text-6xl text-[#A8A8FF] font-bold md:mt-[4%] md:w-[700px] md:h-[130px] text-md w-[300px] min-h-[55px]">
           <Typewriter
             options={{ loop: true }}
             onInit={(typewriter) => {

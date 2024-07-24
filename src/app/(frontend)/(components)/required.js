@@ -1,42 +1,26 @@
-export const Required = () => {
+// Component for "Required" in red
+const Required = ({ error }) => {
   return (
-    <div className="flex justify-around text-[]">
+    <div className="inline-flex justify-around text-[#c91202] mx-[10px] md:mx-[12px] text-[10px] md:text-[12px] h-[12px] md:h-[16px]">
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
+        width="16"
+        height="16"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
-        class="lucide lucide-message-square-warning"
+        class="lucide lucide-message-square-warning w-full h-auto"
+        preserveAspectRatio="xMinYMin meet"
       >
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
         <path d="M12 7v2" />
         <path d="M12 13h.01" />
       </svg>
-      <p className="text-[6px]">Required!</p>
+      <p className="mx-[2px] md:mx-[6px]">{error}</p>
     </div>
   );
 };
-
-export const UnmatchingPassword = () => {
-  return (
-    <div>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        class="lucide lucide-message-square-warning"
-      ></svg>
-    </div>
-  );
-};
+export default Required;

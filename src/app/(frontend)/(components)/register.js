@@ -6,12 +6,19 @@ import "./slide.css";
 import RegisterSocial from "./registersocial";
 import { useRouter } from "next/navigation";
 import { useSlide } from "../(pages)/(auth)/(slide)/slideProvider";
+import Required from "./required";
+import { useScreenDetector } from "./useScreenDetector";
+import RegisterSocialMobile from "./registerSocialMobile";
 
-export default function Register({ handleBack }) {
+export function Register({ handleBack }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [displayNameRequired, setDisplayNameRequired] = useState(false);
+  const [emailRequired, setEmailRequired] = useState(false);
+  const [passwordRequired, setPasswordRequired] = useState(false);
+  const [repeatPasswordRequired, setRepeatPassWordRequired] = useState(false);
 
   function emailOnChange(e) {
     setEmail(e.target.value);
@@ -28,20 +35,47 @@ export default function Register({ handleBack }) {
     setRepeatPassword(e.target.value);
   }
 
-  function registerOnClick() {
-    if (password === repeatPassword) {
-      return;
-    } else {
-    }
-  }
-
   function registerSubmit(e) {
     e.preventDefault();
   }
 
+  // Functions for when a user input either email or password
+  function onDisplayNameKeyPress(e) {
+    if (!e.target.value) {
+      setDisplayNameRequired(true);
+    }
+    if (!!e.target.value) {
+      setDisplayNameRequired(false);
+    }
+  }
+  function onEmailKeyPress(e) {
+    if (!e.target.value) {
+      setEmailRequired(true);
+    }
+    if (!!e.target.value) {
+      setEmailRequired(false);
+    }
+  }
+  function onPasswordKeyPress(e) {
+    if (!e.target.value) {
+      setPasswordRequired(true);
+    }
+    if (!!e.target.value) {
+      setPasswordRequired(false);
+    }
+  }
+  function onRepeatPasswordKeyPress(e) {
+    if (!e.target.value) {
+      setRepeatPassWordRequired(true);
+    }
+    if (!!e.target.value) {
+      setRepeatPassWordRequired(false);
+    }
+  }
+
   return (
     <div
-      className={`bg-[#F6F6F6] min-w-[270px] min-h-[300px] md:min-h-[400px] md:w-[550px] pt-[24px] rounded-l-lg mt-[20%] md:mt-[5%]`}
+      className={`bg-[#F6F6F6] min-w-[270px] min-h-[300px] md:min-h-[400px] md:w-[550px] pt-[12px] md:pt-[24px] rounded-tl-lg rounded-tr-lg md:rounded-tr-none md:rounded-l-lg mt-[20%] md:mt-[5%]`}
     >
       <button onClick={handleBack} className="mb-[2px] md:mb-[0px] md:mt-[2px]">
         <svg
@@ -91,6 +125,7 @@ export default function Register({ handleBack }) {
             className="text-[12px] md:text-[16px] pb-1 text-[#1E1E1E]"
           >
             Email
+            {emailRequired ? <Required error={`Required`} /> : ""}
           </label>
           <input
             id="email"
@@ -100,6 +135,7 @@ export default function Register({ handleBack }) {
             className="text-[12px] md:text-[16px] pl-2 text-gray-950 rounded-md md:h-[40px] h-[25px] w-full border-2 border-[#B3B3B3]"
             value={email}
             onChange={emailOnChange}
+            onKeyUp={(e) => onEmailKeyPress(e)}
           ></input>
         </div>
 
@@ -109,6 +145,7 @@ export default function Register({ handleBack }) {
             className="text-[12px] md:text-[16px] pb-1 text-[#1E1E1E]"
           >
             Display Name
+            {displayNameRequired ? <Required error={`Required`} /> : ""}
           </label>
           <input
             id="display-name"
@@ -118,6 +155,7 @@ export default function Register({ handleBack }) {
             className="text-[12px] md:text-[16px] pl-2 text-gray-950 rounded-md h-[25px] md:h-[40px] w-full border-2 border-[#B3B3B3]"
             value={displayName}
             onChange={displayNameOnChange}
+            onKeyUp={(e) => onDisplayNameKeyPress(e)}
           ></input>
         </div>
 
@@ -128,6 +166,7 @@ export default function Register({ handleBack }) {
             className="text-[12px] md:text-[16px] pb-1 text-[#1E1E1E]"
           >
             Password
+            {passwordRequired ? <Required error={`Required`} /> : ""}
           </label>
           <input
             id="password"
@@ -137,6 +176,7 @@ export default function Register({ handleBack }) {
             className="text-[12px] md:text-[16px] pl-2 text-gray-950 rounded-md h-[25px] md:h-[40px] w-full border-2 border-[#B3B3B3]"
             value={password}
             onChange={passwordOnChange}
+            onKeyUp={(e) => onPasswordKeyPress(e)}
           ></input>
         </div>
 
@@ -146,6 +186,7 @@ export default function Register({ handleBack }) {
             className="text-[12px] md:text-[16px] pb-1 text-[#1E1E1E]"
           >
             Confirm Password
+            {repeatPasswordRequired ? <Required error={`Required`} /> : ""}
           </label>
           <input
             id="repeat-password"
@@ -155,6 +196,7 @@ export default function Register({ handleBack }) {
             className="text-[12px] md:text-[16px] pl-2 text-gray-950 rounded-md h-[25px] md:h-[40px] w-full border-2 border-[#B3B3B3]"
             value={repeatPassword}
             onChange={repeatPasswordOnChange}
+            onKeyUp={(e) => onRepeatPasswordKeyPress(e)}
           ></input>
           <Button
             size="default"
@@ -169,7 +211,7 @@ export default function Register({ handleBack }) {
   );
 }
 
-export function RegisterPageComponent() {
+export default function RegisterPageComponent() {
   const router = useRouter();
   const {
     slideLeftState,
@@ -199,10 +241,13 @@ export function RegisterPageComponent() {
     className += " slide-to-right";
   }
 
+  const { isMobile, isDesktop } = useScreenDetector();
+
   return (
     <div className={className}>
       <Register handleBack={slidetoRight} />
-      <RegisterSocial />
+      {isMobile && <RegisterSocialMobile />}
+      {isDesktop && <RegisterSocial />}
     </div>
   );
 }

@@ -1,7 +1,6 @@
-import { RegisterPageComponent } from "@/app/(frontend)/(components)/register";
+import RegisterPageComponent from "@/app/(frontend)/(components)/register";
 import "@/app/(frontend)/(components)/slide.css";
-// import { useState } from "react";
-import SlideProvider, { useSlide } from "../(slide)/slideProvider";
+import SlideProvider from "../(slide)/slideProvider";
 import "@/app/(frontend)/(components)/slide.css";
 
 export const metadata = {

@@ -1,5 +1,6 @@
 import "./switch.css";
 
+// Switch component
 const Switch = ({ isOn, handleToggle, onColor }) => {
   return (
     <>

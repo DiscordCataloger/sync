@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 export default function ServerCard({ icon, name, online, members }) {
   return (
@@ -13,7 +14,12 @@ export default function ServerCard({ icon, name, online, members }) {
           className="w-[90%] h-auto"
         />
       </div>
-      <div className="font-bold text-lg pt-1">{name}</div>
+      <div className="flex justify-between">
+        <div className="font-bold text-lg pt-1">{name}</div>
+        <Button variant="default" size="sm">
+          Join
+        </Button>
+      </div>
       <div className="flex gap-5">
         <div className="flex items-center gap-2 lg:text-sm text-xs">
           <div className="w-3 h-3 rounded-full bg-green-500"></div>

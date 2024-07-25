@@ -1,5 +1,11 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import {
+  CircleX,
+  CircleCheckBig,
+  MessagesSquare,
+  ShieldBan,
+} from "lucide-react";
 
 export default function FriendListItem({ icon, name, status, buttons }) {
   return (
@@ -21,29 +27,59 @@ export default function FriendListItem({ icon, name, status, buttons }) {
           )}
         </div>
       </div>
-      <div className="flex gap-3">
+      <div className="flex gap-3 items-center">
         {buttons.map((button, index) => {
-          let variant = "default";
           if (button.toLowerCase() === "block") {
-            variant = "black";
-          } else if (
-            button.toLowerCase() === "accept" ||
-            button.toLowerCase() === "dm"
-          ) {
-            variant = "default";
+            return (
+              <ShieldBan
+                onClick={null}
+                className="text-gray-500 hover:text-gray-700 cursor-pointer w-6 h-6 md:w-7 md:h-7"
+              />
+            );
+          } else if (button.toLowerCase() === "accept") {
+            return (
+              <CircleCheckBig
+                onClick={null}
+                className="text-green-500 hover:text-green-700 cursor-pointer w-6 h-6 md:w-7 md:h-7"
+              />
+            );
+          } else if (button.toLowerCase() === "dm") {
+            return (
+              <MessagesSquare
+                onClick={null}
+                className="text-blue-500 hover:text-blue-700 cursor-pointer w-6 h-6 md:w-7 md:h-7"
+              />
+            );
           } else {
-            variant = "red";
+            return (
+              <CircleX
+                onClick={null}
+                className="text-red-500 hover:text-red-700 cursor-pointer w-6 h-6 md:w-7 md:h-7"
+              />
+            );
           }
-          return (
-            <Button
-              key={index}
-              size="lg"
-              variant={variant}
-              className="w-12 md:w-24 rounded-2xl md:text-sm text-xs text-wrap"
-            >
-              {button}
-            </Button>
-          );
+
+          // let variant = "default";
+          // if (button.toLowerCase() === "block") {
+          //   variant = "black";
+          // } else if (
+          //   button.toLowerCase() === "accept" ||
+          //   button.toLowerCase() === "dm"
+          // ) {
+          //   variant = "default";
+          // } else {
+          //   variant = "red";
+          // }
+          // return (
+          //   <Button
+          //     key={index}
+          //     size="lg"
+          //     variant={variant}
+          //     className="w-12 md:w-24 rounded-2xl md:text-sm text-xs text-wrap"
+          //   >
+          //     {button}
+          //   </Button>
+          // );
         })}
       </div>
     </div>

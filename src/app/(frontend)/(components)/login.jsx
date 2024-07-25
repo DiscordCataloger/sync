@@ -160,7 +160,7 @@ export function Login() {
       </form>
       <div className="mx-[24px] flex justify-between items-center">
         <div className="h-0 w-16 md:w-44 border border-gray-300"></div>
-        <span className="min-w-[100px] text-[13px] md:text-[13px] text-[#aeb5bf] font-bold">
+        <span className="min-w-[100px] text-[13px] md:text-[13px] text-[#aeb5bf] font-semibold">
           or log in with
         </span>
         <div className="h-0 w-16 md:w-44 border border-gray-300"></div>

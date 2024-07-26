@@ -35,7 +35,7 @@ export default function InputMessage({ input, setInput, sendMessage }) {
   }, [isEmoji]);
 
   return (
-    <div className="p-4 flex gap-4 justify-center items-center relative">
+    <div className="lg:p-4 md:p-3 p-2 flex lg:gap-4 md:gap-3 gap-2 justify-center items-center relative">
       <div className="relative w-full">
         <Laugh
           className="text-blue-500 absolute left-4 top-1/2 transform -translate-y-1/2 cursor-pointer hover:text-blue-600"
@@ -47,7 +47,7 @@ export default function InputMessage({ input, setInput, sendMessage }) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-          className="w-full px-12 p-3 border rounded-2xl focus:outline-none bg-blue-50 text-black"
+          className="w-full px-12 lg:py-3 py-2 border rounded-2xl focus:outline-none bg-blue-50 text-black"
           placeholder="Type your message here..."
           ref={inputRef}
         />

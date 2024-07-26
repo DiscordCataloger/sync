@@ -31,8 +31,10 @@ export default function MessageItem({ icon, userName, text, time }) {
         <div
           style={{ minWidth: `${userName.length * 7 + 140}px` }}
           className={`py-2 px-4 rounded-xl text-wrap ${
-            userName === "me" ? "bg-blue-500" : "bg-gray-200"
-          } ${userName === "me" ? "text-white" : "text-black"}`}
+            userName === "me"
+              ? "bg-blue-500 text-white"
+              : "bg-blue-100 text-black"
+          }`}
         >
           {text}
         </div>

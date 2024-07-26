@@ -6,12 +6,12 @@ export default function Page() {
     {
       icon: "/chat_bot.png",
       name: "Chuuthiya",
-      status: "Offline",
+      status: "Online",
       lastSeen: "Today, 2:31pm",
     },
   ];
   return (
-    <div className="bg-blue-100 h-screen">
+    <div className="bg-blue-100 h-screen flex items-center justify-center">
       <ChatUI
         icon={friendChatting[0].icon}
         name={friendChatting[0].name}

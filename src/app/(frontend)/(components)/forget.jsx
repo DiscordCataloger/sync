@@ -1,18 +1,60 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import SlideProvider, {
   useSlide,
 } from "../(pages)/(auth)/(slide)/slideProvider";
 import { useRouter } from "next/navigation";
 import "./slide.css";
+import Required from "./required";
 
 export function Forget({ handleBack }) {
   function forgetSubmit() {}
   const [email, setEmail] = useState("");
+  const [clickedInside, setClickedInside] = useState(false);
+  const [emailRequired, setEmailRequired] = useState(false);
+  const [emailValidate, setEmailValidate] = useState(false);
+
   function emailOnChange(e) {
     setEmail(e.target.value);
   }
+
+  function onEmailKeyPress(e) {
+    if (!e.target.value) {
+      setEmailRequired(true);
+      setEmailValidate(false);
+    }
+    if (!!e.target.value) {
+      setEmailRequired(false);
+    }
+  }
+
+  // Validating email before submission
+  const ref = useRef(null);
+  useEffect(() => {
+    const re =
+      /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+    const handleClickOutside = (e) => {
+      if (ref.current.value) {
+        if (!ref.current || !ref.current.contains(e.target)) {
+          if (!ref.current || !re.test(ref.current.value)) {
+            setEmailValidate(true);
+            setClickedInside(false);
+          } else {
+            setEmailValidate(false);
+            setClickedInside(false);
+          }
+        }
+      }
+      console.log(ref.current.contains(e.target));
+    };
+
+    window.addEventListener("click", handleClickOutside);
+
+    return () => {
+      window.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div
@@ -50,6 +92,8 @@ export function Forget({ handleBack }) {
             className="text-[12px] md:text-[16px] pb-1 text-[#1E1E1E]"
           >
             Recovery Email
+            {emailRequired ? <Required error="Required" /> : ""}
+            {emailValidate ? <Required error="Invalid Email Format!" /> : ""}
           </label>
           <input
             id="recovery_email"
@@ -59,6 +103,8 @@ export function Forget({ handleBack }) {
             className="text-[12px] md:text-[16px] pl-2 text-gray-950 rounded-md md:h-[40px] h-[25px] w-full border-2 border-[#B3B3B3]"
             value={email}
             onChange={emailOnChange}
+            onKeyUp={onEmailKeyPress}
+            ref={ref}
           ></input>
         </div>
         <div className="flex flex-col justify-start items-start mx-[24px] my-[20px]">

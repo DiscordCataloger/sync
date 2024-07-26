@@ -46,7 +46,6 @@ export function Login() {
     }
   }
 
-  const ref = useRef(null);
   // Functions for when a user input either email or password
   function onEmailKeyPress(e) {
     if (!e.target.value) {
@@ -68,23 +67,26 @@ export function Login() {
   }
 
   // Validating email before submission
+  const ref = useRef(null);
   useEffect(() => {
     const re =
       /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
-    window.onclick = (e) => {
-      if (
-        !ref.current.contains(e.target) &&
-        !re.test(ref.current.value) &&
-        ref.current.value
-      ) {
-        setEmailValidate(true);
-      } else if (
-        !ref.current.contains(e.target) &&
-        re.test(ref.current.value) &&
-        ref.current.value
-      ) {
-        setEmailValidate(false);
+    const handleClickOutside = (e) => {
+      if (ref.current.value) {
+        if (!ref.current || !ref.current.contains(e.target)) {
+          if (!ref.current || !re.test(ref.current.value)) {
+            setEmailValidate(true);
+          } else {
+            setEmailValidate(false);
+          }
+        }
       }
+    };
+
+    window.addEventListener("click", handleClickOutside);
+
+    return () => {
+      window.removeEventListener("click", handleClickOutside);
     };
   }, []);
 
@@ -107,8 +109,8 @@ export function Login() {
   };
 
   return (
-    <div className="bg-[#F6F6F6] md:mt-[5%] md:mr-6 w-[300px] md:w-[550px] pt-[24px] rounded-lg">
-      <form method="POST  " noValidate onSubmit={loginSubmit}>
+    <div className="bg-[#F6F6F6] md:mt-[5%] md:mr-6 pt-[24px] rounded-lg h-auto">
+      <form method="POST" noValidate onSubmit={loginSubmit}>
         <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
           <label
             for="email"

@@ -11,7 +11,6 @@ import Required from "./required";
 export function Forget({ handleBack }) {
   function forgetSubmit() {}
   const [email, setEmail] = useState("");
-  const [clickedInside, setClickedInside] = useState(false);
   const [emailRequired, setEmailRequired] = useState(false);
   const [emailValidate, setEmailValidate] = useState(false);
 
@@ -19,15 +18,26 @@ export function Forget({ handleBack }) {
     setEmail(e.target.value);
   }
 
-  function onEmailKeyPress(e) {
-    if (!e.target.value) {
-      setEmailRequired(true);
-      setEmailValidate(false);
+  // Functions to check if the input fields are empty
+  useEffect(() => {
+    const emailInput = document.getElementById("recovery_email");
+
+    function emailEmptyCheck(e) {
+      if (!e.target.value) {
+        setEmailRequired(true);
+        setEmailValidate(false);
+      } else {
+        setEmailRequired(false);
+      }
     }
-    if (!!e.target.value) {
-      setEmailRequired(false);
-    }
-  }
+
+    emailInput.addEventListener("blur", emailEmptyCheck);
+
+    return () => {
+      // Clean up the event listener when the component unmounts
+      emailInput.removeEventListener("blur", emailEmptyCheck);
+    };
+  }, []); // Empty dependency array ensures this effect runs only once after the initial render
 
   // Validating email before submission
   const refEmail = useRef(null);
@@ -106,7 +116,6 @@ export function Forget({ handleBack }) {
             className="text-[12px] md:text-[16px] pl-2 text-gray-950 rounded-md md:h-[40px] h-[25px] w-full border-2 border-[#B3B3B3]"
             value={email}
             onChange={emailOnChange}
-            onKeyUp={onEmailKeyPress}
             ref={refEmail}
           ></input>
         </div>

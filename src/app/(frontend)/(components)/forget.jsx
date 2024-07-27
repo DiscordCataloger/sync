@@ -30,29 +30,32 @@ export function Forget({ handleBack }) {
   }
 
   // Validating email before submission
-  const ref = useRef(null);
+  const refEmail = useRef(null);
   useEffect(() => {
-    const re =
+    const reEmail =
       /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
-    const handleClickOutside = (e) => {
-      if (ref.current.value) {
-        if (!ref.current || !ref.current.contains(e.target)) {
-          if (!ref.current || !re.test(ref.current.value)) {
-            setEmailValidate(true);
-            setClickedInside(false);
-          } else {
-            setEmailValidate(false);
-            setClickedInside(false);
-          }
+    const handleValidation = (e) => {
+      if (refEmail.current.value) {
+        if (!refEmail.current || !reEmail.test(refEmail.current.value)) {
+          setEmailValidate(true);
+        } else {
+          setEmailValidate(false);
         }
       }
-      console.log(ref.current.contains(e.target));
     };
 
-    window.addEventListener("click", handleClickOutside);
+    const handleBlur = () => {
+      handleValidation();
+    };
+
+    if (refEmail.current) {
+      refEmail.current.addEventListener("blur", handleBlur);
+    }
 
     return () => {
-      window.removeEventListener("click", handleClickOutside);
+      if (refEmail.current) {
+        refEmail.current.removeEventListener("blur", handleBlur);
+      }
     };
   }, []);
 
@@ -104,7 +107,7 @@ export function Forget({ handleBack }) {
             value={email}
             onChange={emailOnChange}
             onKeyUp={onEmailKeyPress}
-            ref={ref}
+            ref={refEmail}
           ></input>
         </div>
         <div className="flex flex-col justify-start items-start mx-[24px] my-[20px]">

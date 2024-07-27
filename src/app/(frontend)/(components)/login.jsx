@@ -26,7 +26,7 @@ export function Login() {
   const [password, setPassword] = useState("");
   const [isOn, setIsOn] = useState(false);
   const [emailRequired, setEmailRequired] = useState(false);
-  const [passwordRequired, setPassWordRequired] = useState(false);
+  const [passwordRequired, setPasswordRequired] = useState(false);
   const [emailValidate, setEmailValidate] = useState(false);
 
   // Event value change of email field
@@ -46,47 +46,71 @@ export function Login() {
     }
   }
 
-  // Functions for when a user input either email or password
-  function onEmailKeyPress(e) {
-    if (!e.target.value) {
-      setEmailRequired(true);
-      setEmailValidate(false);
-    }
-    if (!!e.target.value) {
-      setEmailRequired(false);
-    }
-  }
+  // Functions to check if the input fields are empty
+  useEffect(() => {
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
 
-  function onPasswordKeyPress(e) {
-    if (!e.target.value) {
-      setPassWordRequired(true);
+    function emailEmptyCheck(e) {
+      if (!e.target.value) {
+        setEmailRequired(true);
+        setEmailValidate(false);
+      } else {
+        setEmailRequired(false);
+      }
     }
-    if (!!e.target.value) {
-      setPassWordRequired(false);
+
+    function passwordEmptyCheck(e) {
+      if (!e.target.value) {
+        setPasswordRequired(true);
+      } else {
+        setPasswordRequired(false);
+      }
     }
-  }
+
+    emailInput.addEventListener("blur", emailEmptyCheck);
+    passwordInput.addEventListener("blur", passwordEmptyCheck);
+
+    return () => {
+      // Clean up the event listener when the component unmounts
+      emailInput.removeEventListener("blur", emailEmptyCheck);
+      passwordInput.removeEventListener("blur", passwordEmptyCheck);
+    };
+  }, []); // Empty dependency array ensures this effect runs only once after the initial render
 
   // Validating email before submission
   const ref = useRef(null);
   useEffect(() => {
     const re =
       /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
-    const handleClickOutside = (e) => {
+    const handleValidation = (e) => {
       if (ref.current.value) {
-        if (!ref.current || !ref.current.contains(e.target)) {
-          if (!ref.current || !re.test(ref.current.value)) {
-            setEmailValidate(true);
-          } else {
-            setEmailValidate(false);
-          }
+        if (!ref.current || !re.test(ref.current.value)) {
+          setEmailValidate(true);
+        } else {
+          setEmailValidate(false);
         }
       }
     };
 
-    window.addEventListener("click", handleClickOutside);
+    const handleFocus = () => {
+      setEmailValidate(false);
+    };
+
+    const handleBlur = () => {
+      handleValidation();
+    };
+
+    if (ref.current) {
+      ref.current.addEventListener("focus", handleFocus);
+      ref.current.addEventListener("blur", handleBlur);
+    }
 
     return () => {
-      window.removeEventListener("click", handleClickOutside);
+      if (ref.current) {
+        ref.current.removeEventListener("focus", handleFocus);
+        ref.current.removeEventListener("blur", handleBlur);
+      }
     };
   }, []);
 
@@ -128,7 +152,6 @@ export function Login() {
             className="text-[12px] md:text-[16px] pl-2 text-gray-950 rounded-md md:h-[40px] h-[25px] w-full border-2 border-[#B3B3B3]"
             value={email}
             onChange={emailOnChange}
-            onKeyUp={(e) => onEmailKeyPress(e)}
             ref={ref}
           ></input>
         </div>
@@ -150,7 +173,6 @@ export function Login() {
             className="text-[12px] md:text-[16px] pl-2 text-gray-950 rounded-md h-[25px] md:h-[40px] w-full border-2 border-[#B3B3B3]"
             value={password}
             onChange={passwordOnChange}
-            onKeyUp={(e) => onPasswordKeyPress(e)}
           ></input>
         </div>
         <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">

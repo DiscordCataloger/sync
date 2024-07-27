@@ -43,7 +43,7 @@ export function Register({ handleBack }) {
     e.preventDefault();
   }
 
-  // Functions for when a user input either email or password
+  // Functions to check if the input fields are empty
   function onDisplayNameKeyPress(e) {
     if (!e.target.value) {
       setDisplayNameRequired(true);
@@ -53,55 +53,90 @@ export function Register({ handleBack }) {
       setDisplayNameRequired(false);
     }
   }
-  function onEmailKeyPress(e) {
-    if (!e.target.value) {
-      setEmailRequired(true);
-      setEmailValidate(false);
+
+  useEffect(() => {
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const displayInput = document.getElementById("display-name");
+    const repeatPasswordInput = document.getElementById("repeat-password");
+
+    function emailEmptyCheck(e) {
+      if (!e.target.value) {
+        setEmailRequired(true);
+        setEmailValidate(false);
+      } else {
+        setEmailRequired(false);
+      }
     }
-    if (!!e.target.value) {
-      setEmailRequired(false);
+
+    function passwordEmptyCheck(e) {
+      if (!e.target.value) {
+        setPasswordRequired(true);
+        setPasswordValidate(false);
+      } else {
+        setPasswordRequired(false);
+      }
     }
-  }
-  function onPasswordKeyPress(e) {
-    if (!e.target.value) {
-      setPasswordRequired(true);
-      setPasswordValidate(false);
+
+    function repeatPasswordEmptyCheck(e) {
+      if (!e.target.value) {
+        setRepeatPassWordRequired(true);
+        setRepeatPasswordValidate(false);
+      } else {
+        setRepeatPassWordRequired(false);
+      }
     }
-    if (!!e.target.value) {
-      setPasswordRequired(false);
+
+    function repeatDisplayEmptyCheck(e) {
+      if (!e.target.value) {
+        setDisplayNameRequired(true);
+        setDisplayValidate(false);
+      } else {
+        setDisplayNameRequired(false);
+      }
     }
-  }
-  function onRepeatPasswordKeyPress(e) {
-    if (!e.target.value) {
-      setRepeatPassWordRequired(true);
-      setRepeatPasswordValidate(false);
-    }
-    if (!!e.target.value) {
-      setRepeatPassWordRequired(false);
-    }
-  }
+
+    emailInput.addEventListener("blur", emailEmptyCheck);
+    passwordInput.addEventListener("blur", passwordEmptyCheck);
+    repeatPasswordInput.addEventListener("blur", repeatPasswordEmptyCheck);
+    displayInput.addEventListener("blur", repeatDisplayEmptyCheck);
+
+    return () => {
+      // Clean up the event listener when the component unmounts
+      emailInput.removeEventListener("blur", emailEmptyCheck);
+      passwordInput.removeEventListener("blur", passwordEmptyCheck);
+      repeatPasswordInput.removeEventListener("blur", repeatPasswordEmptyCheck);
+      displayInput.removeEventListener("blur", repeatDisplayEmptyCheck);
+    };
+  }, []); // Empty dependency array ensures this effect runs only once after the initial render
 
   // Email Validation
   const refEmail = useRef(null);
   useEffect(() => {
     const reEmail =
       /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
-    const handleClickOutside = (e) => {
+    const handleValidation = (e) => {
       if (refEmail.current.value) {
-        if (!refEmail.current || !refEmail.current.contains(e.target)) {
-          if (!refEmail.current || !reEmail.test(refEmail.current.value)) {
-            setEmailValidate(true);
-          } else {
-            setEmailValidate(false);
-          }
+        if (!refEmail.current || !reEmail.test(refEmail.current.value)) {
+          setEmailValidate(true);
+        } else {
+          setEmailValidate(false);
         }
       }
     };
 
-    window.addEventListener("click", handleClickOutside);
+    const handleBlur = () => {
+      handleValidation();
+    };
+
+    if (refEmail.current) {
+      refEmail.current.addEventListener("blur", handleBlur);
+    }
 
     return () => {
-      window.removeEventListener("click", handleClickOutside);
+      if (refEmail.current) {
+        refEmail.current.removeEventListener("blur", handleBlur);
+      }
     };
   }, []);
 
@@ -109,25 +144,28 @@ export function Register({ handleBack }) {
   const refDisplay = useRef(null);
   useEffect(() => {
     const reDisplay = /^.{5,}$/;
-    const handleClickOutside = (e) => {
+    const handleValidation = (e) => {
       if (refDisplay.current.value) {
-        if (!refDisplay.current || !refDisplay.current.contains(e.target)) {
-          if (
-            !refDisplay.current ||
-            !reDisplay.test(refDisplay.current.value)
-          ) {
-            setDisplayValidate(true);
-          } else {
-            setDisplayValidate(false);
-          }
+        if (!refDisplay.current || !reDisplay.test(refDisplay.current.value)) {
+          setDisplayValidate(true);
+        } else {
+          setDisplayValidate(false);
         }
       }
     };
 
-    window.addEventListener("click", handleClickOutside);
+    const handleBlur = () => {
+      handleValidation();
+    };
+
+    if (refDisplay.current) {
+      refDisplay.current.addEventListener("blur", handleBlur);
+    }
 
     return () => {
-      window.removeEventListener("click", handleClickOutside);
+      if (refDisplay.current) {
+        refDisplay.current.removeEventListener("blur", handleBlur);
+      }
     };
   }, []);
 
@@ -135,54 +173,62 @@ export function Register({ handleBack }) {
   const refPassword = useRef(null);
   useEffect(() => {
     const rePassword = /^(?=.*[A-Z])(?=.*[\W_])(.{8,})$/;
-    const handleClickOutside = (e) => {
+    const handleValidation = (e) => {
       if (refPassword.current.value) {
-        if (!refPassword.current || !refPassword.current.contains(e.target)) {
-          if (
-            !refPassword.current ||
-            !rePassword.test(refPassword.current.value)
-          ) {
-            setPasswordValidate(true);
-          } else {
-            setPasswordValidate(false);
-          }
+        if (
+          !refPassword.current ||
+          !rePassword.test(refPassword.current.value)
+        ) {
+          setPasswordValidate(true);
+        } else {
+          setPasswordValidate(false);
         }
       }
     };
 
-    window.addEventListener("click", handleClickOutside);
+    const handleBlur = () => {
+      handleValidation();
+    };
+
+    if (refPassword.current) {
+      refPassword.current.addEventListener("blur", handleBlur);
+    }
 
     return () => {
-      window.removeEventListener("click", handleClickOutside);
+      if (refPassword.current) {
+        refPassword.current.removeEventListener("blur", handleBlur);
+      }
     };
   }, []);
 
   // repeatPassword Validation
   const refRepeatPassword = useRef(null);
   useEffect(() => {
-    const handleClickOutside = (e) => {
+    const handleValidation = () => {
       if (refRepeatPassword.current.value) {
         if (
-          !refRepeatPassword.current ||
-          !refRepeatPassword.current.contains(e.target)
+          refRepeatPassword.current &&
+          refPassword.current.value !== refRepeatPassword.current.value
         ) {
-          if (
-            !refRepeatPassword.current ||
-            refPassword.current.value !== refRepeatPassword.current.value
-          ) {
-            setRepeatPasswordValidate(true);
-          } else {
-            setRepeatPasswordValidate(false);
-          }
+          setRepeatPasswordValidate(true);
+        } else {
+          setRepeatPasswordValidate(false);
         }
       }
-      console.log(refRepeatPassword.current);
     };
 
-    window.addEventListener("click", handleClickOutside);
+    const handleBlur = (e) => {
+      handleValidation(e);
+    };
+
+    if (refRepeatPassword.current) {
+      refRepeatPassword.current.addEventListener("blur", handleBlur);
+    }
 
     return () => {
-      window.removeEventListener("click", handleClickOutside);
+      if (refRepeatPassword.current) {
+        refRepeatPassword.current.removeEventListener("blur", handleBlur);
+      }
     };
   }, []);
 
@@ -258,7 +304,6 @@ export function Register({ handleBack }) {
               className="text-[12px] md:text-[16px] pl-2 text-gray-950 rounded-md md:h-[40px] h-[25px] w-full border-2 border-[#B3B3B3]"
               value={email}
               onChange={emailOnChange}
-              onKeyUp={(e) => onEmailKeyPress(e)}
               ref={refEmail}
             ></input>
           </div>
@@ -284,7 +329,6 @@ export function Register({ handleBack }) {
               className="text-[12px] md:text-[16px] pl-2 text-gray-950 rounded-md h-[25px] md:h-[40px] w-full border-2 border-[#B3B3B3]"
               value={displayName}
               onChange={displayNameOnChange}
-              onKeyUp={(e) => onDisplayNameKeyPress(e)}
               ref={refDisplay}
             ></input>
           </div>
@@ -313,7 +357,6 @@ export function Register({ handleBack }) {
               className="text-[12px] md:text-[16px] pl-2 text-gray-950 rounded-md h-[25px] md:h-[40px] w-full border-2 border-[#B3B3B3]"
               value={password}
               onChange={passwordOnChange}
-              onKeyUp={(e) => onPasswordKeyPress(e)}
               ref={refPassword}
             ></input>
           </div>
@@ -339,7 +382,6 @@ export function Register({ handleBack }) {
               className="text-[12px] md:text-[16px] pl-2 text-gray-950 rounded-md h-[25px] md:h-[40px] w-full border-2 border-[#B3B3B3]"
               value={repeatPassword}
               onChange={repeatPasswordOnChange}
-              onKeyUp={(e) => onRepeatPasswordKeyPress(e)}
               ref={refRepeatPassword}
             ></input>
             <Button

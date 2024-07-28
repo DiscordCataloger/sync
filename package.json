@@ -26,7 +26,7 @@
     "typewriter-effect": "^2.21.0",
     "bcryptjs": "^2.4.3",
     "mongoose": "^8.5.1",
-    "next-auth": "^4.24.7",
+    "next-auth": "^4.24.7"
   },
   "devDependencies": {
     "eslint": "^8",

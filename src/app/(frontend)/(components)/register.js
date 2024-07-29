@@ -53,6 +53,7 @@ export function Register({ handleBack }) {
       !repeatPasswordValidate
     ) {
       try {
+        setAccountCheck(false);
         if (!accountCheck) {
           const resRegister = await fetch("api/register", {
             method: "POST",
@@ -109,6 +110,7 @@ export function Register({ handleBack }) {
     const passwordInput = document.getElementById("password");
     const displayInput = document.getElementById("display-name");
     const repeatPasswordInput = document.getElementById("repeat-password");
+    const signUpButton = document.getElementById("signUpButton");
 
     function emailEmptyCheck(e) {
       if (!e.target.value) {
@@ -137,7 +139,7 @@ export function Register({ handleBack }) {
       }
     }
 
-    function repeatDisplayEmptyCheck(e) {
+    function displayEmptyCheck(e) {
       if (!e.target.value) {
         setDisplayNameRequired(true);
         setDisplayValidate(false);
@@ -146,17 +148,26 @@ export function Register({ handleBack }) {
       }
     }
 
+    function handleSubmit(e) {
+      emailEmptyCheck({ target: emailInput });
+      passwordEmptyCheck({ target: passwordInput });
+      repeatPasswordEmptyCheck({ target: repeatPasswordInput });
+      displayEmptyCheck({ target: displayInput });
+    }
+
     emailInput.addEventListener("blur", emailEmptyCheck);
     passwordInput.addEventListener("blur", passwordEmptyCheck);
     repeatPasswordInput.addEventListener("blur", repeatPasswordEmptyCheck);
-    displayInput.addEventListener("blur", repeatDisplayEmptyCheck);
+    displayInput.addEventListener("blur", displayEmptyCheck);
+    signUpButton.addEventListener("click", handleSubmit);
 
     return () => {
       // Clean up the event listener when the component unmounts
       emailInput.removeEventListener("blur", emailEmptyCheck);
       passwordInput.removeEventListener("blur", passwordEmptyCheck);
       repeatPasswordInput.removeEventListener("blur", repeatPasswordEmptyCheck);
-      displayInput.removeEventListener("blur", repeatDisplayEmptyCheck);
+      displayInput.removeEventListener("blur", displayEmptyCheck);
+      signUpButton.removeEventListener("click", handleSubmit);
     };
   }, []); // Empty dependency array ensures this effect runs only once after the initial render
 
@@ -311,7 +322,7 @@ export function Register({ handleBack }) {
 
           <span className="text-[12px] md:text-[16px]">Back</span>
         </button>
-        <form noValidate="true" onSubmit={registerSubmit}>
+        <form noValidate onSubmit={registerSubmit}>
           <div className="flex justify-center items-center">
             <p className="md:-mt-[30px] text-[12px] md:text-[16px] text-[#1E1E1E] text-center">
               Start your journey today!
@@ -437,6 +448,7 @@ export function Register({ handleBack }) {
               ref={refRepeatPassword}
             ></input>
             <Button
+              id="signUpButton"
               size="default"
               variant="default"
               className="my-[15px] text-[12px] md:text-[16px] bg-[#1D33A8] text-[#F5F5F5] rounded-md h-[25px] md:h-[40px] w-full"

@@ -50,6 +50,7 @@ export function Login() {
   useEffect(() => {
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
+    const signInButton = document.getElementById("signInButton");
 
     function emailEmptyCheck(e) {
       if (!e.target.value) {
@@ -68,13 +69,20 @@ export function Login() {
       }
     }
 
+    function handleSubmit(e) {
+      emailEmptyCheck({ target: emailInput });
+      passwordEmptyCheck({ target: passwordInput });
+    }
+
     emailInput.addEventListener("blur", emailEmptyCheck);
     passwordInput.addEventListener("blur", passwordEmptyCheck);
+    signInButton.addEventListener("click", handleSubmit);
 
     return () => {
       // Clean up the event listener when the component unmounts
       emailInput.removeEventListener("blur", emailEmptyCheck);
       passwordInput.removeEventListener("blur", passwordEmptyCheck);
+      signInButton.removeEventListener("click", handleSubmit);
     };
   }, []); // Empty dependency array ensures this effect runs only once after the initial render
 
@@ -181,6 +189,7 @@ export function Login() {
         </div>
         <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
           <Button
+            id="signInButton"
             size="default"
             variant="default"
             className="text-[12px] md:text-[16px] bg-[#1D33A8] text-[#F5F5F5] rounded-md h-[25px] md:h-[40px] w-full"

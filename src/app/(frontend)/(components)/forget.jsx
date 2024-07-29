@@ -7,9 +7,13 @@ import SlideProvider, {
 import { useRouter } from "next/navigation";
 import "./slide.css";
 import Required from "./required";
+import e from "cors";
 
 export function Forget({ handleBack }) {
-  function forgetSubmit() {}
+  function forgetSubmit(e) {
+    e.preventDefault();
+  }
+
   const [email, setEmail] = useState("");
   const [emailRequired, setEmailRequired] = useState(false);
   const [emailValidate, setEmailValidate] = useState(false);
@@ -21,6 +25,7 @@ export function Forget({ handleBack }) {
   // Functions to check if the input fields are empty
   useEffect(() => {
     const emailInput = document.getElementById("recovery_email");
+    const forgetSubmitButton = document.getElementById("forgetSubmitButton");
 
     function emailEmptyCheck(e) {
       if (!e.target.value) {
@@ -31,11 +36,17 @@ export function Forget({ handleBack }) {
       }
     }
 
+    function handleSubmit() {
+      emailEmptyCheck({ target: emailInput });
+    }
+
     emailInput.addEventListener("blur", emailEmptyCheck);
+    forgetSubmitButton.addEventListener("click", handleSubmit);
 
     return () => {
       // Clean up the event listener when the component unmounts
       emailInput.removeEventListener("blur", emailEmptyCheck);
+      forgetSubmitButton.removeEventListener("click", handleSubmit);
     };
   }, []); // Empty dependency array ensures this effect runs only once after the initial render
 
@@ -121,6 +132,7 @@ export function Forget({ handleBack }) {
         </div>
         <div className="flex flex-col justify-start items-start mx-[24px] my-[20px]">
           <Button
+            id="forgetSubmitButton"
             size="default"
             variant="default"
             className="text-[12px] md:text-[16px] bg-[#1D33A8] text-[#F5F5F5] rounded-md h-[25px] md:h-[40px] w-full"

@@ -10,7 +10,10 @@ export async function POST(request) {
     await server();
     await User.create({ displayName, email, password: hashedPassword });
 
-    return NextResponse.json({ message: "User Registered" }, { status: 201 });
+    return NextResponse.json(
+      { message: "User registration successful!" },
+      { status: 201 }
+    );
   } catch (err) {
     return NextResponse.json({
       message: `${err}`,

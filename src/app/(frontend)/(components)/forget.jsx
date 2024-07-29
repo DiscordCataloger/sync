@@ -142,25 +142,26 @@ export default function ForgetPageComponent() {
     slideRightDispatch,
   } = useSlide();
   let className = `flex justify-center items-center`;
-  const forgetButtonClicked = window.localStorage.getItem(
-    "forgetButtonClicked"
-  );
+  if (typeof window !== "undefined") {
+    const forgetButtonClicked = localStorage.getItem("forgetButtonClicked");
+
+    if (forgetButtonClicked) {
+      className += " slide-from-right";
+      setTimeout(() => {
+        localStorage.removeItem("forgetButtonClicked");
+      }, 100);
+    }
+  }
 
   const slidetoRight = () => {
     slideRightDispatch({ type: "SLIDETORIGHT" });
     setTimeout(() => {
       router.push("/login");
     }, 400);
-    window.localStorage.setItem("backButtonClicked", "true");
+    if (typeof window !== "undefined") {
+      localStorage.setItem("backButtonClicked", "true");
+    }
   };
-
-  if (forgetButtonClicked) {
-    className += " slide-from-right";
-    setTimeout(
-      () => window.localStorage.removeItem("forgetButtonClicked"),
-      100
-    );
-  }
 
   if (slideRightState.slideRight) {
     className += " slide-to-right";

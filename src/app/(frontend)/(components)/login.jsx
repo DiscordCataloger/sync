@@ -120,7 +120,9 @@ export function Login() {
     setTimeout(() => {
       router.push("/register");
     }, 400);
-    window.localStorage.setItem("registerButtonClicked", "true");
+    if (window !== "undefined") {
+      window.localStorage.setItem("registerButtonClicked", "true");
+    }
   }
 
   // Function for login page sliding to the left to make room for forget_credentials page
@@ -129,7 +131,9 @@ export function Login() {
     setTimeout(() => {
       router.push("/forget_credentials");
     }, 400);
-    window.localStorage.setItem("forgetButtonClicked", "true");
+    if (window !== "undefined") {
+      window.localStorage.setItem("forgetButtonClicked", "true");
+    }
   };
 
   return (
@@ -250,11 +254,17 @@ export default function LoginPageComponent() {
     slideLeftDispatch,
     slideRightDispatch,
   } = useSlide();
-  const backButtonClicked = window.localStorage.getItem("backButtonClicked");
   let className = `flex flex-col md:flex-row md:justify-around items-center ml-[2%]`;
-  if (!!backButtonClicked) {
-    className += " slide-from-left";
-    setTimeout(() => window.localStorage.removeItem("backButtonClicked"), 100);
+  if (typeof window !== "undefined") {
+    const backButtonClicked = window.localStorage.getItem("backButtonClicked");
+
+    if (!!backButtonClicked) {
+      className += " slide-from-left";
+      setTimeout(
+        () => window.localStorage.removeItem("backButtonClicked"),
+        100
+      );
+    }
   }
 
   if (slideLeftState.slideLeft) {

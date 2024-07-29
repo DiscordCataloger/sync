@@ -1,7 +1,7 @@
 // Component for "Required" in red
 const Required = ({ error }) => {
   return (
-    <div className="inline-flex justify-normal items-center text-[#c91202] text-[10px] mx-[6px] md:text-[12px] max-h-[12px] md:max-h-[14px] whitespace-nowrap flex-1">
+    <div className="inline-flex justify-normal items-center text-[#c91202] text-[10px] mx-[6px] md:text-[11px] max-h-[12px] md:max-h-[14px] whitespace-nowrap flex-1">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="14"
@@ -19,7 +19,7 @@ const Required = ({ error }) => {
         <path d="M12 7v2" />
         <path d="M12 13h.01" />
       </svg>
-      <p className="inline-block ml-1 p-0 overflow-visible text-wrap max-w-[210px] md:max-w-[250px] min-h-full">
+      <p className="inline-block ml-1 p-0 overflow-visible text-wrap max-w-[230px] md:max-w-[253px] min-h-full">
         {error}
       </p>
     </div>

@@ -11,6 +11,7 @@ import { useScreenDetector } from "./useScreenDetector";
 import RegisterSocialMobile from "./registerSocialMobile";
 
 export function Register({ handleBack }) {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
@@ -23,6 +24,7 @@ export function Register({ handleBack }) {
   const [displayValidate, setDisplayValidate] = useState(false);
   const [passwordValidate, setPasswordValidate] = useState(false);
   const [repeatPasswordValidate, setRepeatPasswordValidate] = useState(false);
+  const [accountCheck, setAccountCheck] = useState(false);
 
   function emailOnChange(e) {
     setEmail(e.target.value);
@@ -38,10 +40,58 @@ export function Register({ handleBack }) {
   function repeatPasswordOnChange(e) {
     setRepeatPassword(e.target.value);
   }
-
-  function registerSubmit(e) {
+  const registerSubmit = async (e) => {
     e.preventDefault();
-  }
+    if (
+      !displayNameRequired &&
+      !emailRequired &&
+      !passwordRequired &&
+      !repeatPasswordRequired &&
+      !emailValidate &&
+      !displayValidate &&
+      !passwordValidate &&
+      !repeatPasswordValidate
+    ) {
+      try {
+        if (!accountCheck) {
+          const resRegister = await fetch("api/register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              displayName,
+              email,
+              password,
+            }),
+          });
+          console.log(response.ok);
+
+          if (resRegister.ok) {
+            router.push("/login");
+          } else {
+            console.log("Account registration failed.");
+          }
+        }
+
+        const resUserCheck = await fetch("api/accountExists", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        const { user } = await resUserCheck.json();
+
+        if (user) {
+          setAccountCheck(true);
+        }
+      } catch (err) {
+        console.log("Error during registration:", err);
+      }
+    }
+  };
 
   // Functions to check if the input fields are empty
   function onDisplayNameKeyPress(e) {
@@ -143,7 +193,7 @@ export function Register({ handleBack }) {
   // Display Name Validation
   const refDisplay = useRef(null);
   useEffect(() => {
-    const reDisplay = /^.{5,}$/;
+    const reDisplay = /^[-_a-zA-Z0-9]{5,}$/;
     const handleValidation = (e) => {
       if (refDisplay.current.value) {
         if (!refDisplay.current || !reDisplay.test(refDisplay.current.value)) {
@@ -261,7 +311,7 @@ export function Register({ handleBack }) {
 
           <span className="text-[12px] md:text-[16px]">Back</span>
         </button>
-        <form onSubmit={registerSubmit}>
+        <form noValidate="true" onSubmit={registerSubmit}>
           <div className="flex justify-center items-center">
             <p className="md:-mt-[30px] text-[12px] md:text-[16px] text-[#1E1E1E] text-center">
               Start your journey today!
@@ -315,7 +365,9 @@ export function Register({ handleBack }) {
             >
               Display Name
               {displayValidate ? (
-                <Required error={`Must consist of at least 5 characters!`} />
+                <Required
+                  error={`Must have at least 5 characters. Only alphabets, underscores & hyphens allowed.`}
+                />
               ) : (
                 ""
               )}
@@ -408,20 +460,19 @@ export default function RegisterPageComponent() {
   } = useSlide();
 
   let className = `flex flex-col md:min-w-screen md:min-h-screen md:flex-row justify-center items-center`;
-  const registerButtonClicked = localStorage.getItem("registerButtonClicked");
-  if (!!registerButtonClicked) {
-    className += " slide-from-right";
-    setTimeout(
-      () => window.localStorage.removeItem("registerButtonClicked"),
-      50
-    );
+  if (typeof window !== "undefined") {
+    const registerButtonClicked = localStorage.getItem("registerButtonClicked");
+    if (!!registerButtonClicked) {
+      className += " slide-from-right";
+      setTimeout(() => localStorage.removeItem("registerButtonClicked"), 300);
+    }
   }
   const slidetoRight = () => {
     slideRightDispatch({ type: "SLIDETORIGHT" });
     setTimeout(() => {
       router.push("/login");
     }, 400);
-    window.localStorage.setItem("backButtonClicked", "true");
+    localStorage.setItem("backButtonClicked", "true");
   };
 
   if (slideRightState.slideRight) {

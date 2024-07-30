@@ -16,7 +16,6 @@ const userSchema = new Schema(
     },
     onlineStatus: {
       type: String,
-      required: true,
     },
     icon: {
       type: String,

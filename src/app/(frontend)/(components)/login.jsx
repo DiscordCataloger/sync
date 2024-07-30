@@ -9,6 +9,7 @@ import SlideProvider, {
   useSlide,
 } from "../(pages)/(auth)/(slide)/slideProvider";
 import Required from "./required";
+import { signIn } from "next-auth/react";
 
 export function Login() {
   // usereducer for sliding animations
@@ -40,9 +41,26 @@ export function Login() {
   }
 
   // Submitting the login form
-  function loginSubmit(e) {
+  async function loginSubmit(e) {
     e.preventDefault();
-    if (!emailRequired && !passwordRequired) {
+    if (!emailRequired && !passwordRequired && !emailValidate) {
+      try {
+        const res = await signIn("credentials", {
+          email,
+          password,
+          redirect: false, // Ensure this is set to false
+        });
+        if (res.error) {
+          console.log(res.error);
+          // Handle the error appropriately
+          return;
+        }
+        if (res.ok) {
+          router.push("/chat"); // Redirect to /chat on successful login
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 

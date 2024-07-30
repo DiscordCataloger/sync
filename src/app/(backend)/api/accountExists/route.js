@@ -8,8 +8,9 @@ export async function POST(request) {
     const { email } = await request.json();
     const user = await User.findOne({ email }).select("_id");
     console.log("user", user);
-    return NextResponse.json(user);
+    return NextResponse.json({ user });
   } catch (err) {
     console.log(err);
+    return NextResponse.json({ message: `${err}` }, { status: 500 });
   }
 }

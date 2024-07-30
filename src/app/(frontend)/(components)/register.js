@@ -9,6 +9,8 @@ import { useSlide } from "../(pages)/(auth)/(slide)/slideProvider";
 import Required from "./required";
 import { useScreenDetector } from "./useScreenDetector";
 import RegisterSocialMobile from "./registerSocialMobile";
+import DialogCloseButton from "./modal";
+import { Cloudinary } from "@cloudinary/url-gen";
 
 export function Register({ handleBack }) {
   const router = useRouter();
@@ -16,6 +18,8 @@ export function Register({ handleBack }) {
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [preview, setPreview] = useState("");
+  const [icon, setIcon] = useState(""); // New state for the avatar URL
   const [displayNameRequired, setDisplayNameRequired] = useState(false);
   const [emailRequired, setEmailRequired] = useState(false);
   const [passwordRequired, setPasswordRequired] = useState(false);
@@ -25,6 +29,16 @@ export function Register({ handleBack }) {
   const [passwordValidate, setPasswordValidate] = useState(false);
   const [repeatPasswordValidate, setRepeatPasswordValidate] = useState(false);
   const [accountCheck, setAccountCheck] = useState(false);
+  const [accountSuccess, setAccountSuccess] = useState(false);
+
+  const cld = new Cloudinary({ cloud: { cloudName: "dwzp0o5aw" } });
+
+  const handleImagePreview = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setPreview(URL.createObjectURL(file)); // Save the uploaded image URL locally
+    }
+  };
 
   function emailOnChange(e) {
     setEmail(e.target.value);
@@ -40,8 +54,35 @@ export function Register({ handleBack }) {
   function repeatPasswordOnChange(e) {
     setRepeatPassword(e.target.value);
   }
+
+  const handleFileUpload = async (file) => {
+    if (file) {
+      const formData = new FormData();
+      formData.set("file", file);
+
+      try {
+        const response = await fetch(`api/avatar`, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error(`Upload failed: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log(data);
+        setIcon(data.url);
+        console.log(data.url);
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+    }
+  };
+
   const registerSubmit = async (e) => {
     e.preventDefault();
+    const file = document.getElementById("fileInput").files[0];
     if (
       !displayNameRequired &&
       !emailRequired &&
@@ -53,29 +94,9 @@ export function Register({ handleBack }) {
       !repeatPasswordValidate
     ) {
       try {
-        setAccountCheck(false);
-        if (!accountCheck) {
-          const resRegister = await fetch("api/register", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              displayName,
-              email,
-              password,
-            }),
-          });
-          console.log(response.ok);
-
-          if (resRegister.ok) {
-            router.push("/login");
-          } else {
-            console.log("Account registration failed.");
-          }
-        }
-
-        const resUserCheck = await fetch("api/accountExists", {
+        // Existing account check
+        console.log("Checking if account exists...");
+        const resUserCheck = await fetch("/api/accountExists", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -84,13 +105,52 @@ export function Register({ handleBack }) {
         });
 
         const { user } = await resUserCheck.json();
+        console.log("User check response:", user);
 
         if (user) {
-          setAccountCheck(true);
+          console.log("Account already exists");
+          return;
+        }
+
+        // Image upload
+        await handleFileUpload(file);
+
+        // Registration formalized
+        console.log("Registering new user...");
+        const resRegister = await fetch("/api/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            displayName,
+            email,
+            password,
+            icon, // Include the avatar URL in the registration data
+          }),
+        });
+
+        if (resRegister.ok) {
+          console.log("Registration successful");
+          setAccountSuccess(true);
+          setTimeout(() => {
+            document
+              .getElementById("register-page")
+              .classList.add("slide-to-right");
+            if (typeof window !== "undefined") {
+              window.localStorage.setItem("backButtonClicked", "true");
+            }
+            router.push("/login");
+          }, 3000);
+        } else {
+          const errorData = await resRegister.json();
+          console.log("Account registration failed:", errorData.message);
         }
       } catch (err) {
         console.log("Error during registration:", err);
       }
+    } else {
+      console.log("Validation failed");
     }
   };
 
@@ -295,6 +355,9 @@ export function Register({ handleBack }) {
 
   return (
     <div className="flex mt-[5%] md:mt-[0%] justify-end flex-1 w-[80%] shrink-0 md:max-w-[53%]">
+      {accountSuccess ? (
+        <DialogCloseButton title="Account Registration Success!" />
+      ) : null}
       <div
         className={`w-[100%] md:w-[460px] shrink-0 flex flex-col justify-center items-center bg-[#F6F6F6] pt-[12px] md:pt-[24px] rounded-tl-lg rounded-tr-lg md:rounded-tr-none md:rounded-l-lg mt-[20%] md:mt-[5%]`}
       >
@@ -330,18 +393,38 @@ export function Register({ handleBack }) {
           </div>
 
           <div className="grid place-content-center">
-            <button className="opacity-0 -mt-[120px] relative top-[120px] rounded-[50%] w-[120px] h-[120px] hover:opacity-100 hover:bg-[#134B70]/[0.65] text-center flex flex-col items-center justify-center">
+            <input
+              type="file"
+              onChange={handleImagePreview}
+              className="hidden"
+              id="fileInput"
+            />
+            <button
+              type="button"
+              onClick={() => document.getElementById("fileInput").click()}
+              className="opacity-0 -mt-[120px] relative top-[120px] rounded-[50%] w-[120px] h-[120px] hover:opacity-100 hover:bg-[#134B70]/[0.65] text-center flex flex-col items-center justify-center"
+            >
               <p className="text-xl text-[#E1EBE6]">Add</p>
               <p className="text-xl text-[#E1EBE6]">Profile</p>
               <p className="text-xl text-[#E1EBE6]">Pic</p>
             </button>
-            <Image
-              src="/chat_bot.png"
-              height={120}
-              width={120}
-              alt="avatar"
-              className="rounded-[50%]"
-            />
+            {preview ? (
+              <Image
+                src={preview}
+                alt="avatar"
+                className="rounded-[50%] w-[120px] h-[120px]"
+                width={120}
+                height={120}
+              />
+            ) : (
+              <Image
+                src="/chat_bot.png"
+                alt="avatar"
+                className="rounded-[50%] w-[120px] h-[120px]"
+                width={120}
+                height={120}
+              />
+            )}
           </div>
 
           <div className="flex flex-col justify-start items-start">
@@ -494,7 +577,7 @@ export default function RegisterPageComponent() {
   const { isMobile, isDesktop } = useScreenDetector();
 
   return (
-    <div className={className}>
+    <div id="register-page" className={className}>
       <Register handleBack={slidetoRight} />
       {isMobile && <RegisterSocialMobile />}
       {isDesktop && <RegisterSocial />}

@@ -13,9 +13,10 @@ export const metadata = {
 
 export default async function LoginPage() {
   const session = await getServerSession(authOptions);
-  // if (session) {
-  //   redirect("/chat");
-  // }
+  if (session) {
+    redirect("/chat");
+  }
+
   return (
     <AuthProvider>
       <SlideProvider>

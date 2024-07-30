@@ -5,8 +5,8 @@ import bcrypt from "bcryptjs";
 
 export async function POST(request) {
   try {
-    const { displayName, email, password } = await request.json();
-    console.log("Received data:", { displayName, email, password });
+    const { displayName, email, password, icon } = await request.json();
+    console.log("Received data:", { displayName, email, password, icon });
 
     const hashedPassword = await bcrypt.hash(password, 10);
     console.log("Hashed password:", hashedPassword);
@@ -18,6 +18,7 @@ export async function POST(request) {
       displayName,
       email,
       password: hashedPassword,
+      icon,
     });
     console.log("User created:", newUser);
 

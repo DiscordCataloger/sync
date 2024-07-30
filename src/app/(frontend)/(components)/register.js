@@ -9,8 +9,6 @@ import { useSlide } from "../(pages)/(auth)/(slide)/slideProvider";
 import Required from "./required";
 import { useScreenDetector } from "./useScreenDetector";
 import RegisterSocialMobile from "./registerSocialMobile";
-import DialogCloseButton from "./modal";
-import { Cloudinary } from "@cloudinary/url-gen";
 
 export function Register({ handleBack }) {
   const router = useRouter();
@@ -19,7 +17,7 @@ export function Register({ handleBack }) {
   const [repeatPassword, setRepeatPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [preview, setPreview] = useState("");
-  const [icon, setIcon] = useState(""); // New state for the avatar URL
+  const [icon, setIcon] = useState("");
   const [displayNameRequired, setDisplayNameRequired] = useState(false);
   const [emailRequired, setEmailRequired] = useState(false);
   const [passwordRequired, setPasswordRequired] = useState(false);
@@ -29,16 +27,6 @@ export function Register({ handleBack }) {
   const [passwordValidate, setPasswordValidate] = useState(false);
   const [repeatPasswordValidate, setRepeatPasswordValidate] = useState(false);
   const [accountCheck, setAccountCheck] = useState(false);
-  const [accountSuccess, setAccountSuccess] = useState(false);
-
-  const cld = new Cloudinary({ cloud: { cloudName: "dwzp0o5aw" } });
-
-  const handleImagePreview = async (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setPreview(URL.createObjectURL(file)); // Save the uploaded image URL locally
-    }
-  };
 
   function emailOnChange(e) {
     setEmail(e.target.value);
@@ -55,115 +43,17 @@ export function Register({ handleBack }) {
     setRepeatPassword(e.target.value);
   }
 
-  const handleFileUpload = async (file) => {
+  const handleImagePreview = (e) => {
+    const file = e.target.files[0];
     if (file) {
-      const formData = new FormData();
-      formData.set("file", file);
-
-      try {
-        const response = await fetch(`api/avatar`, {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!response.ok) {
-          throw new Error(`Upload failed: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        console.log(data);
-        setIcon(data.url);
-        console.log(data.url);
-      } catch (error) {
-        console.error("Error uploading file:", error);
-      }
+      setPreview(URL.createObjectURL(file)); // Save the uploaded image URL locally
     }
   };
 
-  const registerSubmit = async (e) => {
+  const handleImageUploadClick = (e) => {
     e.preventDefault();
-    const file = document.getElementById("fileInput").files[0];
-    if (
-      !displayNameRequired &&
-      !emailRequired &&
-      !passwordRequired &&
-      !repeatPasswordRequired &&
-      !emailValidate &&
-      !displayValidate &&
-      !passwordValidate &&
-      !repeatPasswordValidate
-    ) {
-      try {
-        // Existing account check
-        console.log("Checking if account exists...");
-        const resUserCheck = await fetch("/api/accountExists", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email }),
-        });
-
-        const { user } = await resUserCheck.json();
-        console.log("User check response:", user);
-
-        if (user) {
-          console.log("Account already exists");
-          return;
-        }
-
-        // Image upload
-        await handleFileUpload(file);
-
-        // Registration formalized
-        console.log("Registering new user...");
-        const resRegister = await fetch("/api/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            displayName,
-            email,
-            password,
-            icon, // Include the avatar URL in the registration data
-          }),
-        });
-
-        if (resRegister.ok) {
-          console.log("Registration successful");
-          setAccountSuccess(true);
-          setTimeout(() => {
-            document
-              .getElementById("register-page")
-              .classList.add("slide-to-right");
-            if (typeof window !== "undefined") {
-              window.localStorage.setItem("backButtonClicked", "true");
-            }
-            router.push("/login");
-          }, 3000);
-        } else {
-          const errorData = await resRegister.json();
-          console.log("Account registration failed:", errorData.message);
-        }
-      } catch (err) {
-        console.log("Error during registration:", err);
-      }
-    } else {
-      console.log("Validation failed");
-    }
+    document.getElementById("fileInput").click();
   };
-
-  // Functions to check if the input fields are empty
-  function onDisplayNameKeyPress(e) {
-    if (!e.target.value) {
-      setDisplayNameRequired(true);
-      setDisplayValidate(false);
-    }
-    if (!!e.target.value) {
-      setDisplayNameRequired(false);
-    }
-  }
 
   useEffect(() => {
     const emailInput = document.getElementById("email");
@@ -353,11 +243,114 @@ export function Register({ handleBack }) {
     };
   }, []);
 
+  // handle Iamage Upload
+  const handleFileUpload = async (file) => {
+    if (file) {
+      const formData = new FormData();
+      formData.set("file", file);
+
+      try {
+        console.log("Attempting to upload file...");
+        const response = await fetch(`/api/avatar`, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(
+            `Upload failed: ${response.status} ${response.statusText}\nError details: ${errorText}`
+          );
+        }
+
+        const data = await response.json();
+        console.log("Upload successful:", data);
+        return data;
+      } catch (error) {
+        console.error("Error uploading file:", error.message);
+        throw error;
+      }
+    }
+  };
+
+  const registerSubmit = async (e) => {
+    e.preventDefault();
+    const fileInput = document.getElementById("fileInput");
+    const file = fileInput ? fileInput.files[0] : null;
+    let iconUrl = icon;
+
+    if (
+      !displayNameRequired &&
+      !emailRequired &&
+      !passwordRequired &&
+      !repeatPasswordRequired &&
+      !emailValidate &&
+      !displayValidate &&
+      !passwordValidate &&
+      !repeatPasswordValidate
+    ) {
+      try {
+        setAccountCheck(false);
+
+        // Image upload
+        if (file) {
+          const data = await handleFileUpload(file);
+          iconUrl = data.url;
+        }
+
+        if (!accountCheck) {
+          const resRegister = await fetch("api/register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              displayName,
+              email,
+              password,
+              icon: iconUrl,
+            }),
+          });
+          console.log(resRegister.ok);
+
+          if (resRegister.ok) {
+            setTimeout(() => {
+              document
+                .getElementById("register-page")
+                .classList.add("slide-to-right");
+              if (typeof window !== "undefined") {
+                window.localStorage.setItem("backButtonClicked", "true");
+              }
+              router.push("/login");
+            }, 3000);
+          } else {
+            console.log("Account registration failed.");
+          }
+        }
+
+        const resUserCheck = await fetch("api/accountExists", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        const { user } = await resUserCheck.json();
+
+        if (user) {
+          setAccountCheck(true);
+        }
+      } catch (err) {
+        console.error("Error during registration:", err);
+      }
+    } else {
+      console.log("Validation failed");
+    }
+  };
+
   return (
     <div className="flex mt-[5%] md:mt-[0%] justify-end flex-1 w-[80%] shrink-0 md:max-w-[53%]">
-      {accountSuccess ? (
-        <DialogCloseButton title="Account Registration Success!" />
-      ) : null}
       <div
         className={`w-[100%] md:w-[460px] shrink-0 flex flex-col justify-center items-center bg-[#F6F6F6] pt-[12px] md:pt-[24px] rounded-tl-lg rounded-tr-lg md:rounded-tr-none md:rounded-l-lg mt-[20%] md:mt-[5%]`}
       >
@@ -398,10 +391,10 @@ export function Register({ handleBack }) {
               onChange={handleImagePreview}
               className="hidden"
               id="fileInput"
+              accept="image/*"
             />
             <button
-              type="button"
-              onClick={() => document.getElementById("fileInput").click()}
+              onClick={handleImageUploadClick}
               className="opacity-0 -mt-[120px] relative top-[120px] rounded-[50%] w-[120px] h-[120px] hover:opacity-100 hover:bg-[#134B70]/[0.65] text-center flex flex-col items-center justify-center"
             >
               <p className="text-xl text-[#E1EBE6]">Add</p>

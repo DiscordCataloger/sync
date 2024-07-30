@@ -4,7 +4,7 @@ import server from "../../../../../../libs/mongodb/server";
 import User from "../../../../../../models/user";
 import bcrypt from "bcrypt";
 
-const options = {
+export const authOptions = {
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -29,7 +29,7 @@ const options = {
         } catch (error) {
           console.log(error);
         }
-        },
+      },
     }),
   ],
   session: {
@@ -44,6 +44,6 @@ const options = {
   },
 };
 
-const authHandler = (req, res) => NextAuth(req, res, options);
+const authHandler = (req, res) => NextAuth(req, res, authOptions);
 
 export { authHandler as GET, authHandler as POST };

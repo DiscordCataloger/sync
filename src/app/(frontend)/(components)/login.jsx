@@ -9,18 +9,18 @@ import SlideProvider, {
   useSlide,
 } from "../(pages)/(auth)/(slide)/slideProvider";
 import Required from "./required";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 export function Login() {
-  // usereducer for sliding animations
-  const {
-    slideLeftState,
-    slideRightState,
-    slideLeftDispatch,
-    slideRightDispatch,
-  } = useSlide();
-
+  const { data: session, status } = useSession();
   const router = useRouter(); // URL changing function
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/chat");
+    }
+  }, [status, router]);
 
   // various useStates
   const [email, setEmail] = useState("");
@@ -29,6 +29,12 @@ export function Login() {
   const [emailRequired, setEmailRequired] = useState(false);
   const [passwordRequired, setPasswordRequired] = useState(false);
   const [emailValidate, setEmailValidate] = useState(false);
+  const {
+    slideLeftState,
+    slideRightState,
+    slideLeftDispatch,
+    slideRightDispatch,
+  } = useSlide();
 
   // Event value change of email field
   function emailOnChange(e) {
@@ -162,6 +168,33 @@ export function Login() {
     }
   };
 
+  // Function to handle Google sign-in
+  const handleGoogleSignIn = async () => {
+    try {
+      await signIn("google");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Function to handle Facebook sign-in
+  const handleFacebookSignIn = async () => {
+    try {
+      await signIn("facebook");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Function to handle Github sign-in
+  const handleGithubSignIn = async () => {
+    try {
+      await signIn("github");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="bg-[#F6F6F6] md:mt-[5%] md:mr-6 pt-[24px] rounded-lg h-auto">
       <form method="POST" noValidate onSubmit={loginSubmit}>
@@ -234,27 +267,36 @@ export function Login() {
         <div className="h-0 w-16 md:w-44 border border-gray-300"></div>
       </div>
       <div className="mx-[80px] mt-[10px] flex md:justify-between justify-center items-center">
-        <Image
-          src="/googleicon.png"
-          width={50}
-          height={50}
-          alt="Google login"
-          className="mx-4 md:mx-0"
-        />
-        <Image
-          src="/facebookicon.png"
-          width={50}
-          height={50}
-          alt="Google login"
-          className="mx-4 md:mx-0"
-        />
-        <Image
-          src="/githubicon.png"
-          width={50}
-          height={50}
-          alt="Google login"
-          className="mx-4 md:mx-0"
-        />
+        <button>
+          <Image
+            src="/googleicon.png"
+            width={50}
+            height={50}
+            alt="Google login"
+            className="mx-4 md:mx-0"
+            onClick={handleGoogleSignIn} // Add onClick handler
+          />
+        </button>
+        <button>
+          <Image
+            src="/facebookicon.png"
+            width={50}
+            height={50}
+            alt="Facebook login"
+            className="mx-4 md:mx-0"
+            onClick={handleFacebookSignIn} // Add onClick handler
+          />
+        </button>
+        <button>
+          <Image
+            src="/githubicon.png"
+            width={50}
+            height={50}
+            alt="GitHub login"
+            className="mx-4 md:mx-0"
+            onClick={handleGithubSignIn}
+          />
+        </button>
       </div>
       <div className="mx-[24px] my-[15px] md:my-[20px] text-[10px] md:text-[13px] flex justify-between items-center">
         <button
@@ -289,7 +331,7 @@ export default function LoginPageComponent() {
       className += " slide-from-left";
       setTimeout(
         () => window.localStorage.removeItem("backButtonClicked"),
-        100
+        300
       );
     }
   }

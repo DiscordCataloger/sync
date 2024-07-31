@@ -1,7 +1,34 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { signIn } from "next-auth/react";
 
 export default function RegisterSocial() {
+  // Function to handle Google sign-in
+  const handleGoogleSignIn = async () => {
+    try {
+      await signIn("google");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Function to handle Facebook sign-in
+  const handleFacebookSignIn = async () => {
+    try {
+      await signIn("facebook");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Function to handle Github sign-in
+  const handleGithubSignIn = async () => {
+    try {
+      await signIn("github");
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="flex mt-0 max-w-[45%] md:mt-[2.67%] flex-1">
       <div className="flex flex-row h-[100%]">
@@ -17,6 +44,7 @@ export default function RegisterSocial() {
             size="default"
             variant="grey"
             className="py-2 md:py-6 my-[24px] text-[12px] md:text-[16px] bg-[#F5F5F5] text-[#1E1E1E] drop-shadow-lg hover:bg-[#60595e]/60 hover:text-[#F5F5F5] hover:shadow-md rounded-md h-[25px] md:h-[40px] w-full px-6"
+            onClick={handleGoogleSignIn}
           >
             Sign Up with Google
             <Image
@@ -31,6 +59,7 @@ export default function RegisterSocial() {
             size="default"
             variant="grey"
             className="py-2 md:py-6 my-[24px] text-[12px] md:text-[16px] bg-[#F5F5F5] text-[#1E1E1E] drop-shadow-md hover:bg-[#60595e]/60 hover:text-[#F5F5F5] hover:shadow-md rounded-md h-[25px] md:h-[40px] w-full px-6"
+            onClick={handleFacebookSignIn}
           >
             Sign Up with Facebook
             <Image
@@ -45,6 +74,7 @@ export default function RegisterSocial() {
             size="default"
             variant="grey"
             className="py-2 md:py-6 my-[24px] text-[12px] md:text-[16px] bg-[#F5F5F5] text-[#1E1E1E] drop-shadow-md hover:bg-[#60595e]/60 hover:shadow-md hover:text-[#F5F5F5] rounded-md h-[25px] md:h-[40px] w-full px-6"
+            onClick={handleGithubSignIn}
           >
             Sign Up with Github
             <Image

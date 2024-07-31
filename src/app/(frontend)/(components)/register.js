@@ -9,6 +9,7 @@ import { useSlide } from "../(pages)/(auth)/(slide)/slideProvider";
 import Required from "./required";
 import { useScreenDetector } from "./useScreenDetector";
 import RegisterSocialMobile from "./registerSocialMobile";
+import { signIn } from "next-auth/react";
 
 export function Register({ handleBack }) {
   const router = useRouter();

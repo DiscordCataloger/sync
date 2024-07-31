@@ -1,8 +1,11 @@
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import server from "../../../../../../libs/mongodb/server";
 import User from "../../../../../../models/user";
 import bcrypt from "bcrypt";
+import FacebookProvider from "next-auth/providers/facebook";
+import GithubProvider from "next-auth/providers/github";
 
 export const authOptions = {
   providers: [
@@ -31,6 +34,19 @@ export const authOptions = {
         }
       },
     }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
+    FacebookProvider({
+      clientId: process.env.FACEBOOK_CLIENT_ID,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+      scope: "email", // Add the 'email' scope here
+    }),
+    GithubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    }),
   ],
   session: {
     strategy: "jwt",
@@ -41,6 +57,98 @@ export const authOptions = {
     signOut: "/login",
     error: "/login",
     newUser: "/login",
+  },
+  callbacks: {
+    async signIn({ user, account, profile }) {
+      if (account.provider === "google") {
+        try {
+          const res = await fetch(`${process.env.NEXTAUTH_URL}/api/register`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: profile.email,
+              displayName: profile.name,
+              icon: profile.picture,
+            }),
+          });
+          if (res.ok) {
+            return true;
+          } else {
+            console.error("Failed to register user");
+            return false;
+          }
+        } catch (error) {
+          console.log(error);
+          return false;
+        }
+      }
+      if (account.provider === "facebook") {
+        try {
+          // Assuming 'profile.picture.data' is the object you receive from Facebook
+          const profilePictureData = profile.picture.data; // This should be the object containing the URL
+
+          const res = await fetch(`${process.env.NEXTAUTH_URL}/api/register`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: profile.email,
+              displayName: profile.name,
+              icon: profilePictureData.url,
+            }),
+          });
+          if (res.ok) {
+            return true;
+          } else {
+            console.error("Failed to register user");
+            return false;
+          }
+        } catch (error) {
+          console.log(error);
+          return false;
+        }
+      }
+      if (account.provider === "github") {
+        console.log(profile.login);
+        try {
+          const res = await fetch(`${process.env.NEXTAUTH_URL}/api/register`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email:
+                profile.email || `${profile.login}@users.noreply.github.com`, // Fallback to a generated email if not provided,
+              displayName: profile.name || profile.login,
+              icon: profile.avatar_url,
+            }),
+          });
+          if (res.ok) {
+            return true;
+          } else {
+            console.error("Failed to register user");
+            return false;
+          }
+        } catch (error) {
+          console.log(error);
+          return false;
+        }
+      }
+      return true;
+    },
+    async session({ session, token }) {
+      session.user.id = token.id;
+      return session;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
   },
 };
 

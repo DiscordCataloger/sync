@@ -8,11 +8,14 @@ export async function POST(request) {
     const { displayName, email, password, icon } = await request.json();
     console.log("Received data:", { displayName, email, password, icon });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    console.log("Hashed password:", hashedPassword);
-
     await server();
     console.log("Connected to the database");
+
+    let hashedPassword = null;
+    if (password) {
+      hashedPassword = await bcrypt.hash(password, 10);
+      console.log("Hashed password:", hashedPassword);
+    }
 
     const newUser = await User.create({
       displayName,

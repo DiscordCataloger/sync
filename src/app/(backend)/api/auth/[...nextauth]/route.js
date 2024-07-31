@@ -7,30 +7,35 @@ import bcrypt from "bcrypt";
 import FacebookProvider from "next-auth/providers/facebook";
 import GithubProvider from "next-auth/providers/github";
 
-export const authOptions = {
+const authOptions = {
   providers: [
     CredentialsProvider({
       name: "credentials",
       credentials: {},
       async authorize(credentials) {
-        const { email, password } = credentials;
+        const { email, password, rememberMe } = credentials;
         try {
           await server();
           const user = await User.findOne({ email });
 
           if (!user) {
+            console.log("User not found");
             return null;
           }
 
           const passwordMatch = await bcrypt.compare(password, user.password);
 
           if (!passwordMatch) {
+            console.log("Password does not match");
             return null;
           }
 
+          user.rememberMe = rememberMe; // Add rememberMe to user object
+          console.log("authorize.user.rememberMe", user.rememberMe); // Log rememberMe in authorize
           return user;
         } catch (error) {
           console.log(error);
+          return null;
         }
       },
     }),
@@ -60,6 +65,7 @@ export const authOptions = {
   },
   callbacks: {
     async signIn({ user, account, profile }) {
+      console.log("signIn callback triggered"); // Initial log
       if (account.provider === "google") {
         try {
           const res = await fetch(`${process.env.NEXTAUTH_URL}/api/register`, {
@@ -140,13 +146,23 @@ export const authOptions = {
       return true;
     },
     async session({ session, token }) {
+      console.log("session callback triggered"); // Initial log
       session.user.id = token.id;
+      session.user.rememberMe = token.rememberMe; // Add rememberMe to session for debugging
+      console.log("session.user.rememberMe", session.user.rememberMe); // Log the custom property
+      session.maxAge = token.rememberMe ? 7 * 24 * 60 * 60 : 14 * 60 * 60; // Set session duration based on rememberMe
       return session;
     },
     async jwt({ token, user }) {
+      console.log("jwt callback triggered"); // Initial log
       if (user) {
         token.id = user.id;
+        token.rememberMe = user.rememberMe; // Add rememberMe to token
+        console.log("jwt.user.rememberMe", user.rememberMe); // Log user.rememberMe to ensure it's set
+      } else {
+        console.log("jwt.user is not set");
       }
+      console.log("jwt.token.rememberMe", token.rememberMe); // Log after setting the value
       return token;
     },
   },

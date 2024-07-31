@@ -15,13 +15,6 @@ export function Login() {
   const { data: session, status } = useSession();
   const router = useRouter(); // URL changing function
 
-  // Redirect if already authenticated
-  useEffect(() => {
-    if (status === "authenticated") {
-      router.push("/chat");
-    }
-  }, [status, router]);
-
   // various useStates
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -55,6 +48,7 @@ export function Login() {
           email,
           password,
           redirect: false, // Ensure this is set to false
+          rememberMe: isOn, // Pass the rememberMe claim
         });
         if (res.error) {
           console.log(res.error);
@@ -62,7 +56,10 @@ export function Login() {
           return;
         }
         if (res.ok) {
-          router.push("/chat"); // Redirect to /chat on successful login
+          console.log("isOn:", isOn); // Debugging line
+          const callbackUrl = `${process.env.NEXT_PUBLIC_URL}/chat`;
+          console.log("Callback URL:", callbackUrl); // Debugging line
+          router.push("/chat");
         }
       } catch (error) {
         console.log(error);
@@ -114,7 +111,7 @@ export function Login() {
   const ref = useRef(null);
   useEffect(() => {
     const re =
-      /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+      /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
     const handleValidation = (e) => {
       if (ref.current.value) {
         if (!ref.current || !re.test(ref.current.value)) {

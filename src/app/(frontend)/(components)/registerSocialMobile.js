@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { signIn } from "next-auth/react";
 
 export default function RegisterSocialMobile() {
   // Function to handle Google sign-in
@@ -53,7 +54,7 @@ export default function RegisterSocialMobile() {
             src="/facebookicon.png"
             width={50}
             height={50}
-            alt="Google login"
+            alt="Facebook login"
             className="mx-4 md:mx-0"
           />
         </button>
@@ -62,7 +63,7 @@ export default function RegisterSocialMobile() {
             src="/githubicon.png"
             width={50}
             height={50}
-            alt="Google login"
+            alt="Github login"
             className="mx-4 md:mx-0"
           />
         </button>

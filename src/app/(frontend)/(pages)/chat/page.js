@@ -1,9 +1,9 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/(backend)/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { AuthHandler } from "@/app/(backend)/api/auth/[...nextauth]/route";
 
 export default async function Chat() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(AuthHandler);
   if (!session) {
     redirect("/login");
   }

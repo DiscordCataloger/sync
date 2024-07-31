@@ -1,10 +1,10 @@
-import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
-import { authOptions } from "@/app/(backend)/api/auth/[...nextauth]/route";
 import LoginPageComponent from "@/app/(frontend)/(components)/login";
 import "@/app/(frontend)/(components)/slide.css";
 import SlideProvider from "../(slide)/slideProvider";
 import { AuthProvider } from "@/app/AuthProvider";
+import { getServerSession } from "next-auth";
+import { AuthHandler } from "@/app/(backend)/api/auth/[...nextauth]/route";
 
 export const metadata = {
   title: "Sign In to Sync",
@@ -12,8 +12,7 @@ export const metadata = {
 };
 
 export default async function LoginPage() {
-  const session = await getServerSession(authOptions);
-
+  const session = await getServerSession(AuthHandler);
   if (session) {
     redirect("/chat");
   }

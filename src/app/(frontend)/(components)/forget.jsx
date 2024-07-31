@@ -7,7 +7,6 @@ import SlideProvider, {
 import { useRouter } from "next/navigation";
 import "./slide.css";
 import Required from "./required";
-import e from "cors";
 
 export function Forget({ handleBack }) {
   function forgetSubmit(e) {

@@ -9,7 +9,7 @@ import { useSlide } from "../(pages)/(auth)/(slide)/slideProvider";
 import Required from "./required";
 import { useScreenDetector } from "./useScreenDetector";
 import RegisterSocialMobile from "./registerSocialMobile";
-import { signIn } from "next-auth/react";
+import AnimatedButton from "./animatedButton";
 
 export function Register({ handleBack }) {
   const router = useRouter();
@@ -49,6 +49,11 @@ export function Register({ handleBack }) {
     if (file) {
       setPreview(URL.createObjectURL(file)); // Save the uploaded image URL locally
     }
+  };
+
+  const deleteImagePreview = (e) => {
+    e.preventDefault();
+    setPreview("");
   };
 
   const handleImageUploadClick = (e) => {
@@ -394,6 +399,14 @@ export function Register({ handleBack }) {
               id="fileInput"
               accept="image/*"
             />
+            {preview && (
+              <button
+                className="-mt-[120px] relative top-[85px] left-[80px] z-10"
+                onClick={deleteImagePreview}
+              >
+                <AnimatedButton />
+              </button>
+            )}
             <button
               onClick={handleImageUploadClick}
               className="opacity-0 -mt-[120px] relative top-[120px] rounded-[50%] w-[120px] h-[120px] hover:opacity-100 hover:bg-[#134B70]/[0.65] text-center flex flex-col items-center justify-center"

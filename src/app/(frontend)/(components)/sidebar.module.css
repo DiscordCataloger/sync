@@ -1,0 +1,50 @@
+/*.sidebar {
+  position: fixed;
+  top: 0;
+  left: 10px;
+  width: 80px;
+  height: 100vh;
+  background-color: #0080ff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  border-radius: 30px;
+  box-shadow: 0 0 10px #0080ff;
+  z-index: 10;
+}
+
+.button {
+  margin: 20px 0;
+}
+
+.icon {
+  color: white;
+}
+
+.notification {
+  margin-bottom: 40px;
+  cursor: pointer;
+}
+
+.profile {
+  margin-top: auto;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.profileImage {
+  border-radius: 50%;
+}
+
+.status {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 10px;
+  height: 10px;
+  background-color: green;
+  border: 2px solid white;
+  border-radius: 50%;
+}
+*/

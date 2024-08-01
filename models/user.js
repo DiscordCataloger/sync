@@ -16,6 +16,10 @@ const userSchema = new Schema(
     onlineStatus: {
       type: String,
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
     icon: {
       type: String,
     },
@@ -25,7 +29,7 @@ const userSchema = new Schema(
     joinedServerList: {
       type: Array,
     },
-    allFrineds: {
+    allFriends: {
       type: Array,
     },
     pendingFriends: {
@@ -36,6 +40,12 @@ const userSchema = new Schema(
     },
     messages: {
       type: Array,
+    },
+    verificationToken: {
+      type: String,
+    },
+    verificationTokenExpires: {
+      type: Date,
     },
   },
   { timestamps: true }

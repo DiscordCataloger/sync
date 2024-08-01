@@ -1,5 +1,5 @@
 // Component for "Required" in red
-const Required = ({ error }) => {
+const Required = ({ error, children }) => {
   return (
     <div className="inline-flex justify-normal items-center text-[#c91202] text-[10px] mx-[6px] md:text-[11px] max-h-[12px] md:max-h-[14px] whitespace-nowrap flex-1">
       <svg
@@ -21,6 +21,7 @@ const Required = ({ error }) => {
       </svg>
       <p className="inline-block ml-1 p-0 overflow-visible text-wrap max-w-[230px] md:max-w-[253px] min-h-full">
         {error}
+        {children}
       </p>
     </div>
   );

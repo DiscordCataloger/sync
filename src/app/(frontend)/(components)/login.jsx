@@ -10,6 +10,7 @@ import SlideProvider, {
 } from "../(pages)/(auth)/(slide)/slideProvider";
 import Required from "./required";
 import { signIn, useSession } from "next-auth/react";
+import Cookies from "js-cookie";
 
 export function Login() {
   const { data: session, status } = useSession();
@@ -22,6 +23,7 @@ export function Login() {
   const [emailRequired, setEmailRequired] = useState(false);
   const [passwordRequired, setPasswordRequired] = useState(false);
   const [emailValidate, setEmailValidate] = useState(false);
+  const [isNotVerified, setIsNotVerified] = useState(false);
   const {
     slideLeftState,
     slideRightState,
@@ -42,13 +44,35 @@ export function Login() {
   // Submitting the login form
   async function loginSubmit(e) {
     e.preventDefault();
-    if (!emailRequired && !passwordRequired && !emailValidate) {
+    // Check if the email is verified
+    const resUserCheck = await fetch("/api/accountExists", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    const { user } = await resUserCheck.json();
+
+    if (user && !user.isVerified) {
+      setIsNotVerified(true);
+      return;
+    } else {
+      setIsNotVerified(false);
+    }
+
+    if (
+      !emailRequired &&
+      !passwordRequired &&
+      !emailValidate &&
+      !isNotVerified
+    ) {
       try {
         const res = await signIn("credentials", {
           email,
           password,
-          redirect: false, // Ensure this is set to false
-          rememberMe: isOn, // Pass the rememberMe claim
+          redirect: false,
         });
         if (res.error) {
           console.log(res.error);
@@ -56,9 +80,21 @@ export function Login() {
           return;
         }
         if (res.ok) {
-          console.log("isOn:", isOn); // Debugging line
-          const callbackUrl = `${process.env.NEXT_PUBLIC_URL}/chat`;
-          console.log("Callback URL:", callbackUrl); // Debugging line
+          console.log("Login successful");
+          console.log("isOn:", isOn);
+          if (isOn) {
+            Cookies.set("rememberMe", "on", {
+              expires: 14,
+              sameSite: "None",
+              secure: true,
+            }); // Set cookie with SameSite attribute
+          } else {
+            Cookies.set("rememberMe", "on", {
+              expires: 7,
+              sameSite: "None",
+              secure: true,
+            });
+          }
           router.push("/chat");
         }
       } catch (error) {
@@ -203,6 +239,11 @@ export function Login() {
             Email
             {emailRequired ? <Required error={`Required`} /> : ""}
             {emailValidate ? <Required error={`Invalid email format!`} /> : ""}
+            {isNotVerified && (
+              <Required
+                error={`You have not verified your email address yet. Please check your inbox again.`}
+              />
+            )}
           </label>
           <input
             id="email"

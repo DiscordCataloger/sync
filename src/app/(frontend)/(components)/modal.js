@@ -1,6 +1,6 @@
-import { Copy } from "lucide-react";
+"use client"; // Add this line to indicate it's a client-side component
 
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import {
   Dialog,
   DialogClose,
@@ -11,34 +11,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-export default function DialogCloseButton({
-  title,
-  message,
-  buttonText,
-  buttonOnClick,
-}) {
+export function DialogCloseButton({ isOpen, onClose, title, children }) {
   return (
-    <Dialog className="">
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{message}</DialogDescription>
+          <DialogDescription>{children}</DialogDescription>
         </DialogHeader>
-        <div className="flex items-center space-x-2">
-          <Button type="submit" size="sm" className="px-3">
-            <span onClick={buttonOnClick} className="sr-only">
-              {buttonText}
-            </span>
-            <Copy className="h-4 w-4" />
-          </Button>
-        </div>
-        <DialogFooter className="sm:justify-start">
-          <DialogClose asChild>
-            <Button type="button" variant="secondary">
-              Close
-            </Button>
-          </DialogClose>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

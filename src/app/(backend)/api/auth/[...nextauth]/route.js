@@ -7,13 +7,13 @@ import bcrypt from "bcrypt";
 import FacebookProvider from "next-auth/providers/facebook";
 import GithubProvider from "next-auth/providers/github";
 
-const authOptions = {
+const options = {
   providers: [
     CredentialsProvider({
       name: "credentials",
       credentials: {},
       async authorize(credentials) {
-        const { email, password, rememberMe } = credentials;
+        const { email, password } = credentials;
         try {
           await server();
           const user = await User.findOne({ email });
@@ -30,8 +30,6 @@ const authOptions = {
             return null;
           }
 
-          user.rememberMe = rememberMe; // Add rememberMe to user object
-          console.log("authorize.user.rememberMe", user.rememberMe); // Log rememberMe in authorize
           return user;
         } catch (error) {
           console.log(error);
@@ -145,29 +143,9 @@ const authOptions = {
       }
       return true;
     },
-    async session({ session, token }) {
-      console.log("session callback triggered"); // Initial log
-      session.user.id = token.id;
-      session.user.rememberMe = token.rememberMe; // Add rememberMe to session for debugging
-      console.log("session.user.rememberMe", session.user.rememberMe); // Log the custom property
-      session.maxAge = token.rememberMe ? 7 * 24 * 60 * 60 : 14 * 60 * 60; // Set session duration based on rememberMe
-      return session;
-    },
-    async jwt({ token, user }) {
-      console.log("jwt callback triggered"); // Initial log
-      if (user) {
-        token.id = user.id;
-        token.rememberMe = user.rememberMe; // Add rememberMe to token
-        console.log("jwt.user.rememberMe", user.rememberMe); // Log user.rememberMe to ensure it's set
-      } else {
-        console.log("jwt.user is not set");
-      }
-      console.log("jwt.token.rememberMe", token.rememberMe); // Log after setting the value
-      return token;
-    },
   },
 };
 
-const authHandler = (req, res) => NextAuth(req, res, authOptions);
+const handler = (req, res) => NextAuth(req, res, options);
 
-export { authHandler as GET, authHandler as POST };
+export { handler as GET, handler as POST };

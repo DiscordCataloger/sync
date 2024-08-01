@@ -10,6 +10,9 @@ import Required from "./required";
 import { useScreenDetector } from "./useScreenDetector";
 import RegisterSocialMobile from "./registerSocialMobile";
 import AnimatedButton from "./animatedButton";
+import Link from "next/link";
+import { DialogCloseButton } from "./modal";
+import crypto from "crypto"; // Import crypto for generating tokens
 
 export function Register({ handleBack }) {
   const router = useRouter();
@@ -28,6 +31,9 @@ export function Register({ handleBack }) {
   const [passwordValidate, setPasswordValidate] = useState(false);
   const [repeatPasswordValidate, setRepeatPasswordValidate] = useState(false);
   const [accountCheck, setAccountCheck] = useState(false);
+  const [accountSuccess, setAccountSuccess] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // State to control modal open state
+  const [counter, setCounter] = useState(3); // State to control the countdown
 
   function emailOnChange(e) {
     setEmail(e.target.value);
@@ -60,6 +66,29 @@ export function Register({ handleBack }) {
     e.preventDefault();
     document.getElementById("fileInput").click();
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      const interval = setInterval(() => {
+        setCounter((prevCounter) => {
+          if (prevCounter <= 1) {
+            clearInterval(interval);
+            document
+              .getElementById("register-page")
+              .classList.add("slide-to-right");
+            if (typeof window !== "undefined") {
+              window.localStorage.setItem("backButtonClicked", "true");
+            }
+            router.push("/login");
+            return 0;
+          }
+          return prevCounter - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [isOpen, router]);
 
   useEffect(() => {
     const emailInput = document.getElementById("email");
@@ -285,6 +314,25 @@ export function Register({ handleBack }) {
     const file = fileInput ? fileInput.files[0] : null;
     let iconUrl = icon;
 
+    // Check if the account already exists before proceeding
+    const resUserCheck = await fetch("api/accountExists", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    const { user } = await resUserCheck.json();
+
+    if (user) {
+      setAccountCheck(true);
+      console.log("Account already exists.");
+      return; // Exit the function to prevent further execution
+    } else {
+      setAccountCheck(false);
+    }
+
     if (
       !displayNameRequired &&
       !emailRequired &&
@@ -293,59 +341,55 @@ export function Register({ handleBack }) {
       !emailValidate &&
       !displayValidate &&
       !passwordValidate &&
-      !repeatPasswordValidate
+      !repeatPasswordValidate &&
+      !accountCheck
     ) {
       try {
-        setAccountCheck(false);
-
         // Image upload
         if (file) {
           const data = await handleFileUpload(file);
           iconUrl = data.url;
         }
 
-        if (!accountCheck) {
-          const resRegister = await fetch("api/register", {
+        // Generate verification token
+        const verificationToken = crypto.randomBytes(32).toString("hex");
+        const verificationTokenExpires = new Date(
+          Date.now() + 24 * 60 * 60 * 1000
+        ); // 24 hours
+
+        const resRegister = await fetch("api/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            displayName,
+            email,
+            password,
+            icon: iconUrl,
+            verificationToken,
+            verificationTokenExpires,
+          }),
+        });
+
+        if (resRegister.ok) {
+          // Send verification email
+          await fetch("api/sendVerificationEmail", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              displayName,
               email,
-              password,
-              icon: iconUrl,
+              verificationToken,
             }),
           });
-          console.log(resRegister.ok);
 
-          if (resRegister.ok) {
-            setTimeout(() => {
-              document
-                .getElementById("register-page")
-                .classList.add("slide-to-right");
-              if (typeof window !== "undefined") {
-                window.localStorage.setItem("backButtonClicked", "true");
-              }
-              router.push("/login");
-            }, 3000);
-          } else {
-            console.log("Account registration failed.");
-          }
-        }
-
-        const resUserCheck = await fetch("api/accountExists", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email }),
-        });
-
-        const { user } = await resUserCheck.json();
-
-        if (user) {
-          setAccountCheck(true);
+          setAccountCheck(false);
+          setAccountSuccess(true);
+          setIsOpen(true); // Open the modal on successful registration
+        } else {
+          console.log("Account registration failed.");
         }
       } catch (err) {
         console.error("Error during registration:", err);
@@ -357,6 +401,22 @@ export function Register({ handleBack }) {
 
   return (
     <div className="flex mt-[5%] md:mt-[0%] justify-end flex-1 w-[80%] shrink-0 md:max-w-[53%]">
+      {accountSuccess && (
+        <DialogCloseButton
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          title={`Registration Successful!`}
+        >
+          {" "}
+          Your account has been created successfully. Please verify your account
+          in your email address. You will be redirected in {counter}{" "}
+          {counter === 1 ? "second" : "seconds"}, or click{" "}
+          <Link onClick={handleBack} href="/login" className="text-blue-500">
+            here
+          </Link>{" "}
+          to return to the login page.
+        </DialogCloseButton>
+      )}
       <div
         className={`w-[100%] md:w-[460px] shrink-0 flex flex-col justify-center items-center bg-[#F6F6F6] pt-[12px] md:pt-[24px] rounded-tl-lg rounded-tr-lg md:rounded-tr-none md:rounded-l-lg mt-[20%] md:mt-[5%]`}
       >
@@ -409,6 +469,7 @@ export function Register({ handleBack }) {
             )}
             <button
               onClick={handleImageUploadClick}
+              type="button"
               className="opacity-0 -mt-[120px] relative top-[120px] rounded-[50%] w-[120px] h-[120px] hover:opacity-100 hover:bg-[#134B70]/[0.65] text-center flex flex-col items-center justify-center"
             >
               <p className="text-xl text-[#E1EBE6]">Add</p>
@@ -446,6 +507,19 @@ export function Register({ handleBack }) {
                 ""
               )}
               {emailRequired ? <Required error={`Required`} /> : ""}
+              {accountCheck && (
+                <Required>
+                  This account already exists!{" "}
+                  <Link
+                    onClick={handleBack}
+                    className="text-blue-500 text-purple-500:visited"
+                    href="/login"
+                  >
+                    Log in
+                  </Link>{" "}
+                  instead?
+                </Required>
+              )}
             </label>
             <input
               id="email"
@@ -539,6 +613,7 @@ export function Register({ handleBack }) {
             ></input>
             <Button
               id="signUpButton"
+              type="submit"
               size="default"
               variant="default"
               className="my-[15px] text-[12px] md:text-[16px] bg-[#1D33A8] text-[#F5F5F5] rounded-md h-[25px] md:h-[40px] w-full"

@@ -2,9 +2,7 @@ import RegisterPageComponent from "@/app/(frontend)/(components)/register";
 import "@/app/(frontend)/(components)/slide.css";
 import SlideProvider from "../(slide)/slideProvider";
 import "@/app/(frontend)/(components)/slide.css";
-import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { AuthHandler } from "@/app/(backend)/api/auth/[...nextauth]/route";
+import LoggedInSessionCheck from "@/app/(frontend)/(components)/LoggedInSessionCheck";
 
 export const metadata = {
   title: "Sign Up For an Account on Sync!",
@@ -12,12 +10,9 @@ export const metadata = {
 };
 
 export default async function RegisterPage() {
-  const session = await getServerSession(AuthHandler);
-  if (session) {
-    redirect("/chat");
-  }
   return (
     <SlideProvider>
+      <LoggedInSessionCheck />
       <RegisterPageComponent />
     </SlideProvider>
   );

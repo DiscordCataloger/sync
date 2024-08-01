@@ -1,10 +1,8 @@
-import { redirect } from "next/navigation";
 import LoginPageComponent from "@/app/(frontend)/(components)/login";
 import "@/app/(frontend)/(components)/slide.css";
 import SlideProvider from "../(slide)/slideProvider";
 import { AuthProvider } from "@/app/AuthProvider";
-import { getServerSession } from "next-auth";
-import { AuthHandler } from "@/app/(backend)/api/auth/[...nextauth]/route";
+import LoggedInSessionCheck from "@/app/(frontend)/(components)/LoggedInSessionCheck";
 
 export const metadata = {
   title: "Sign In to Sync",
@@ -12,13 +10,9 @@ export const metadata = {
 };
 
 export default async function LoginPage() {
-  const session = await getServerSession(AuthHandler);
-  if (session) {
-    redirect("/chat");
-  }
-
   return (
     <AuthProvider>
+      <LoggedInSessionCheck />
       <SlideProvider>
         <LoginPageComponent />
       </SlideProvider>

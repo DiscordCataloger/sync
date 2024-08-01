@@ -27,13 +27,15 @@
     "mongoose": "^8.5.1",
     "next": "14.2.5",
     "next-auth": "^4.24.7",
+    "nodemailer": "^6.9.14",
     "nodemon": "^3.1.4",
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^5.2.1",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
-    "typewriter-effect": "^2.21.0"
+    "typewriter-effect": "^2.21.0",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "eslint": "^8",

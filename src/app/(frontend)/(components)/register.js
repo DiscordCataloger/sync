@@ -12,7 +12,7 @@ import RegisterSocialMobile from "./registerSocialMobile";
 import AnimatedButton from "./animatedButton";
 import Link from "next/link";
 import { DialogCloseButton } from "./modal";
-import crypto from "crypto"; // Import crypto for generating tokens
+import { v4 as uuidv4 } from "uuid"; // Import the uuid function
 
 export function Register({ handleBack }) {
   const router = useRouter();
@@ -314,67 +314,86 @@ export function Register({ handleBack }) {
     const file = fileInput ? fileInput.files[0] : null;
     let iconUrl = icon;
 
-    // Check if the account already exists before proceeding
-    const resUserCheck = await fetch("api/accountExists", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email }),
-    });
+    try {
+      // Check if the account already exists before proceeding
+      const resUserCheck = await fetch("/api/accountExists", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
 
-    const { user } = await resUserCheck.json();
+      if (!resUserCheck.ok) {
+        throw new Error("Failed to check if account exists");
+      }
 
-    if (user) {
-      setAccountCheck(true);
-      console.log("Account already exists.");
-      return; // Exit the function to prevent further execution
-    } else {
-      setAccountCheck(false);
-    }
+      const { user } = await resUserCheck.json();
 
-    if (
-      !displayNameRequired &&
-      !emailRequired &&
-      !passwordRequired &&
-      !repeatPasswordRequired &&
-      !emailValidate &&
-      !displayValidate &&
-      !passwordValidate &&
-      !repeatPasswordValidate &&
-      !accountCheck
-    ) {
-      try {
-        // Image upload
-        if (file) {
-          const data = await handleFileUpload(file);
-          iconUrl = data.url;
-        }
+      if (user) {
+        setAccountCheck(true);
+        console.log("Account already exists.");
+        return; // Exit the function to prevent further execution
+      } else {
+        setAccountCheck(false);
+      }
 
-        // Generate verification token
-        const verificationToken = crypto.randomBytes(32).toString("hex");
-        const verificationTokenExpires = new Date(
-          Date.now() + 24 * 60 * 60 * 1000
-        ); // 24 hours
+      if (
+        !displayNameRequired &&
+        !emailRequired &&
+        !passwordRequired &&
+        !repeatPasswordRequired &&
+        !emailValidate &&
+        !displayValidate &&
+        !passwordValidate &&
+        !repeatPasswordValidate &&
+        !accountCheck
+      ) {
+        try {
+          // Image upload
+          if (file) {
+            const data = await handleFileUpload(file);
+            iconUrl = data.url;
+          }
 
-        const resRegister = await fetch("api/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            displayName,
-            email,
-            password,
-            icon: iconUrl,
-            verificationToken,
-            verificationTokenExpires,
-          }),
-        });
+          // Generate verification token
+          const verificationToken = uuidv4();
+          const verificationTokenExpires = new Date(
+            Date.now() + 24 * 60 * 60 * 1000
+          ); // 24 hours
 
-        if (resRegister.ok) {
+          const resRegister = await fetch("/api/register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              displayName,
+              email,
+              password,
+              icon: iconUrl,
+              verificationToken,
+              verificationTokenExpires,
+            }),
+          });
+          if (resRegister.ok) {
+            setAccountSuccess(true);
+            setIsOpen(true); // Open the modal on successful registration
+            setTimeout(() => {
+              document
+                .getElementById("register-page")
+                .classList.add("slide-to-right");
+              if (typeof window !== "undefined") {
+                window.localStorage.setItem("backButtonClicked", "true");
+              }
+              router.push("/login");
+            }, 3000);
+          } else {
+            throw new Error("Account registration failed");
+          }
+
           // Send verification email
-          await fetch("api/sendVerificationEmail", {
+          const resEmail = await fetch("/api/sendVerificationEmail", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -384,18 +403,19 @@ export function Register({ handleBack }) {
               verificationToken,
             }),
           });
+          if (!resEmail.ok) {
+            throw new Error("Failed to send verification email");
+          }
 
           setAccountCheck(false);
-          setAccountSuccess(true);
-          setIsOpen(true); // Open the modal on successful registration
-        } else {
-          console.log("Account registration failed.");
+        } catch (err) {
+          console.error("Error during registration:", err);
         }
-      } catch (err) {
-        console.error("Error during registration:", err);
+      } else {
+        console.log("Validation failed");
       }
-    } else {
-      console.log("Validation failed");
+    } catch (err) {
+      console.error("Error in registerSubmit:", err);
     }
   };
 

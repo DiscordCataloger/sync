@@ -1,8 +1,8 @@
 import User from "../../../models/user";
-import dbConnect from "../../../utils/dbConnect";
+import server from "libs/mongodb/server";
 
 export default async function handler(req, res) {
-  await dbConnect();
+  await server();
 
   if (req.method === "GET") {
     const { token } = req.query;

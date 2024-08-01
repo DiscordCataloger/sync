@@ -14,7 +14,7 @@ const Inbox = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="absolute z-30 h-auto w-100 mx-24 my-96 rounded-lg border border-gray-300 shadow-lg bg-blue-100 text-black">
+    <div className="left-8 absolute z-30 h-auto w-100 mx-16 my-96 rounded-lg border border-gray-300 shadow-lg bg-blue-100 text-black">
       <div className='flex items-center justify-between p-4'> 
         <div className='flex items-center'> 
           <MdInbox className="mr-2" /> 

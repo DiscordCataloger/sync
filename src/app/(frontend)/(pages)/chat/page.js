@@ -48,74 +48,62 @@ const App = () => {
 
     const closeAllComponents = () => setActiveComponent(null);
 
+    const handleOpenComponent = (component) => {
+        closeAllComponents(); 
+        setActiveComponent(component); 
+    };
+
     const handleOpenInbox = () => {
-        closeAllComponents();
-        setActiveComponent('inbox');
+        setActiveComponent('inbox'); 
     };
 
-    const handleOpenServerModal = () => {
-        closeAllComponents();
-        setActiveComponent('serverModal');
-    };
-
-    const handleOpenProfileCard = () => {
-        closeAllComponents();
-        setActiveComponent('profileCard');
-    };
-
-    const handleOpenPrinterest = () => {
-        closeAllComponents();
-        setActiveComponent('printerest');
-    };
-
-    const handleOpenSelectFriends = () => {
-        closeAllComponents();
-        setActiveComponent('selectFriends');
+    const handleShowComponents = () => {
+        closeAllComponents(); 
+        setActiveComponent(null); 
     };
 
     return (
-      <div className='bg-blue-100'>
-        <div className="flex bg-blue-100 h-screen" style={{ width: '40%' }}>
-            <Sidebar 
-                onOpenModal={handleOpenInbox} 
-                onOpenServerModal={handleOpenServerModal}
-                onOpenProfileCard={handleOpenProfileCard} 
-                onOpenPrinterest={handleOpenPrinterest} 
-                className="w-64 h-full" 
-            />
-            {activeComponent === 'inbox' && (
-                <Inbox isOpen={true} onClose={closeAllComponents} />
-            )}
-            {activeComponent === 'serverModal' && (
-                <ServerModal isOpen={true} onClose={closeAllComponents} />
-            )}
-            {activeComponent === 'profileCard' && (
-                <ProfileCard 
-                    isOpen={true} 
-                    onClose={closeAllComponents} 
-                    username="YourUsername" 
-                    discriminator="#1234" 
-                    onSave={() => console.log('Saved!')} 
+        <div className='bg-blue-100'>
+            <div className="flex h-screen" style={{ width: '40%' }}>
+                <Sidebar 
+                    onOpenInbox={handleOpenInbox} 
+                    onOpenServerModal={() => handleOpenComponent('serverModal')}
+                    onOpenProfileCard={() => handleOpenComponent('profileCard')} 
+                    onOpenPrinterest={() => handleOpenComponent('channelBar')} 
+                    onShowComponents={handleShowComponents} 
                 />
-            )}
-            {activeComponent === 'printerest' ? (
-                <ChannelBar onClose={closeAllComponents} />
-            ) : (
                 <div className="flex-1 flex flex-col p-4 overflow-hidden ml-20">
-                    <Searchbar />
-                    <Menu onOpenSelectFriends={handleOpenSelectFriends} />
-                    <Directmessage />
+                    {activeComponent === 'channelBar' ? (
+                        <ChannelBar onClose={closeAllComponents} />
+                    ) : (
+                        <>
+                            <Searchbar />
+                            <Menu onOpenSelectFriends={() => handleOpenComponent('selectFriends')} />
+                            <Directmessage />
+                            {activeComponent === 'inbox' && <Inbox isOpen={true} onClose={closeAllComponents} />}
+                            {activeComponent === 'serverModal' && <ServerModal isOpen={true} onClose={closeAllComponents} />}
+                            {activeComponent === 'profileCard' && (
+                                <ProfileCard 
+                                    isOpen={true} 
+                                    onClose={closeAllComponents} 
+                                    username="YourUsername" 
+                                    discriminator="#1234" 
+                                    onSave={() => console.log('Saved!')} 
+                                />
+                            )}
+                            {activeComponent === 'selectFriends' && <SelectFriends onClose={closeAllComponents} />}
+                        </>
+                    )}
                 </div>
-            )}
-            {activeComponent === 'selectFriends' && (
-                <SelectFriends onClose={closeAllComponents} />
-            )}
+            </div>
         </div>
-      </div>
     );
 };
 
 export default App;
+
+
+
 
 
 

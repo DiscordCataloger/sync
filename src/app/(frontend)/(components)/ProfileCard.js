@@ -5,7 +5,7 @@ const ProfileCard = ({ isOpen, onClose, username, discriminator, onSave }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="w-80 mx-auto rounded-lg overflow-hidden shadow-lg absolute z-20 bottom-24 left-20">
+    <div className="w-80 mx-auto rounded-lg overflow-hidden shadow-lg absolute z-20 bottom-24 left-22">
       <button
         onClick={onClose}
         className="absolute top-2 right-2 bg-pink-900 text-white py-1 px-3 rounded-full text-xs"

@@ -3,6 +3,15 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { MdOutlineJoinLeft } from "react-icons/md";
 
+const isValidUrl = (url) => {
+  try {
+    new URL(url);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
 export default function ServerCard({ icon, name, online, members }) {
   return (
     <div className="w-full h-28 bg-white rounded-2xl flex flex-col gap-3 justify-between py-8 px-5 shadow-sm shadow-sky-300/50 relative">
@@ -11,7 +20,7 @@ export default function ServerCard({ icon, name, online, members }) {
           width={64}
           height={64}
           alt="Sync.dev server image"
-          src={icon}
+          src={isValidUrl(icon) ? icon : "/chat_bot.png"}
           className="w-[90%] h-auto"
         />
       </div>

@@ -50,11 +50,18 @@ export default function ChannelUI({ channelId, name }) {
   useEffect(() => {
     const fetchServerChannelMsgData = async () => {
       setLoading(true);
-      const { msgs } = await getServerChannelMsgs(channelId);
-      setMsg(msgs);
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
+      try {
+        const response = await getServerChannelMsgs(channelId);
+        const { msgs } = response;
+        setMsg(msgs);
+      } catch (error) {
+        console.error("Error fetching server channel messages:", error);
+        // Handle the error case, e.g., display an error message
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
+      }
     };
     fetchServerChannelMsgData();
 

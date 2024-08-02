@@ -50,8 +50,16 @@ export default function ChatUI({ messagesId, icon, name, status }) {
   useEffect(() => {
     const fetchMessagesMsgData = async () => {
       setLoading(true);
-      const { msgs } = await getMessagesMsgs(messagesId);
-      setMsg(msgs);
+      try {
+        const response = await getMessagesMsgs(messagesId);
+        if (response && response.msgs) {
+          setMsg(response.msgs);
+        } else {
+          console.error('Response does not have the "msgs" property');
+        }
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+      }
       setTimeout(() => {
         setLoading(false);
       }, 1000);

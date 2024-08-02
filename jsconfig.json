@@ -2,7 +2,8 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*"],
-      "libs/*": ["./libs/*"]
+      "libs/*": ["./libs/*"],
+      "api/*": ["./src/app/(backend)/api/*"]
     }
   }
 }

@@ -4,7 +4,7 @@ import server from "libs/mongodb/server";
 export default async function handler(req, res) {
   await server();
 
-  if (req.method === "GET") {
+  if (req.method === "POST") {
     const { token } = req.query;
 
     try {

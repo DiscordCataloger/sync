@@ -377,17 +377,9 @@ export function Register({ handleBack }) {
             }),
           });
           if (resRegister.ok) {
+            setAccountCheck(false);
             setAccountSuccess(true);
             setIsOpen(true); // Open the modal on successful registration
-            setTimeout(() => {
-              document
-                .getElementById("register-page")
-                .classList.add("slide-to-right");
-              if (typeof window !== "undefined") {
-                window.localStorage.setItem("backButtonClicked", "true");
-              }
-              router.push("/login");
-            }, 3000);
           } else {
             throw new Error("Account registration failed");
           }
@@ -403,11 +395,10 @@ export function Register({ handleBack }) {
               verificationToken,
             }),
           });
+
           if (!resEmail.ok) {
             throw new Error("Failed to send verification email");
           }
-
-          setAccountCheck(false);
         } catch (err) {
           console.error("Error during registration:", err);
         }
@@ -430,7 +421,7 @@ export function Register({ handleBack }) {
           {" "}
           Your account has been created successfully. Please verify your account
           in your email address. You will be redirected in {counter}{" "}
-          {counter === 1 ? "second" : "seconds"}, or click{" "}
+          {counter <= 1 ? "second" : "seconds"}, or click{" "}
           <Link onClick={handleBack} href="/login" className="text-blue-500">
             here
           </Link>{" "}

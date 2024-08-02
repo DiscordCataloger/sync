@@ -22,19 +22,25 @@ export default function MessageList({
   const [loading, setLoading] = useState(true); // Loading state
 
   const loadMoreMsg = async () => {
-    const { msgs } = await getServerChannelMsgs(
-      id,
-      offset,
-      NUMBER_OF_MSG_TO_FETCH
-    );
-
-    if (msgs) {
-      setTimeout(() => {
-        setMsg((prevMsg) => [...prevMsg, ...msgs]);
-        setOffset((prevOffset) => prevOffset + NUMBER_OF_MSG_TO_FETCH);
-      }, 500);
-    }
-    if (msgs.length === 0) {
+    try {
+      const response = await getServerChannelMsgs(
+        id,
+        offset,
+        NUMBER_OF_MSG_TO_FETCH
+      );
+      const { msgs } = response;
+      if (msgs) {
+        setTimeout(() => {
+          setMsg((prevMsg) => [...prevMsg, ...msgs]);
+          setOffset((prevOffset) => prevOffset + NUMBER_OF_MSG_TO_FETCH);
+        }, 500);
+      }
+      if (!response && msgs.length === 0) {
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("Error fetching more messages:", error);
+      // Handle the error case, e.g., display an error message
       setLoading(false);
     }
   };

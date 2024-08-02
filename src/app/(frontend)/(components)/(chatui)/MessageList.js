@@ -22,15 +22,26 @@ export default function MessageList({
   const [loading, setLoading] = useState(true); // Loading state
 
   const loadMoreMsg = async () => {
-    const { msgs } = await getMessagesMsgs(id, offset, NUMBER_OF_MSG_TO_FETCH);
+    try {
+      const response = await getMessagesMsgs(
+        id,
+        offset,
+        NUMBER_OF_MSG_TO_FETCH
+      );
+      if (response && response.msgs) {
+        setTimeout(() => {
+          setMsg((prevMsg) => [...prevMsg, ...response.msgs]);
+          setOffset((prevOffset) => prevOffset + NUMBER_OF_MSG_TO_FETCH);
+        }, 500);
+      } else {
+        console.error('Response does not have the "msgs" property');
+      }
 
-    if (msgs) {
-      setTimeout(() => {
-        setMsg((prevMsg) => [...prevMsg, ...msgs]);
-        setOffset((prevOffset) => prevOffset + NUMBER_OF_MSG_TO_FETCH);
-      }, 500);
-    }
-    if (msgs.length === 0) {
+      if (!response && response.msgs.length === 0) {
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("Error fetching messages:", error);
       setLoading(false);
     }
   };
@@ -54,26 +65,27 @@ export default function MessageList({
       className={`flex flex-col-reverse flex-grow p-8 pb-5 overflow-y-auto ${style.scrollableContent}`}
     >
       <div ref={bottomRef}></div>
-      {msg.map((message) => (
-        <motion.div
-          key={message._id || message.uid}
-          initial={{ opacity: 0, x: message.msgFrom === "me" ? 20 : -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ type: "spring", bounce: 0.4, duration: 0.8 }}
-          className={`flex ${
-            message.msgFrom === "me" ? "justify-end" : "justify-start"
-          }`}
-        >
-          <MessageItem
-            icon={message.msgIcon}
-            userName={message.msgFrom}
-            text={message.msgText}
-            time={message.msgTime}
-            file={message.msgAttach}
-          />
-        </motion.div>
-      ))}
+      {msg &&
+        msg.map((message) => (
+          <motion.div
+            key={message._id || message.uid}
+            initial={{ opacity: 0, x: message.msgFrom === "me" ? 20 : -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ type: "spring", bounce: 0.4, duration: 0.8 }}
+            className={`flex ${
+              message.msgFrom === "me" ? "justify-end" : "justify-start"
+            }`}
+          >
+            <MessageItem
+              icon={message.msgIcon}
+              userName={message.msgFrom}
+              text={message.msgText}
+              time={message.msgTime}
+              file={message.msgAttach}
+            />
+          </motion.div>
+        ))}
       <div ref={ref}>
         {loading && (
           <Player

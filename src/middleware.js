@@ -12,7 +12,6 @@ export function middleware(req) {
       { status: 403, headers: { "Content-Type": "application/json" } }
     );
   }
-  return NextResponse.next();
 }
 
 export default withAuth(

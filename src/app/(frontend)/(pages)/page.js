@@ -124,14 +124,10 @@ export default function Home() {
               Click on direct messages and find someone you know to chat with.
             </Typography>
           </motion.div>
-          <Image
-            width={800}
-            height={600}
-            alt="Sync.dev feature image"
+          <img
             src="/home_feature.png"
-            layout="responsive"
-            sizes="400px"
-            className="rounded-[36px]"
+            alt="Sync.dev feature image"
+            className="rounded-[36px] md:w-[60%] w-[95%]"
           />
           <motion.div
             className="flex-col w-xl lg:ml-24 md:flex hidden"
@@ -164,19 +160,15 @@ export default function Home() {
               Join servers and participate in group chats.
             </Typography>
           </motion.div>
-          <Image
-            width={800}
-            height={600}
+          <img
             alt="Sync.dev feature image"
             src="/home_feature_2.png"
-            layout="responsive"
-            sizes="400px"
-            className="rounded-[36px] max-w-[900px]"
+            className="rounded-[36px] md:w-[60%] w-full"
           />
         </div>
 
         <motion.div
-          className="flex flex-col lg:flex-row items-center"
+          className="flex flex-col lg:flex-row items-center justify-start w-auto"
           initial={{ opacity: 0, y: -100 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1, ease: "easeInOut" }}
@@ -187,9 +179,10 @@ export default function Home() {
             height={600}
             alt="Sync.dev chat image"
             src="/chat_icon.gif"
-            className="max-w-[900px] lg:mb-0 lg:mr-10 lg:w-[600px] md:w-[480px] w-[360px] mb-10 mr-0"
+            className="max-w-[900px] lg:mb-0 lg:mr-10 xl:w-[60%] lg:w-[70%] md:w-[80%] w-[90%] mb-10 mr-0"
+            unoptimized
           />
-          <Link href="#" target="_blank">
+          <Link href="#" target="_blank" className=" w-full">
             <Button
               size="round"
               variant="solid"

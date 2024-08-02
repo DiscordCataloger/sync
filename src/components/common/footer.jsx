@@ -2,6 +2,9 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Typography from "@/components/ui/typography";
+import { Pacifico } from "next/font/google";
+
+const pacifico = Pacifico({ subsets: ["latin"], weight: ["400"] });
 
 export function Footer() {
   return (
@@ -10,7 +13,11 @@ export function Footer() {
         <div className="gap-x-11 md:flex flex-1">
           <Link href="/" className="pointer flex items-center">
             <img src="/robo_icon.png" className="mr-3 w-16 h-16" />
-            <Typography className="!text-xl font-medium">Sync</Typography>
+            <Typography
+              className={`!text-xl font-medium ${pacifico.className}`}
+            >
+              Sync
+            </Typography>
           </Link>
         </div>
         <div className="flex max-w-fit items-center gap-x-4">

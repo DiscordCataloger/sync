@@ -54,7 +54,43 @@ export default function Page() {
   const [selectedLeftComponent, setSelectedLeftComponent] = useState("chat");
   const [selectedMiddleComponent, setSelectedMiddleComponent] =
     useState("server");
-  const [channelName, setChannelName] = useState(null);
+  const [channelName, setChannelName] = useState({});
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        console.log(
+          "API Key from Environment:",
+          process.env.NEXT_PUBLIC_API_KEY
+        ); // Log to verify
+
+        const response = await fetch(`/api/user`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.NEXT_PUBLIC_API_KEY, // Include the API key in the headers
+          },
+          credentials: "include", // Ensure cookies are included in the request
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+
+        const userData = await response.json();
+        console.log("Fetched User Data:", userData); // Log to verify fetched data
+        setUser(userData);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    }
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    console.log("User state updated:", user); // Log to verify state update
+  }, [user]);
 
   const handleChatClick = () => {
     setSelectedLeftComponent("chat");
@@ -107,6 +143,7 @@ export default function Page() {
     //     status={friendChatting[0].status}
     //   /> */}
     // </div>
+
     <div
       className={`${font.className} flex h-screen items-center justify-between p-3 bg-blue-100`}
     >

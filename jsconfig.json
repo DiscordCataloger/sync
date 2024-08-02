@@ -3,7 +3,8 @@
     "paths": {
       "@/*": ["./src/*"],
       "libs/*": ["./libs/*"],
-      "api/*": ["./src/app/(backend)/api/*"]
+      "api/*": ["./src/app/(backend)/api/*"],
+      "models/*": ["./models/*"]
     }
   }
 }

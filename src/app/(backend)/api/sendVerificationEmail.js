@@ -1,9 +1,8 @@
 import nodemailer from "nodemailer";
 
-export default async function handler(req, res) {
-  if (req.method === "POST") {
-    const { email, verificationToken } = req.body;
-
+export async function POST(request) {
+  try {
+    const { email, verificationToken } = await request.json();
     console.log("Sending verification email to:", email);
     console.log("Verification token:", verificationToken);
 
@@ -40,17 +39,29 @@ export default async function handler(req, res) {
       `,
     };
 
-    try {
-      // Send the email
-      await transporter.sendMail(mailOptions);
-      console.log("Verification email sent successfully");
-      res.status(200).json({ message: "Verification email sent" });
-    } catch (error) {
-      console.error("Error sending verification email:", error);
-      console.error("Error details:", error.response);
-      res.status(500).json({ error: "Error sending verification email" });
-    }
+    // Send the email
+    await transporter.sendMail(mailOptions);
+    console.log("Verification email sent successfully");
+
+    return NextResponse.json(
+      { message: "Verification email sent" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error sending verification email:", error);
+    console.error("Error details:", error.response);
+
+    return NextResponse.json(
+      { message: `Error: ${error.message}` },
+      { status: 500 }
+    );
+  }
+}
+
+export default async function handler(req, res) {
+  if (req.method === "POST") {
+    return POST(req, res);
   } else {
-    res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({ error: "Method not allowed" });
   }
 }

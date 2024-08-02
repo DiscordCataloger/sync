@@ -1,0 +1,20 @@
+export async function addMessages(userIds) {
+  try {
+    const res = await fetch(`http://localhost:3000/api/messages/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userIds: userIds, msgs: [] }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to add messages");
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.log("Error adding messages: ", error);
+  }
+}

@@ -70,42 +70,40 @@ export function Login() {
       !isNotVerified &&
       !accountIsNotVerified
     ) {
-      if (user && user.isVerified) {
-        setAccountIsNotVerified(false);
-        try {
-          const res = await signIn("credentials", {
-            email,
-            password,
-            redirect: false,
-          });
-          if (res.error) {
-            console.log(res.error);
-            // Handle the error appropriately
-            return;
-          }
-          if (res.ok) {
-            console.log("Login successful");
-            console.log("isOn:", isOn);
-            if (isOn) {
-              Cookies.set("rememberMe", "on", {
-                expires: 14,
-                sameSite: "None",
-                secure: true,
-              }); // Set cookie with SameSite attribute
-            } else {
-              Cookies.set("rememberMe", "on", {
-                expires: 7,
-                sameSite: "None",
-                secure: true,
-              });
-            }
-            router.push("/chat");
-          }
-        } catch (error) {
-          console.log(error);
+      setAccountIsNotVerified(false);
+
+      try {
+        const res = await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
+        if (res.error) {
+          console.log(res.error);
+          // Handle the error appropriately
+          setAccountIsNotVerified(true); // Show invalid credentials warning
+          return;
         }
-      } else {
-        setAccountIsNotVerified(true);
+        if (res.ok) {
+          console.log("Login successful");
+          console.log("isOn:", isOn);
+          if (isOn) {
+            Cookies.set("rememberMe", "on", {
+              expires: 14,
+              sameSite: "None",
+              secure: true,
+            }); // Set cookie with SameSite attribute
+          } else {
+            Cookies.set("rememberMe", "on", {
+              expires: 7,
+              sameSite: "None",
+              secure: true,
+            });
+          }
+          router.push("/chat");
+        }
+      } catch (error) {
+        console.log(error);
       }
     }
   }
@@ -159,6 +157,7 @@ export function Login() {
       if (ref.current.value) {
         if (!ref.current || !re.test(ref.current.value)) {
           setEmailValidate(true);
+          // setAccountIsNotVerified(false);
         } else {
           setEmailValidate(false);
         }

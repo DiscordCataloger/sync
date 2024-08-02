@@ -16,6 +16,7 @@ import ProfileCard from "../../(components)/ProfileCard";
 import DirectMessageAdd from "../../(components)/DirectMessageAdd";
 import FriendUI from "../../(components)/FriendUI";
 import ServerUI from "../../(components)/ServerUI";
+import LoggedOutSessionCheck from "../../(components)/LoggedOutSessionCheck";
 
 const font = Josefin_Sans({
   weight: "400",
@@ -109,6 +110,7 @@ export default function Page() {
     <div
       className={`${font.className} flex h-screen items-center justify-between p-3 bg-blue-100`}
     >
+      <LoggedOutSessionCheck />
       <Sidebar
         onclickChat={handleChatClick}
         onclickServer={handleServerClick}

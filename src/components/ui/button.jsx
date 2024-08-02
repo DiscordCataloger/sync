@@ -27,6 +27,7 @@ const buttonVariants = cva(
         unset: "hover:bg-sky-400 hover:text-white",
         active:
           "bg-indigo-500 text-primary-foreground transition-all duration-200",
+        grey: "",
       },
       size: {
         default: "h-10 px-4 py-2",

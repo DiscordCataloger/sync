@@ -17,6 +17,7 @@ import DirectMessageAdd from "../../(components)/DirectMessageAdd";
 import FriendUI from "../../(components)/FriendUI";
 import ServerUI from "../../(components)/ServerUI";
 import LoggedOutSessionCheck from "../../(components)/LoggedOutSessionCheck";
+import getCurrentUser from "../../../../../api/getCurrentUser";
 
 const font = Josefin_Sans({
   weight: "400",
@@ -55,6 +56,17 @@ export default function Page() {
   const [selectedMiddleComponent, setSelectedMiddleComponent] =
     useState("server");
   const [channelName, setChannelName] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(null);
+
+  useEffect(() => {
+    async function getUser() {
+      const userId = await getCurrentUser();
+      // console.log(userId);
+      setCurrentUserId(userId);
+    }
+
+    getUser();
+  }, []);
 
   const handleChatClick = () => {
     setSelectedLeftComponent("chat");
@@ -122,7 +134,10 @@ export default function Page() {
       {popupComponent && (
         <div>
           {popupComponent === "addServer" && (
-            <ServerModal onClose={() => setPopupComponent("")} />
+            <ServerModal
+              onClose={() => setPopupComponent("")}
+              userId={currentUserId}
+            />
           )}
           {popupComponent === "notification" && (
             <Notification onClose={() => setPopupComponent("")} />

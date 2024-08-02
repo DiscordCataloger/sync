@@ -9,9 +9,14 @@ export default function Discover({ position }) {
 
   useEffect(() => {
     const fetchServerData = async () => {
-      const { servers } = await getServers();
-      setServers(servers);
+      try {
+        const { servers } = await getServers();
+        setServers(servers);
+      } catch (error) {
+        console.error("Failed to fetch servers:", error);
+      }
     };
+
     fetchServerData();
   }, []);
 
@@ -21,7 +26,7 @@ export default function Discover({ position }) {
 
   return (
     <>
-      <div className="custom-scrollbar -mb-2 grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 grid-flow-row auto-rows-min xl:gap-10 gap-10 h-full overflow-scroll pt-10 px-5 pb-0">
+      <div className="custom-scrollbar -mb-2 grid xl:grid-cols-2 grid-cols-1 grid-flow-row auto-rows-min xl:gap-10 gap-10 h-full overflow-scroll pt-10 px-5 pb-0">
         {position === "home" &&
           servers.map((e, i) => (
             <ServerCard

@@ -107,6 +107,7 @@ export default function InputMessage({
       (file) => !attachments.some((attach) => attach.name === file.name)
     );
     setAttachments((prevFiles) => [...prevFiles, ...newAttachments]);
+    console.log(files);
     event.target.value = null;
   };
 

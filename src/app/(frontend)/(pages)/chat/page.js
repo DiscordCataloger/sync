@@ -17,6 +17,8 @@ import DirectMessageAdd from "../../(components)/DirectMessageAdd";
 import FriendUI from "../../(components)/FriendUI";
 import ServerUI from "../../(components)/ServerUI";
 import LoggedOutSessionCheck from "../../(components)/LoggedOutSessionCheck";
+import { FriendContext } from "../../(components)/Search";
+import { FilteredUserContext } from "../../(components)/TemplateUI";
 
 const font = Josefin_Sans({
   weight: "400",
@@ -55,16 +57,18 @@ export default function Page() {
   const [selectedMiddleComponent, setSelectedMiddleComponent] =
     useState("server");
   const [channelName, setChannelName] = useState({});
-  const [user, setUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [userLib, setUserLib] = useState(null);
+  const [filteredUsers, setFilteredUsers] = useState(null);
+  const [buttonText, setButtonText] = useState("");
+  const filteredUserContextValue = {
+    filteredUsers,
+    setFilteredUsers,
+  };
 
   useEffect(() => {
     async function fetchUser() {
       try {
-        console.log(
-          "API Key from Environment:",
-          process.env.NEXT_PUBLIC_API_KEY
-        ); // Log to verify
-
         const response = await fetch(`/api/user`, {
           method: "GET",
           headers: {
@@ -79,8 +83,8 @@ export default function Page() {
         }
 
         const userData = await response.json();
-        console.log("Fetched User Data:", userData); // Log to verify fetched data
-        setUser(userData);
+        // console.log("Fetched User Data:", userData); // Log to verify fetched data
+        setCurrentUser(userData);
       } catch (error) {
         console.error("Error fetching user:", error);
       }
@@ -89,8 +93,29 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    console.log("User state updated:", user); // Log to verify state update
-  }, [user]);
+    async function fetchUserLibrary() {
+      try {
+        const response = await fetch(`/api/users`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.NEXT_PUBLIC_API_KEY, // Include the API key in the headers
+          },
+          credentials: "include", // Ensure cookies are included in the request
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+
+        const userLibData = await response.json();
+        setUserLib(userLibData);
+      } catch (error) {
+        console.error("Error fetching user library:", error);
+      }
+    }
+    fetchUserLibrary();
+  }, []);
 
   const handleChatClick = () => {
     setSelectedLeftComponent("chat");
@@ -133,6 +158,21 @@ export default function Page() {
     );
   };
 
+  const inputIntermediate = (e) => {
+    const searchValue = e.target.value;
+    if (searchValue) {
+      setFilteredUsers(
+        userLib.filter(
+          (user) =>
+            user.email.toLowerCase().includes(searchValue) ||
+            user.displayName.toLowerCase().includes(searchValue)
+        )
+      );
+    } else {
+      setFilteredUsers(null);
+    }
+  };
+
   return (
     // <div className="bg-blue-100 h-screen flex items-center justify-center">
     //   <ChannelUI channelId={channelId} name={channelChatting} />
@@ -143,92 +183,95 @@ export default function Page() {
     //     status={friendChatting[0].status}
     //   /> */}
     // </div>
-
-    <div
-      className={`${font.className} flex h-screen items-center justify-between p-3 bg-blue-100`}
-    >
-      <LoggedOutSessionCheck />
-      <Sidebar
-        onclickChat={handleChatClick}
-        onclickServer={handleServerClick}
-        onclickAddServer={() => togglePopupComponent("addServer")}
-        onclickNotification={() => togglePopupComponent("notification")}
-        onclickProfile={() => togglePopupComponent("profile")}
-        selectedLeftComponent={selectedLeftComponent}
-      />
-      {popupComponent && (
-        <div>
-          {popupComponent === "addServer" && (
-            <ServerModal onClose={() => setPopupComponent("")} />
-          )}
-          {popupComponent === "notification" && (
-            <Notification onClose={() => setPopupComponent("")} />
-          )}
-          {popupComponent === "profile" && (
-            <ProfileCard
-              onClose={() => setPopupComponent("")}
-              username="Chuuthiya"
-            />
-          )}
-          {popupComponent === "directMessageAdd" && (
-            <DirectMessageAdd onClose={() => setPopupComponent("")} />
-          )}
-        </div>
-      )}
-
-      {middleComponent === "menu" && (
-        <div className="w-[40%] min-w-[360px] min-h-[550px] h-full overflow-hidden mx-3 rounded-2xl flex flex-col gap-3 justify-between">
-          <SearchBar />
-          <Menu
-            onclickDirectMessageAdd={() =>
-              togglePopupComponent("directMessageAdd")
-            }
-            onclickFriend={handleFriendMenu}
-            onclickServer={handleServerMenu}
-            selectedMiddleComponent={selectedMiddleComponent}
-          />
-          <DirectMessages
-            onclickDmUser={handleDmClick}
-            selectedMiddleComponent={selectedMiddleComponent}
-          />
-        </div>
-      )}
-      {middleComponent === "channel" && (
-        <div className="w-[40%] min-w-[320px] h-full overflow-hidden mx-3 rounded-2xl shadow-md shadow-sky-400/40">
-          <ChannelBar
-            onclickChannel={handleChannelClick}
-            selectedMiddleComponent={selectedMiddleComponent}
-          />
-        </div>
-      )}
-
-      {rightComponent === "chat" && (
-        <div className="h-full w-full">
-          <ChatUI
-            messagesId={messagesId}
-            icon={friendChatting[0].icon}
-            name={friendChatting[0].name}
-            status={friendChatting[0].status}
-          />
-        </div>
-      )}
-      {rightComponent === "channel" && (
-        <div className="h-full w-full">
-          <ChannelUI channelId={channelId} name={channelName} />
-        </div>
-      )}
-      {rightComponent === "friend" && (
-        <div className="h-full w-full">
-          <FriendUI />
-        </div>
-      )}
-      {rightComponent === "server" && (
-        <div className="w-full h-full">
-          <ServerUI
+    <FriendContext.Provider value={(e) => inputIntermediate(e)}>
+      <FilteredUserContext.Provider value={filteredUserContextValue}>
+        <div
+          className={`${font.className} flex h-screen items-center justify-between p-3 bg-blue-100`}
+        >
+          <LoggedOutSessionCheck />
+          <Sidebar
+            onclickChat={handleChatClick}
+            onclickServer={handleServerClick}
             onclickAddServer={() => togglePopupComponent("addServer")}
+            onclickNotification={() => togglePopupComponent("notification")}
+            onclickProfile={() => togglePopupComponent("profile")}
+            selectedLeftComponent={selectedLeftComponent}
           />
+          {popupComponent && (
+            <div>
+              {popupComponent === "addServer" && (
+                <ServerModal onClose={() => setPopupComponent("")} />
+              )}
+              {popupComponent === "notification" && (
+                <Notification onClose={() => setPopupComponent("")} />
+              )}
+              {popupComponent === "profile" && (
+                <ProfileCard
+                  onClose={() => setPopupComponent("")}
+                  username="Chuuthiya"
+                />
+              )}
+              {popupComponent === "directMessageAdd" && (
+                <DirectMessageAdd onClose={() => setPopupComponent("")} />
+              )}
+            </div>
+          )}
+
+          {middleComponent === "menu" && (
+            <div className="w-[40%] min-w-[360px] min-h-[550px] h-full overflow-hidden mx-3 rounded-2xl flex flex-col gap-3 justify-between">
+              <SearchBar />
+              <Menu
+                onclickDirectMessageAdd={() =>
+                  togglePopupComponent("directMessageAdd")
+                }
+                onclickFriend={handleFriendMenu}
+                onclickServer={handleServerMenu}
+                selectedMiddleComponent={selectedMiddleComponent}
+              />
+              <DirectMessages
+                onclickDmUser={handleDmClick}
+                selectedMiddleComponent={selectedMiddleComponent}
+              />
+            </div>
+          )}
+          {middleComponent === "channel" && (
+            <div className="w-[40%] min-w-[320px] h-full overflow-hidden mx-3 rounded-2xl shadow-md shadow-sky-400/40">
+              <ChannelBar
+                onclickChannel={handleChannelClick}
+                selectedMiddleComponent={selectedMiddleComponent}
+              />
+            </div>
+          )}
+
+          {rightComponent === "chat" && (
+            <div className="h-full w-full">
+              <ChatUI
+                messagesId={messagesId}
+                icon={friendChatting[0].icon}
+                name={friendChatting[0].name}
+                status={friendChatting[0].status}
+              />
+            </div>
+          )}
+          {rightComponent === "channel" && (
+            <div className="h-full w-full">
+              <ChannelUI channelId={channelId} name={channelName} />
+            </div>
+          )}
+          {rightComponent === "friend" && (
+            <div className="h-full w-full">
+              <FriendUI />
+            </div>
+          )}
+          {rightComponent === "server" && (
+            <div className="w-full h-full">
+              <ServerUI
+                onclickAddServer={() => togglePopupComponent("addServer")}
+              />
+            </div>
+          )}
         </div>
-      )}
-    </div>
+      </FilteredUserContext.Provider>
+    </FriendContext.Provider>
   );
 }

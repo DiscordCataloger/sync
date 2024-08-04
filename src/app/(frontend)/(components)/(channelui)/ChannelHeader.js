@@ -1,7 +1,16 @@
 "use client";
+import { useState } from "react";
 import { EllipsisVertical, Hash } from "lucide-react";
+import PopupModalConfirm from "../PopupModelConfirm";
 
-export default function ChannelHeader({ name }) {
+export default function ChannelHeader({ name, handleDeleteChannel }) {
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
+  const handleConfirmDelete = () => {
+    handleDeleteChannel();
+    setShowConfirmation(false);
+  };
+
   return (
     <>
       <div className="flex justify-between items-center px-4 lg:py-5 md:py-4 py-3">
@@ -11,11 +20,20 @@ export default function ChannelHeader({ name }) {
             {name}
           </div>
         </div>
-        <EllipsisVertical className="text-blue-500" />
+        <button onClick={() => setShowConfirmation(true)}>
+          <EllipsisVertical className="text-blue-500" />
+        </button>
       </div>
       <div className="flex justify-center items-center">
         <hr className="w-[90%]" />
       </div>
+      {showConfirmation && (
+        <PopupModalConfirm
+          message="Are you sure you want to delete this channel?"
+          onClose={() => setShowConfirmation(false)}
+          onConfirm={handleConfirmDelete}
+        />
+      )}
     </>
   );
 }

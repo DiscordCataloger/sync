@@ -9,7 +9,7 @@ export default async function getCurrentUser() {
   if (session) {
     const user = users.user.find((u) => u.email === session.user.email);
     if (user) {
-      return user._id;
+      return user;
     }
   }
 }

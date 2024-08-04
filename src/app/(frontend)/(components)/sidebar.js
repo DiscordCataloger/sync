@@ -3,6 +3,8 @@
 import { AiFillMessage } from "react-icons/ai";
 import { FaPlusCircle } from "react-icons/fa";
 import { IoMdArrowDropdown } from "react-icons/io";
+import { useContext, useEffect, useState } from "react";
+import ServerContext from "../(context)/ServerContext";
 
 import Image from "next/image";
 import NotificationButton from "./NotificationButton";
@@ -15,12 +17,22 @@ function Sidebar({
   onclickProfile,
   selectedLeftComponent,
 }) {
-  const servers = [
-    { serverName: "Server 1", serverIcon: "/chat_bot.png" },
-    { serverName: "Server 2", serverIcon: "/chat_bot.png" },
-    { serverName: "Server 3", serverIcon: "/chat_bot.png" },
-    { serverName: "Server 4", serverIcon: "/chat_bot.png" },
-  ];
+  const { servers, currentUser, serverTrigger, setServerTrigger } =
+    useContext(ServerContext);
+  const [filteredServers, setFilteredServers] = useState([]);
+
+  useEffect(() => {
+    if (currentUser) {
+      // console.log(currentUser);
+      const joinedServerList = currentUser.joinedServerList;
+      const filteredServers = servers.filter((server) =>
+        joinedServerList.includes(server._id)
+      );
+      // console.log("filteredServers: ", filteredServers);
+      setFilteredServers(filteredServers);
+    }
+  }, [currentUser, servers]);
+
   return (
     <div className="h-full w-24 min-w-[65px] min-h-[550px] bg-blue-600 flex flex-col gap-5 items-center justify-between py-5 rounded-xl shadow-lg z-10">
       <div
@@ -47,12 +59,15 @@ function Sidebar({
         `}
         </style>
         <div className="flex flex-col items-center -mt-2 cursor-pointer overflow-scroll w-full serverIconScrollbar">
-          {servers.map((server, index) => (
+          {filteredServers.map((server, index) => (
             <div
-              onClick={() => onclickServer(index)}
+              onClick={() => {
+                onclickServer(server._id);
+                setServerTrigger((prev) => prev + 1);
+              }}
               key={index}
               className={`w-full flex justify-center py-2 hover:bg-blue-700 hover:border-l-4 hover:border-orange-600 ${
-                selectedLeftComponent === `server-${index}`
+                selectedLeftComponent === server._id
                   ? "bg-blue-700 border-l-4 border-orange-600"
                   : ""
               }`}

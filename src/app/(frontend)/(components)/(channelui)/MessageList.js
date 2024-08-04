@@ -15,6 +15,7 @@ export default function MessageList({
   offset,
   setOffset,
   NUMBER_OF_MSG_TO_FETCH,
+  currentUserId,
 }) {
   const bottomRef = useRef(null);
   const scrollContainerRef = useRef(null);
@@ -41,8 +42,8 @@ export default function MessageList({
     } catch (error) {
       console.error("Error fetching more messages:", error);
       // Handle the error case, e.g., display an error message
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -78,6 +79,8 @@ export default function MessageList({
             text={message.msgText}
             time={message.msgTime}
             file={message.msgAttach}
+            userId={message.userId}
+            currentUserId={currentUserId}
           />
         </motion.div>
       ))}

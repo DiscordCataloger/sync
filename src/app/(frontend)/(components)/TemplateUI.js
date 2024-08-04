@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Button } from "@/components/ui/button";
 import AddFriend from "./(friendui)/AddFriend";
 import OnlineFriends from "./(friendui)/OnlineFriends";
@@ -77,8 +77,8 @@ export default function TemplateUI({ icon, name, category, onclickAddServer }) {
             You can join servers with server name.
           </div>
           <Search
-            buttonName="Join Server"
-            placeholder="You can join servers with server name."
+            buttonName="Search Servers"
+            placeholder="You can search servers with server name."
             submitValue={submitValue}
             setSubmitValue={setSubmitValue}
           />
@@ -98,14 +98,20 @@ export default function TemplateUI({ icon, name, category, onclickAddServer }) {
           />
         </div>
       )}
-      {submitValue && <p>{submitValue}</p>}
+      {/* {submitValue && <p>{submitValue}</p>} */}
 
       {currentCategory === "Online" && <OnlineFriends />}
       {currentCategory === "All" && <AllFriends />}
       {currentCategory === "Pending" && <PendingFriends />}
       {currentCategory === "Blocked" && <BlockedUsers />}
       {currentCategory === "Add Friend" && <AddFriend />}
-      {currentCategory === "Discover" && <Discover position={position} />}
+      {currentCategory === "Discover" && (
+        <Discover
+          position={position}
+          submitValue={submitValue}
+          setSubmitValue={setSubmitValue}
+        />
+      )}
     </div>
   );
 }

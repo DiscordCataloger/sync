@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import io from "socket.io-client";
 import ChannelHeader from "./(channelui)/ChannelHeader";
 import InputMessage from "./InputMessage";
@@ -9,6 +9,9 @@ import { getServerChannelMsgs } from "../../../../api/getServerChannelMsgs";
 import { addServerChannelMsg } from "../../../../api/addServerChannelMsg";
 import { Player } from "@lottiefiles/react-lottie-player";
 import { v4 as uuidv4 } from "uuid"; // Import the uuid library
+import ServerContext from "../(context)/ServerContext";
+import { deleteServerChannel } from "../../../../api/deleteServerChannel";
+import deleteServerChannelfromServer from "../../../../api/deleteServerChannelfromServer";
 
 const font = Josefin_Sans({
   weight: "400",
@@ -16,9 +19,11 @@ const font = Josefin_Sans({
 });
 
 const NUMBER_OF_MSG_TO_FETCH = 20;
-const socket = io("http://localhost:3000");
+const socket = io();
 
-export default function ChannelUI({ channelId, name }) {
+export default function ChannelUI({ channelId, name, setServerChannels }) {
+  const { servers, setServers, selectedServer, currentUser } =
+    useContext(ServerContext);
   const [msg, setMsg] = useState([]);
   const [offset, setOffset] = useState(NUMBER_OF_MSG_TO_FETCH);
   const [input, setInput] = useState("");
@@ -26,6 +31,31 @@ export default function ChannelUI({ channelId, name }) {
   const [addMsg, setAddMsg] = useState(0);
   const [loading, setLoading] = useState(true); // Loading state
   const [isDragOver, setIsDragOver] = useState(false);
+  const [serverMembersExceptCurrentUser, setServerMembersExceptCurrentUser] =
+    useState([]);
+
+  useEffect(() => {
+    if (selectedServer && channelId) {
+      socket.emit("joinServer", { serverId: selectedServer._id });
+      socket.emit("joinChannel", { channelId, userId: currentUser._id });
+    }
+
+    return () => {
+      if (selectedServer && channelId) {
+        socket.emit("leaveServer", { serverId: selectedServer._id });
+        socket.emit("leaveChannel", { channelId });
+      }
+    };
+  }, [selectedServer, channelId, currentUser]);
+
+  useEffect(() => {
+    if (selectedServer && currentUser._id) {
+      const serverMembersExceptCurrentUser = selectedServer.members.filter(
+        (member) => member !== currentUser._id
+      );
+      setServerMembersExceptCurrentUser(serverMembersExceptCurrentUser);
+    }
+  }, [selectedServer]);
 
   // Drag and Drop
   const handleDragOver = (event) => {
@@ -47,6 +77,32 @@ export default function ChannelUI({ channelId, name }) {
     setAttachments((prevFiles) => [...prevFiles, ...newAttachments]);
   };
 
+  const handleDeleteChannel = async () => {
+    try {
+      await deleteServerChannelfromServer(selectedServer._id, channelId);
+      await deleteServerChannel(channelId);
+      console.log("channel deleted", channelId);
+
+      const server = servers.find(
+        (server) => server._id === selectedServer._id
+      );
+      const updatedServer = {
+        ...server,
+        serverChannels: server.serverChannels.filter(
+          (channel) => channel !== channelId
+        ),
+      };
+      // Update the server's channels
+      setServers(
+        servers.map((server) =>
+          server._id === selectedServer._id ? updatedServer : server
+        )
+      );
+    } catch (error) {
+      console.error("Error deleting channel:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchServerChannelMsgData = async () => {
       setLoading(true);
@@ -56,11 +112,10 @@ export default function ChannelUI({ channelId, name }) {
         setMsg(msgs);
       } catch (error) {
         console.error("Error fetching server channel messages:", error);
-        // Handle the error case, e.g., display an error message
       } finally {
         setTimeout(() => {
           setLoading(false);
-        }, 1000);
+        }, 200);
       }
     };
     fetchServerChannelMsgData();
@@ -84,13 +139,37 @@ export default function ChannelUI({ channelId, name }) {
       setAddMsg((prevCounter) => prevCounter + 1);
     });
 
+    socket.on("receiveServerMessage", (newMessage) => {
+      const { channelId: messageChannelId } = newMessage;
+      // Update the server's channels with the new message
+      setServerChannels((prevChannels) => {
+        const updatedChannels = [...prevChannels];
+        const channelIndex = updatedChannels.findIndex(
+          (channel) => channel._id === messageChannelId
+        );
+        if (channelIndex !== -1) {
+          updatedChannels[channelIndex] = {
+            ...updatedChannels[channelIndex],
+            channelMsgs: [
+              ...updatedChannels[channelIndex].channelMsgs,
+              newMessage,
+            ],
+          };
+        }
+
+        // console.log("updatedChannels: ", updatedChannels);
+        return updatedChannels;
+      });
+    });
+
     return () => {
       socket.off("receiveMessage");
+      socket.off("receiveServerMessage");
     };
-  }, [channelId]);
+  }, [channelId, selectedServer, setServerChannels]);
 
   const sendMessage = async () => {
-    if (input.trim() || attachments.length > 0) {
+    if (currentUser && (input.trim() || attachments.length > 0)) {
       const currentTime = new Date();
       const months = [
         "Jan",
@@ -111,23 +190,27 @@ export default function ChannelUI({ channelId, name }) {
       } ${currentTime.getFullYear()}, ${currentTime.getHours()}:${String(
         currentTime.getMinutes()
       ).padStart(2, "0")}`;
-
       const newMsgLocal = {
-        msgFrom: "me",
-        msgIcon: "/chat_bot.png",
+        msgFrom: currentUser.displayName,
+        msgIcon: currentUser.icon || "/chat_bot.png",
         msgTime: formattedTime,
         msgText: input,
         msgAttach: attachments.length > 0 ? ["loadImg"] : ["noImg"],
-        msgUnread: ["User1", "User2", "User3"],
+        msgUnread: serverMembersExceptCurrentUser,
+        userId: currentUser._id,
         uid: uuidv4(),
       };
 
       // Emit the initial message to live chat & added msg (state) without attachments
-      socket.emit("sendMessage", newMsgLocal);
+      socket.emit("sendMessage", { channelId, ...newMsgLocal });
+      socket.emit("sendServerMessage", {
+        serverId: selectedServer._id,
+        channelId, // Include the channelId in the message
+        ...newMsgLocal,
+      });
 
       // Clear the input field and make scroll to bottom
       setInput("");
-      // setAddMsg((prevCounter) => prevCounter + 1);
 
       if (attachments.length > 0) {
         try {
@@ -145,16 +228,16 @@ export default function ChannelUI({ channelId, name }) {
               return data.url; // Get the URL from the response
             })
           );
-          // console.log(uploadedUrls);
-          // Add msgAttach urls after getting url
           const updatedMsg = { ...newMsgLocal, msgAttach: uploadedUrls };
 
-          // Modify live chat & previous added msg (state) with uploadedurls
-          socket.emit("sendMessage", updatedMsg);
+          socket.emit("sendMessage", { channelId, ...updatedMsg });
+          socket.emit("sendServerMessage", {
+            serverId: selectedServer._id,
+            channelId, // Include the channelId in the message
+            ...updatedMsg,
+          });
 
-          // Create newMsg without the uid
           const { uid, ...newMsg } = updatedMsg;
-          // console.log("with attachments", newMsg);
           setAddMsg((prevCounter) => prevCounter + 1);
           return await addServerChannelMsg(channelId, newMsg);
         } catch (error) {
@@ -162,10 +245,9 @@ export default function ChannelUI({ channelId, name }) {
         }
       }
 
-      // Create newMsg without the uid
       const updatedMsg = { ...newMsgLocal, msgAttach: [] };
       const { uid, ...newMsg } = updatedMsg;
-      // console.log("without attachments", newMsg);
+
       return await addServerChannelMsg(channelId, newMsg);
     }
   };
@@ -179,7 +261,7 @@ export default function ChannelUI({ channelId, name }) {
         isDragOver ? "border-2 border-dashed border-blue-500" : "border-none"
       } min-w-[400px] h-full bg-white rounded-2xl flex flex-col shadow-md shadow-sky-400/40`}
     >
-      <ChannelHeader name={name} />
+      <ChannelHeader name={name} handleDeleteChannel={handleDeleteChannel} />
       {loading && (
         <div className={`flex flex-col justify-center items-center h-full`}>
           <Player
@@ -200,6 +282,7 @@ export default function ChannelUI({ channelId, name }) {
           offset={offset}
           setOffset={setOffset}
           NUMBER_OF_MSG_TO_FETCH={NUMBER_OF_MSG_TO_FETCH}
+          currentUserId={currentUser._id}
         />
       )}
       <InputMessage

@@ -1,7 +1,8 @@
 "use client";
-import { useState } from "react"; // Hook
+import { useState, useContext, useRef, useEffect } from "react"; // Hook
 import { Button } from "@/components/ui/button";
 // import style from "./Form.module.css";
+import ServerContext from "../(context)/ServerContext";
 
 export default function Search({
   placeholder,
@@ -9,17 +10,57 @@ export default function Search({
   submitValue,
   setSubmitValue,
 }) {
+  const { servers } = useContext(ServerContext);
+
   const [value, setValue] = useState("");
-  // const [submitValue, setSubmitValue] = useState("");
+
+  const [serverSuggestions, setServerSuggestions] = useState([]);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const dropdownRef = useRef(null);
 
   function handleChange(event) {
-    setValue(event.target.value);
+    handleServerSearchChange(event.target.value);
+    setIsDropdownVisible(true);
   }
 
   function handleSubmit(event) {
     event.preventDefault();
     setSubmitValue(value);
+    setValue("");
+    setIsDropdownVisible(false);
   }
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsDropdownVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleServerSearchChange = (val) => {
+    setValue(val);
+    if (val.length > 0) {
+      // Filter server suggestions based on the input value
+      const filteredServers = servers.filter((server) =>
+        server.serverName.toLowerCase().includes(val.toLowerCase())
+      );
+      setServerSuggestions(filteredServers);
+    } else {
+      setServerSuggestions([]);
+    }
+  };
+
+  const handleSuggestionClick = (serverName) => {
+    setValue(serverName);
+    setServerSuggestions([]);
+    setIsDropdownVisible(false);
+  };
 
   return (
     <>
@@ -42,6 +83,22 @@ export default function Search({
         >
           {buttonName}
         </Button>
+        {isDropdownVisible && serverSuggestions.length > 0 && (
+          <div
+            ref={dropdownRef}
+            className="bg-white border border-gray-300 rounded-2xl lg:top-16 top-14 w-full z-40 absolute shadow-md shadow-sky-300/50"
+          >
+            {serverSuggestions.map((server) => (
+              <div
+                key={server._id}
+                className="p-2 cursor-pointer hover:bg-blue-100 rounded-2xl"
+                onClick={() => handleSuggestionClick(server.serverName)}
+              >
+                {server.serverName}
+              </div>
+            ))}
+          </div>
+        )}
       </form>
     </>
   );

@@ -58,12 +58,22 @@ const fileIcons = {
   txt: FaFileAlt,
 };
 
-export default function MessageItem({ icon, userName, text, time, file }) {
+export default function MessageItem({
+  icon,
+  userName,
+  text,
+  time,
+  file,
+  userId,
+  currentUserId,
+}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [videoFileType, setVideoFileType] = useState(null);
   const videoRef = useRef(null);
+  // console.log("userId", userId);
+  // console.log("currentUserId", currentUserId);
 
   const currentTime = new Date();
   const months = [
@@ -127,7 +137,7 @@ export default function MessageItem({ icon, userName, text, time, file }) {
             minWidth: `${(userName.length + displayDate.length) * 6 + 30}px`,
           }}
           className={`flex flex-col gap-2 p-2 rounded-xl text-wrap ${
-            userName === "me"
+            userId === currentUserId
               ? "bg-blue-400 text-white"
               : "bg-blue-100 text-black"
           }`}

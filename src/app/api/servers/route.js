@@ -34,12 +34,15 @@ export async function POST(req) {
     serverChannels,
   });
 
-  return new Response(JSON.stringify(newServer), {
-    status: 201,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return new Response(
+    JSON.stringify({ _id: newServer._id, ...newServer.toObject() }),
+    {
+      status: 201,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 }
 
 // DELETE request handler

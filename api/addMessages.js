@@ -4,6 +4,7 @@ export async function addMessages(userIds) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
       },
       body: JSON.stringify({ userIds: userIds, msgs: [] }),
     });

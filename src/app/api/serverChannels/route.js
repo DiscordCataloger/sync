@@ -16,13 +16,14 @@ export async function POST(req) {
   await connectMongoDB();
 
   const newChannelMsgs = channelMsgs.map(
-    ({ msgFrom, msgIcon, msgTime, msgText, msgAttach, msgUnread }) => ({
+    ({ msgFrom, msgIcon, msgTime, msgText, msgAttach, msgUnread, userId }) => ({
       msgFrom,
       msgIcon,
       msgTime,
       msgText,
       msgAttach,
       msgUnread,
+      userId,
     })
   );
 

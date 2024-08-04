@@ -4,6 +4,9 @@ export async function getServerChannelMsgs(id, offset = 0, limit = 20) {
       `http://localhost:3000/api/serverChannels/${id}/msgs?offset=${offset}&limit=${limit}`,
       {
         cache: "no-store",
+        headers: {
+          "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
+        },
       }
     );
 

@@ -2,6 +2,9 @@ export async function getServerChannels() {
   try {
     const res = await fetch("http://localhost:3000/api/serverChannels", {
       cache: "no-store",
+      headers: {
+        "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
+      },
     });
 
     if (!res.ok) {

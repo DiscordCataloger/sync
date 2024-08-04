@@ -32,24 +32,27 @@ export async function POST(req) {
       return new NextResponse("Friend not found", { status: 404 });
     }
 
-    // Check if the friend request is already pending
+    // Check if the friend is already your friend
+    if (user.allFriends.includes(friendId)) {
+      return new NextResponse("This user is already your friend!", {
+        status: 400,
+      });
+    }
+
+    // Add friend ID to user's allFriends list and remove it from pendingFriends list
     if (user.pendingFriends.includes(friendId)) {
-      return new NextResponse("They've already sent you a friend request!", {
-        status: 400,
-      });
-    }
-
-    // Remove userId from the friend's pendingFriends
-    if (friend.pendingFriends.includes(userId)) {
-      friend.pendingFriends.pop(userId);
-      await friend.save();
+      user.pendingFriends = user.pendingFriends.filter((id) => id !== friendId); // Correctly remove the friendId
+      user.allFriends.push(friendId);
+      friend.allFriends.push(userId);
+      await user.save(); // Save the updated user
+      await friend.save(); // Save the updated friend object
     } else {
-      return new NextResponse("Friend request already removed!", {
+      return new NextResponse("Friend Request already accepted!", {
         status: 400,
       });
     }
 
-    return new NextResponse("Friend request removed successfully", {
+    return new NextResponse("Friend request accepted successfully", {
       status: 200,
     });
   } catch (error) {

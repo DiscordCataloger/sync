@@ -60,12 +60,16 @@ export default function Page() {
   const [currentUser, setCurrentUser] = useState(null);
   const [userLib, setUserLib] = useState(null);
   const [filteredUsers, setFilteredUsers] = useState(null);
+  const [pendingFriends, setPendingFriends] = useState(null);
   const [buttonText, setButtonText] = useState("");
   const filteredUserContextValue = {
     filteredUsers,
     setFilteredUsers,
+    pendingFriends,
+    setPendingFriends,
   };
 
+  // Fetch the user of the current session
   useEffect(() => {
     async function fetchUser() {
       try {
@@ -92,6 +96,7 @@ export default function Page() {
     fetchUser();
   }, []);
 
+  // Fetch filtered users
   useEffect(() => {
     async function fetchUserLibrary() {
       try {
@@ -116,6 +121,29 @@ export default function Page() {
     }
     fetchUserLibrary();
   }, []);
+
+  // Fetch pending friends
+  useEffect(() => {
+    async function fetchPendingFriends() {
+      try {
+        const response = await fetch(`/api/pendingFriends`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
+          },
+          credentials: "include",
+        });
+
+        const pendingFriendData = await response.json();
+        console.log(pendingFriendData);
+        setPendingFriends(pendingFriendData);
+      } catch {}
+    }
+    fetchPendingFriends();
+  }, []);
+
+  useEffect(() => console.log(pendingFriends), [pendingFriends]);
 
   const handleChatClick = () => {
     setSelectedLeftComponent("chat");

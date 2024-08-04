@@ -19,7 +19,8 @@ export default function TemplateUI({ icon, name, category, onclickAddServer }) {
   const [currentCategory, setCurrentCategory] = useState("");
   const [submitValue, setSubmitValue] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
-  const { filteredUsers, setFilteredUsers } = useContext(FilteredUserContext);
+  const { filteredUsers, setFilteredUsers, pendingFriends, setPendingFriends } =
+    useContext(FilteredUserContext);
   const [userStatuses, setUserStatuses] = useState({}); // State to hold statuses for each user
   const buttonContextValue = {
     accept: null,
@@ -43,24 +44,43 @@ export default function TemplateUI({ icon, name, category, onclickAddServer }) {
             removeFriend: true,
             removeRequest: false,
             accept: false,
+            dm: true,
+            block: true,
           };
         } else if (isPending) {
           statuses[user._id] = {
             removeFriend: false,
             removeRequest: true,
-            accept: false,
+            add: false,
+            block: false,
           };
         } else {
           statuses[user._id] = {
             removeFriend: false,
             removeRequest: false,
-            accept: true,
+            add: true,
           };
         }
       });
       setUserStatuses(statuses); // Update state with the new statuses
     }
   }, [filteredUsers, currentUser]); // Add dependencies
+
+  useEffect(() => {
+    if (pendingFriends) {
+      const statuses = {}; // Temporary object to hold statuses for each user
+      pendingFriends.forEach((user) => {
+        statuses[user._id] = {
+          accept: true,
+          reject: true,
+          dm: true,
+          block: true,
+        };
+
+        setUserStatuses(statuses); // Update state with the new statuses
+      });
+    }
+  }, [pendingFriends, currentUser]); // Add dependencies
 
   useEffect(() => {
     if (name === "Friends") {
@@ -101,6 +121,78 @@ export default function TemplateUI({ icon, name, category, onclickAddServer }) {
     fetchUser();
   }, []);
 
+  const handleAcceptFriend = async (userId) => {
+    try {
+      const response = await fetch(`/api/acceptFriend`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ friendId: userId }), // Send userId as friendId
+        credentials: "include", // Include credentials if needed
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Error accepting friend: ${errorMessage}`);
+      }
+
+      // Remove the accepted friend from pendingFriends
+      setPendingFriends((prev) => prev.filter((user) => user._id !== userId));
+
+      // Update the status immediately
+      handleStatusChange(userId, {
+        removeFriend: true,
+        removeRequest: false,
+        accept: false,
+        dm: true,
+        block: true,
+      });
+
+      const result = await response.text(); // Get the response text
+      console.log(result); // Log success message
+    } catch (error) {
+      console.error("Error accepting friend:", error);
+    }
+  };
+
+  const handleRejectFriend = async (userId) => {
+    try {
+      const response = await fetch(`/api/removePendingFriend`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ friendId: userId }), // Send userId as friendId
+        credentials: "include", // Include credentials if needed
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Error rejecting friend: ${errorMessage}`);
+      }
+
+      // Remove the rejected friend from pendingFriends
+      setPendingFriends((prev) => prev.filter((user) => user._id !== userId));
+
+      // Update the status immediately
+      handleStatusChange(userId, {
+        removeFriend: false,
+        removeRequest: false,
+        accept: false,
+        dm: false,
+        block: true,
+      });
+
+      const result = await response.text(); // Get the response text
+      console.log(result); // Log success message
+    } catch (error) {
+      console.error("Error rejecting friend:", error);
+    }
+  };
+
   const handleButtonClick = (category) => {
     if (category !== "Categories" && category !== "Create Server")
       setCurrentCategory(category);
@@ -118,7 +210,7 @@ export default function TemplateUI({ icon, name, category, onclickAddServer }) {
 
   return (
     <ButtonContext.Provider value={buttonContextValue}>
-      <div className="h-full flex flex-col justify-start">
+      <div className="h-full flex flex-col justify-start gap-5">
         <div className="flex justify-between items-center gap-2">
           <div className="flex lg:gap-4 gap-3 font-bold lg:text-lg text-base items-center pl-2">
             {icon}
@@ -188,7 +280,36 @@ export default function TemplateUI({ icon, name, category, onclickAddServer }) {
 
         {currentCategory === "Online" && <OnlineFriends />}
         {currentCategory === "All" && <AllFriends />}
-        {currentCategory === "Pending" && <PendingFriends />}
+        {currentCategory === "Pending" && pendingFriends
+          ? pendingFriends.map((user) => {
+              return (
+                <FriendListItem
+                  key={user.id}
+                  icon={user.icon}
+                  name={user.displayName}
+                  status={user.onlineStatus === "" ? "" : "online"}
+                  email={user.email}
+                  userId={user._id}
+                  userStatus={
+                    userStatuses[user._id] || {
+                      removeFriend: false,
+                      removeRequest: true,
+                      accept: true,
+                    }
+                  }
+                  onStatusChange={handleStatusChange}
+                  handleAcceptFriend={() => handleAcceptFriend(user._id)}
+                  handleRejectFriend={() => handleRejectFriend(user._id)}
+                />
+              );
+            })
+          : ""}
+        {currentCategory === "Pending" && !pendingFriends ? <AddFriend /> : ""}
+        {currentCategory === "Pending" && pendingFriends.length === 0 ? (
+          <AddFriend />
+        ) : (
+          ""
+        )}
         {currentCategory === "Blocked" && <BlockedUsers />}
         {currentCategory === "Add Friend" && !filteredUsers ? (
           <AddFriend />

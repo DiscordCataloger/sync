@@ -58,6 +58,42 @@ export default function FriendListItem({
         removeFriend: false,
         removeRequest: true,
         accept: false,
+        dm: false,
+      });
+    } catch (error) {
+      console.error("Error adding friend:", error);
+    }
+  };
+
+  const handleRemoveFriend = async () => {
+    console.log("Adding friend with ID:", userId); // Log the userId
+
+    try {
+      const response = await fetch(`/api/removeFriend`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ friendId: userId }), // Send userId as friendId
+        credentials: "include", // Include credentials if needed
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Error removing friend: ${errorMessage}`);
+      }
+
+      const result = await response.text(); // Get the response text
+      console.log(result); // Log success message
+      // Optionally, you can update local state or notify the user here
+
+      // Call the onStatusChange function to update the status
+      onStatusChange(userId, {
+        removeFriend: false,
+        removeRequest: false,
+        accept: true,
+        dm: false,
       });
     } catch (error) {
       console.error("Error adding friend:", error);
@@ -101,19 +137,20 @@ export default function FriendListItem({
         )}
         {userStatus.removeRequest && (
           <AiOutlineClose
-            onClick={() =>
-              onStatusChange(userId, {
-                removeFriend: false,
-                removeRequest: false,
-                accept: true,
-              })
-            }
+            onClick={handleRemoveFriend}
             className="text-blue-500 hover:text-blue-950 cursor-pointer w-6 h-6 md:w-7 md:h-7"
           />
         )}
         {userStatus.accept && (
           <IoPersonAddSharp
             onClick={handleAddFriend}
+            className="text-blue-500 hover:text-blue-700 cursor-pointer w-6 h-6 md:w-7 md:h-7"
+          />
+        )}
+        {userStatus.dm && (
+          <PiChatsFill
+            key={index}
+            onClick={null}
             className="text-blue-500 hover:text-blue-700 cursor-pointer w-6 h-6 md:w-7 md:h-7"
           />
         )}

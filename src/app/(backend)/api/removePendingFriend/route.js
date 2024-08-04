@@ -12,30 +12,38 @@ export async function POST(req) {
   }
 
   const { friendId } = await req.json(); // Only friendId is expected
+  console.log("Friend ID:", friendId); // Log the friendId
 
   if (!friendId) {
     return new NextResponse("Friend ID is required", { status: 400 });
   }
 
   const userId = token.sub; // Use the user ID from the token
+  console.log("User ID:", userId); // Log the userId
 
   try {
     await mongoose.connect(process.env.MONGODB_URI); // Ensure you have your MongoDB URI set
 
     const user = await User.findById(userId);
+    console.log("User found:", user); // Log the user object
+
     if (!user) {
       return new NextResponse("User not found", { status: 404 });
     }
 
     const friend = await User.findById(friendId);
+    console.log("Friend found:", friend); // Log the friend object
+
     if (!friend) {
       return new NextResponse("Friend not found", { status: 404 });
     }
 
-    // Remove friendId from the user's pendingFriends
-    if (user.pendingFriends.includes(friendId)) {
-      user.pendingFriends = user.pendingFriends.filter((id) => id !== friendId); // Correctly remove the friendId
-      await user.save();
+    // Remove userId from the friend's pendingFriends
+    if (friend.pendingFriends.includes(userId)) {
+      friend.pendingFriends = friend.pendingFriends.filter(
+        (id) => id !== userId
+      ); // Correctly remove the friendId
+      await friend.save();
     } else {
       return new NextResponse("Friend request already removed!", {
         status: 400,

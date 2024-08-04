@@ -37,6 +37,7 @@ export default function TemplateUI({ icon, name, category, onclickAddServer }) {
       filteredUsers.forEach((user) => {
         const isFriend = user.allFriends?.includes(currentUser._id);
         const isPending = user.pendingFriends?.includes(currentUser._id);
+        console.log(isFriend, isPending);
 
         console.log(isFriend, isPending);
         if (isFriend) {

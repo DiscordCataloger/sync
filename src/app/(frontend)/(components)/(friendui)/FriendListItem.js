@@ -4,15 +4,32 @@ import { PiChatsFill } from "react-icons/pi";
 import { GoBlocked } from "react-icons/go";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { AiOutlineClose } from "react-icons/ai";
+import { useContext, createContext } from "react";
+
+export const ButtonContext = createContext(null);
 
 export default function FriendListItem({
   icon,
   name,
   status,
-  buttons,
   email,
   userId,
+  userStatus,
+  onStatusChange,
 }) {
+  const {
+    block,
+    setBlock,
+    accept,
+    setAccept,
+    dm,
+    setDm,
+    removeRequest,
+    setRemoveRequest,
+    removeFriend,
+    setRemoveFriend,
+  } = useContext(ButtonContext);
+
   const handleAddFriend = async () => {
     console.log("Adding friend with ID:", userId); // Log the userId
 
@@ -35,6 +52,13 @@ export default function FriendListItem({
       const result = await response.text(); // Get the response text
       console.log(result); // Log success message
       // Optionally, you can update local state or notify the user here
+
+      // Call the onStatusChange function to update the status
+      onStatusChange(userId, {
+        removeFriend: false,
+        removeRequest: true,
+        accept: false,
+      });
     } catch (error) {
       console.error("Error adding friend:", error);
     }
@@ -63,49 +87,36 @@ export default function FriendListItem({
         </div>
       </div>
       <div className="flex gap-3 items-center">
-        {buttons.map((button, index) => {
-          if (button.toLowerCase() === "block") {
-            return (
-              <GoBlocked
-                key={index}
-                onClick={null}
-                className="text-gray-500 hover:text-gray-700 cursor-pointer w-6 h-6 md:w-7 md:h-7"
-              />
-            );
-          } else if (button.toLowerCase() === "accept") {
-            return (
-              <IoPersonAddSharp
-                key={index}
-                onClick={handleAddFriend} // Use the updated function
-                className="text-blue-500 hover:text-blue-700 cursor-pointer w-6 h-6 md:w-7 md:h-7"
-              />
-            );
-          } else if (button.toLowerCase() === "dm") {
-            return (
-              <PiChatsFill
-                key={index}
-                onClick={null}
-                className="text-blue-500 hover:text-blue-700 cursor-pointer w-6 h-6 md:w-7 md:h-7"
-              />
-            );
-          } else if (button.toLowerCase() === "Remove Request") {
-            return (
-              <AiOutlineClose
-                key={index}
-                onClick={null}
-                className="text-blue-500 hover:text-blue-950 cursor-pointer w-6 h-6 md:w-7 md:h-7"
-              />
-            );
-          } else {
-            return (
-              <RiDeleteBin6Fill
-                key={index}
-                onClick={null}
-                className="text-red-500 hover:text-red-700 cursor-pointer w-6 h-6 md:w-7 md:h-7"
-              />
-            );
-          }
-        })}
+        {userStatus.removeFriend && (
+          <RiDeleteBin6Fill
+            onClick={() =>
+              onStatusChange(userId, {
+                removeFriend: false,
+                removeRequest: false,
+                accept: true,
+              })
+            }
+            className="text-red-500 hover:text-red-700 cursor-pointer w-6 h-6 md:w-7 md:h-7"
+          />
+        )}
+        {userStatus.removeRequest && (
+          <AiOutlineClose
+            onClick={() =>
+              onStatusChange(userId, {
+                removeFriend: false,
+                removeRequest: false,
+                accept: true,
+              })
+            }
+            className="text-blue-500 hover:text-blue-950 cursor-pointer w-6 h-6 md:w-7 md:h-7"
+          />
+        )}
+        {userStatus.accept && (
+          <IoPersonAddSharp
+            onClick={handleAddFriend}
+            className="text-blue-500 hover:text-blue-700 cursor-pointer w-6 h-6 md:w-7 md:h-7"
+          />
+        )}
       </div>
     </div>
   );

@@ -24,10 +24,7 @@ export async function GET(req) {
 
     console.log("Finding users...");
     // Find all users except the current user
-    const users = await User.find(
-      { _id: { $ne: currentUserId } },
-      "displayName email"
-    );
+    const users = await User.find({ _id: { $ne: currentUserId } });
     console.log("Users:", users);
 
     return NextResponse.json(users, { status: 200 });

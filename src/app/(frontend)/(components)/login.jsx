@@ -11,6 +11,7 @@ import SlideProvider, {
 import Required from "./required";
 import { signIn, useSession } from "next-auth/react";
 import Cookies from "js-cookie";
+import Loading from "@/app/(frontend)/(components)/Loading";
 
 export function Login() {
   const { data: session, status } = useSession();
@@ -31,6 +32,7 @@ export function Login() {
     slideLeftDispatch,
     slideRightDispatch,
   } = useSlide();
+  const [isLoading, setIsLoading] = useState(false);
 
   // Event value change of email field
   function emailOnChange(e) {
@@ -45,7 +47,9 @@ export function Login() {
   // Submitting the login form
   async function loginSubmit(e) {
     e.preventDefault();
+    setIsLoading(true);
     // Check if the email is verified
+    
     const resUserCheck = await fetch("/api/accountExists", {
       method: "POST",
       headers: {
@@ -58,6 +62,7 @@ export function Login() {
 
     if (user && !user.isVerified) {
       setIsNotVerified(true);
+      setIsLoading(false);
       return;
     } else {
       setIsNotVerified(false);
@@ -82,11 +87,13 @@ export function Login() {
           console.log(res.error);
           // Handle the error appropriately
           setAccountIsNotVerified(true); // Show invalid credentials warning
+          setIsLoading(false);
           return;
         }
         if (res.ok) {
           console.log("Login successful");
           console.log("isOn:", isOn);
+          setTimeout(() => {
           if (isOn) {
             Cookies.set("rememberMe", "on", {
               expires: 14,
@@ -101,9 +108,11 @@ export function Login() {
             });
           }
           router.push("/chat");
-        }
+        }, 1000);
+      }
       } catch (error) {
         console.log(error);
+        setIsLoading(false);
       }
     }
   }
@@ -236,6 +245,11 @@ export function Login() {
 
   return (
     <div className="bg-[#F6F6F6] md:mt-[5%] md:mr-6 pt-[24px] rounded-lg h-auto">
+      {isLoading ? (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-100 z-50">
+        <Loading />
+        </div>
+      ): (
       <form method="POST" noValidate onSubmit={loginSubmit}>
         <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
           <label
@@ -304,6 +318,7 @@ export function Login() {
           </div>
         </div>
       </form>
+      )}
       <div className="mx-[24px] flex justify-between items-center">
         <div className="h-0 w-16 md:w-44 border border-gray-300"></div>
         <span className="min-w-[100px] text-[13px] md:text-[13px] text-[#aeb5bf] font-semibold">

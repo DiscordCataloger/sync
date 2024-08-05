@@ -1,15 +1,8 @@
-import { DialogCloseButton } from "../../(components)/modal";
+import Image from "next/image";
+import Loading from "@/app/(frontend)/(components)/Loading";
 
-function ParentComponent() {
-  const handleButtonClick = () => {
-    console.log("Button clicked");
-  };
-
-  return (
-    <div>
-      <DialogCloseButton />
-    </div>
-  );
+export default function Home() {
+  return <div>
+    <Loading />
+  </div>;
 }
-
-export default ParentComponent;

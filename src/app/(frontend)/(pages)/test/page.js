@@ -1,8 +1,8 @@
 import Image from "next/image";
-import Loading from "@/app/(frontend)/(components)/Loading";
+import DirectMessageAddNew from "@/app/(frontend)/(components)/DirectMessageAddNew";
 
 export default function Home() {
   return <div>
-    <Loading />
+    <DirectMessageAddNew />
   </div>;
 }

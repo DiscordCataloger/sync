@@ -24,7 +24,7 @@
     "dotenv": "^16.4.5",
     "emoji-picker-react": "^4.11.1",
     "express": "^4.19.2",
-    "framer-motion": "^11.3.12",
+    "framer-motion": "^11.3.21",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.414.0",
     "mongodb": "^6.8.0",
@@ -43,7 +43,8 @@
     "tailwindcss-animate": "^1.0.7",
     "typewriter-effect": "^2.21.0",
     "uuid": "^10.0.0",
-    "ws": "^8.18.0"
+    "ws": "^8.18.0",
+    "scrollreveal": "^4.0.9"
   },
   "devDependencies": {
     "eslint": "^8",

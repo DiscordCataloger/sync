@@ -3,33 +3,34 @@ import User from "models/user";
 import server from "libs/mongodb/server";
 import { NextResponse } from "next/server";
 
-export async function GET(req) {
-  try {
+let isConnected = false;
+
+async function connectToDatabase() {
+  if (!isConnected) {
     console.log("Connecting to the database...");
     await server(); // Ensure the database connection is established
+    isConnected = true; // Update connection status
     console.log("Database connected.");
+  }
+}
 
-    console.log("Getting token...");
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-    console.log("Token:", token);
+async function getUserFromToken(req) {
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  if (!token) throw new Error("Unauthorized");
+  return await User.findOne({ email: token.email });
+}
 
-    if (!token) {
-      console.log("No token found.");
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
+export async function GET(req) {
+  try {
+    await connectToDatabase();
 
-    console.log("Finding user...");
-    const user = await User.findOne({ email: token.email });
-    console.log("User:", user);
-
-    if (!user) {
-      console.log("User not found.");
+    const user = await getUserFromToken(req);
+    if (!user)
       return NextResponse.json({ message: "User not found" }, { status: 404 });
-    }
 
     return NextResponse.json(user, { status: 200 });
   } catch (error) {
-    console.error("Error fetching user:", error);
+    console.error("Error:", error.message);
     return NextResponse.json(
       { message: `Error: ${error.message}` },
       { status: 500 }

@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react"; // Hook
 import { Button } from "@/components/ui/button";
-import { createContext, useContext } from "react";
+// import { createContext, useContext } from "react";
 
 // import style from "./Form.module.css";
-export const FriendContext = createContext(1);
+// export const FriendContext = createContext(1);
 
 export default function Search({
   placeholder,
@@ -16,7 +16,7 @@ export default function Search({
   const [value, setValue] = useState("");
   // const [submitValue, setSubmitValue] = useState("");
 
-  inputIntermediate = useContext(FriendContext);
+  // inputIntermediate = useContext(FriendContext);
 
   function handleChange(event) {
     setValue(event.target.value);

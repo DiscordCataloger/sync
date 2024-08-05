@@ -4,11 +4,11 @@ import { PiChatsFill } from "react-icons/pi";
 import { GoBlocked } from "react-icons/go";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { AiOutlineClose } from "react-icons/ai";
-import { useContext, createContext } from "react";
+// import { useContext, createContext } from "react";
 import { IoMdCheckmark } from "react-icons/io";
 import { RiMailCloseLine } from "react-icons/ri";
 
-export const ButtonContext = createContext(null);
+// export const ButtonContext = createContext(null);
 
 export default function FriendListItem({
   icon,
@@ -20,89 +20,22 @@ export default function FriendListItem({
   onStatusChange,
   handleAcceptFriend,
   handleRejectFriend,
+  handleAddFriend,
+  handleRemoveFriend,
+  handleRemoveRequest,
 }) {
-  const {
-    block,
-    setBlock,
-    accept,
-    setAccept,
-    dm,
-    setDm,
-    removeRequest,
-    setRemoveRequest,
-    removeFriend,
-    setRemoveFriend,
-  } = useContext(ButtonContext);
-
-  const handleAddFriend = async () => {
-    console.log("Adding friend with ID:", userId); // Log the userId
-
-    try {
-      const response = await fetch(`/api/addfriend`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({ friendId: userId }), // Send userId as friendId
-        credentials: "include", // Include credentials if needed
-      });
-
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(`Error adding friend: ${errorMessage}`);
-      }
-
-      const result = await response.text(); // Get the response text
-      console.log(result); // Log success message
-      // Optionally, you can update local state or notify the user here
-
-      // Call the onStatusChange function to update the status
-      onStatusChange(userId, {
-        removeFriend: false,
-        removeRequest: true,
-        accept: false,
-        dm: false,
-      });
-    } catch (error) {
-      console.error("Error adding friend:", error);
-    }
-  };
-
-  const handleRemoveRequest = async () => {
-    console.log("Adding friend with ID:", userId); // Log the userId
-
-    try {
-      const response = await fetch(`/api/removePendingFriend`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({ friendId: userId }), // Send userId as friendId
-        credentials: "include", // Include credentials if needed
-      });
-
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(`Error removing friend: ${errorMessage}`);
-      }
-
-      const result = await response.text(); // Get the response text
-      console.log(result); // Log success message
-      // Optionally, you can update local state or notify the user here
-
-      // Call the onStatusChange function to update the status
-      onStatusChange(userId, {
-        removeFriend: false,
-        removeRequest: false,
-        add: true,
-        dm: false,
-      });
-    } catch (error) {
-      console.error("Error removing friend:", error);
-    }
-  };
+  // const {
+  //   block,
+  //   setBlock,
+  //   accept,
+  //   setAccept,
+  //   dm,
+  //   setDm,
+  //   removeRequest,
+  //   setRemoveRequest,
+  //   removeFriend,
+  //   setRemoveFriend,
+  // } = useContext(ButtonContext);
 
   return (
     <div className="flex w-full items-center justify-between bg-white rounded-full p-3 px-5 hover:bg-blue-50">
@@ -136,7 +69,7 @@ export default function FriendListItem({
 
         {userStatus.removeFriend && (
           <RiDeleteBin6Fill
-            onClick={null}
+            onClick={handleRemoveFriend}
             className="text-red-500 hover:text-red-700 cursor-pointer w-6 h-6 md:w-7 md:h-7"
           />
         )}

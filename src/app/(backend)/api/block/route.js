@@ -14,7 +14,7 @@ export async function POST(req) {
   const { friendId } = await req.json(); // Only friendId is expected
 
   if (!friendId) {
-    return new NextResponse("Friend ID is required", { status: 400 });
+    return new NextResponse("Target user ID is required", { status: 400 });
   }
 
   const userId = token.sub; // Use the user ID from the token
@@ -29,39 +29,35 @@ export async function POST(req) {
 
     const friend = await User.findById(friendId);
     if (!friend) {
-      return new NextResponse("Friend not found", { status: 404 });
+      return new NextResponse("Target user not found", { status: 404 });
     }
 
     // Check if the friend request is already pending
-    if (user.pendingFriends.includes(friendId)) {
-      user.allFriends.push(friendId);
-      friend.allFriends.push(userId);
-      await user.save();
-      await friend.save();
-      return new NextResponse("They've already sent you a friend request!", {
+    if (user.blockedUsers.includes(friendId)) {
+      return new NextResponse("They've already blocked the target user!", {
         status: 400,
       });
     }
 
-    if (friend.pendingFriends.includes(userId)) {
-      return new NextResponse("Friend Request already sent!", { status: 400 });
-    }
+    // Remove friend from user's friend lists
+    user.pendingFriends = user.pendingFriends.filter((id) => id !== friendId);
+    user.allFriends = user.allFriends.filter((id) => id !== friendId);
+    friend.pendingFriends = friend.pendingFriends.filter((id) => id !== userId);
+    friend.allFriends = friend.allFriends.filter((id) => id !== userId);
+    await user.save();
+    await friend.save();
 
-    // Add userId to the friend's pendingFriends
-    if (!friend.pendingFriends.includes(userId)) {
-      friend.pendingFriends.push(userId);
-      await friend.save();
-    } else {
-      return new NextResponse("Friend Request already sent!", { status: 400 });
-    }
+    // Add friend to user's blockedUsers
+    user.blockedUsers.push(friendId);
+    await user.save();
 
-    return new NextResponse("Friend request sent successfully", {
+    return new NextResponse("Target user blocked successfully", {
       status: 200,
     });
   } catch (error) {
-    console.error("Error adding friend:", error.message);
+    console.error("Error blocking target user:", error.message);
     console.error(error.stack);
-    return new NextResponse("Error adding friend", { status: 500 });
+    return new NextResponse("Error blocking target user", { status: 500 });
   } finally {
     await mongoose.disconnect();
   }

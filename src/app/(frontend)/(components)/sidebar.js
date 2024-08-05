@@ -6,6 +6,7 @@ import { IoMdArrowDropdown } from "react-icons/io";
 
 import Image from "next/image";
 import NotificationButton from "./NotificationButton";
+import { useState, useEffect } from "react";
 
 function Sidebar({
   onclickChat,
@@ -21,6 +22,40 @@ function Sidebar({
     { serverName: "Server 3", serverIcon: "/chat_bot.png" },
     { serverName: "Server 4", serverIcon: "/chat_bot.png" },
   ];
+  const [currentUser, setCurrentUser] = useState({});
+
+  // Fetch current user
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const response = await fetch(`/api/user`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.NEXT_PUBLIC_API_KEY, // Include the API key in the headers
+          },
+          credentials: "include", // Ensure cookies are included in the request
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+
+        const userData = await response.json();
+        if (userData) {
+          // Check if userData is not null
+          console.log("Fetched User Data:", userData); // Log fetched user data
+          setCurrentUser(userData);
+        } else {
+          console.error("User data is null or undefined");
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    }
+    fetchUser();
+  }, []);
+
   return (
     <div className="h-full w-24 min-w-[65px] min-h-[550px] bg-blue-600 flex flex-col gap-5 items-center justify-between py-5 rounded-xl shadow-lg z-10">
       <div
@@ -87,7 +122,11 @@ function Sidebar({
         <div className="cursor-pointer" onClick={onclickProfile}>
           <div className="relative top-3 left-7 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
           <Image
-            src="/chat_bot.png"
+            src={
+              currentUser && currentUser.icon
+                ? currentUser.icon
+                : "/chat_bot.png"
+            }
             alt="Profile"
             width={40}
             height={40}

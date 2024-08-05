@@ -7,6 +7,7 @@ import { AiOutlineClose } from "react-icons/ai";
 // import { useContext, createContext } from "react";
 import { IoMdCheckmark } from "react-icons/io";
 import { RiMailCloseLine } from "react-icons/ri";
+import { CgUnblock } from "react-icons/cg";
 
 // export const ButtonContext = createContext(null);
 
@@ -23,6 +24,9 @@ export default function FriendListItem({
   handleAddFriend,
   handleRemoveFriend,
   handleRemoveRequest,
+  handleBlock,
+  handleUnblock,
+  handleDm,
 }) {
   // const {
   //   block,
@@ -93,13 +97,19 @@ export default function FriendListItem({
         )}
         {userStatus.dm && (
           <PiChatsFill
-            onClick={null}
+            onClick={handleDm}
             className="text-blue-500 hover:text-blue-700 cursor-pointer w-6 h-6 md:w-7 md:h-7"
           />
         )}
         {userStatus.block && (
           <GoBlocked
-            onClick={null}
+            onClick={handleBlock}
+            className="text-gray-500 hover:text-gray-700 cursor-pointer w-6 h-6 md:w-7 md:h-7"
+          />
+        )}
+        {userStatus.unblock && (
+          <CgUnblock
+            onClick={handleUnblock}
             className="text-gray-500 hover:text-gray-700 cursor-pointer w-6 h-6 md:w-7 md:h-7"
           />
         )}

@@ -21,7 +21,7 @@ export function Footer() {
           </Link>
         </div>
         <div className="flex max-w-fit items-center gap-x-4">
-          <Link href="#" target="_blank">
+          <Link href="/chat" target="_blank">
             <Button size="lg" variant="outline">
               <Typography variant="p" className="text-blue-600">
                 Open Sync

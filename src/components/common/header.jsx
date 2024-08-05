@@ -5,10 +5,17 @@ import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import Typography from "@/components/ui/typography";
 import { Pacifico } from "next/font/google";
+import { getSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { signOut } from "next-auth/react";
 
 const pacifico = Pacifico({ subsets: ["latin"], weight: ["400"] });
 
 export function Header({ className }) {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [session, setSession] = useState(null);
+  const [rememberMe, setRememberMe] = useState(null);
   const pathname = usePathname();
   const items = [
     // {
@@ -23,6 +30,26 @@ export function Header({ className }) {
     // }
   ];
 
+  useEffect(() => {
+    const fetchTokenAndCookie = async () => {
+      const session = await getSession();
+      setSession(session);
+      setIsLoggedIn(!!session); // Update isLoggedIn based on token presence
+
+      const rememberMeCookie = document.cookie
+        .split(";")
+        .some((item) => item.trim().startsWith("rememberMe="));
+      setRememberMe(rememberMeCookie ? rememberMeCookie : null);
+      if (session && rememberMe) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    };
+
+    fetchTokenAndCookie();
+  }, [rememberMe]);
+
   const getLogo = () => (
     <Link href="/" className="pointer flex items-center">
       <img src="/robo_icon.png" className="mr-3 w-16 h-16" />
@@ -32,18 +59,52 @@ export function Header({ className }) {
 
   const getAuthButtons = () => (
     <div className="flex gap-3 items-center">
-      <Link href="#" target="_blank">
-        <Button size="lg" variant="outline">
-          <Typography variant="p" className="text-blue-600">
-            Login
-          </Typography>
-        </Button>
-      </Link>
-      <Link href="#" target="_blank">
-        <Button size="lg" variant="default">
-          <Typography variant="p">Sign Up</Typography>
-        </Button>
-      </Link>
+      {isLoggedIn ? (
+        <div className="flex gap-3 items-center">
+          <Link href="/chat">
+            <Image
+              src="/chat_bot.png"
+              alt="avatar"
+              className="rounded-[50%] w-[50px] h-[50px]"
+              width={120}
+              height={120}
+            />
+          </Link>
+          <Link
+            href="/"
+            target="_blank"
+            onClick={() => {
+              signOut();
+            }}
+          >
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-teal-800 hover:border-teal-850 hover:shadow-md hover:shadow-teal-900"
+            >
+              <Typography variant="p" className="text-black-500">
+                Logout
+              </Typography>
+            </Button>
+          </Link>
+        </div>
+      ) : (
+        <>
+          {" "}
+          <Link href="/login" target="_blank">
+            <Button size="lg" variant="outline">
+              <Typography variant="p" className="text-blue-600">
+                Login
+              </Typography>
+            </Button>
+          </Link>
+          <Link href="/register" target="_blank">
+            <Button size="lg" variant="default">
+              <Typography variant="p">Sign Up</Typography>
+            </Button>
+          </Link>
+        </>
+      )}
     </div>
   );
 

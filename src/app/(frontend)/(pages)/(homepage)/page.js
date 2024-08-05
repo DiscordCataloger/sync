@@ -28,7 +28,7 @@ export default function Home() {
             Sync makes it easy to connect, share and interact with your friends
             and team.
           </Typography>
-          <Link href="#" target="_blank">
+          <Link href="/chat" target="_blank">
             <Button size="lg" variant="default">
               {`Start Chatting`}
             </Button>
@@ -182,7 +182,7 @@ export default function Home() {
             className="max-w-[900px] lg:mb-0 lg:mr-10 xl:w-[60%] lg:w-[70%] md:w-[80%] w-[90%] mb-10 mr-0"
             unoptimized
           />
-          <Link href="#" target="_blank" className=" w-full">
+          <Link href="/chat" target="_blank" className=" w-full">
             <Button
               size="round"
               variant="solid"

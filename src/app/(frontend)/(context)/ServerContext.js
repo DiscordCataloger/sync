@@ -26,12 +26,44 @@ export const ServerProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [serverTrigger, setServerTrigger] = useState(0);
 
+  // useEffect(() => {
+  //   async function getUser() {
+  //     const user = await getCurrentUser();
+  //     setCurrentUser(user);
+  //   }
+  //   getUser();
+  // }, []);
+
+  // Fetch current user
   useEffect(() => {
-    async function getUser() {
-      const user = await getCurrentUser();
-      setCurrentUser(user);
+    async function fetchUser() {
+      try {
+        const response = await fetch(`/api/user`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.NEXT_PUBLIC_API_KEY, // Include the API key in the headers
+          },
+          credentials: "include", // Ensure cookies are included in the request
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+
+        const userData = await response.json();
+        if (userData) {
+          // Check if userData is not null
+          console.log("Fetched User Data:", userData); // Log fetched user data
+          setCurrentUser(userData);
+        } else {
+          console.error("User data is null or undefined");
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
     }
-    getUser();
+    fetchUser();
   }, []);
 
   useEffect(() => {

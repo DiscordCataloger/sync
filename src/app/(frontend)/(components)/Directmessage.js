@@ -3,93 +3,93 @@ import { BsFill1CircleFill } from "react-icons/bs";
 import { getUsers } from "../../../../api/getUsers";
 import { useState, useEffect } from "react";
 
-const userMessages = ["id1", "id2", "id3"];
+// const userMessages = ["id1", "id2", "id3"];
 
-const messages = [
-  {
-    _id: "id1",
-    userIds: ["userid1", "userid2"],
-    msgs: [
-      {
-        msgFrom: "User1",
-        msgIcon: "/chat_bot.png",
-        msgText: "April fool's day",
-        msgTime: "Today, 9:52pm",
-        msgAttach: [],
-        msgUnread: ["userid2"],
-      },
-      {
-        msgFrom: "User1",
-        msgIcon: "/chat_bot.png",
-        msgText: "April fool's day",
-        msgTime: "Today, 9:52pm",
-        msgAttach: [],
-        msgUnread: ["userid2"],
-      },
-    ],
-  },
-  {
-    _id: "id2",
-    userIds: ["userid1", "userid3"],
-    msgs: [
-      {
-        msgFrom: "User2",
-        msgIcon: "/chat_bot.png",
-        msgText: "April fool's day",
-        msgTime: "Today, 9:52pm",
-        msgAttach: [],
-        msgUnread: ["userid1"],
-      },
-      {
-        msgFrom: "User2",
-        msgIcon: "/chat_bot.png",
-        msgText: "April fool's day",
-        msgTime: "Today, 9:52pm",
-        msgAttach: [],
-        msgUnread: ["userid1"],
-      },
-    ],
-  },
-  {
-    _id: "id3",
-    userIds: ["userid1", "userid4"],
-    msgs: [
-      {
-        msgFrom: "User3",
-        msgIcon: "/chat_bot.png",
-        msgText: "April fool's day",
-        msgTime: "Today, 9:52pm",
-        msgAttach: [],
-        msgUnread: ["userid1"],
-      },
-    ],
-  },
-];
+// const messages = [
+//   {
+//     _id: "id1",
+//     userIds: ["userid1", "userid2"],
+//     msgs: [
+//       {
+//         msgFrom: "User1",
+//         msgIcon: "/chat_bot.png",
+//         msgText: "April fool's day",
+//         msgTime: "Today, 9:52pm",
+//         msgAttach: [],
+//         msgUnread: ["userid2"],
+//       },
+//       {
+//         msgFrom: "User1",
+//         msgIcon: "/chat_bot.png",
+//         msgText: "April fool's day",
+//         msgTime: "Today, 9:52pm",
+//         msgAttach: [],
+//         msgUnread: ["userid2"],
+//       },
+//     ],
+//   },
+//   {
+//     _id: "id2",
+//     userIds: ["userid1", "userid3"],
+//     msgs: [
+//       {
+//         msgFrom: "User2",
+//         msgIcon: "/chat_bot.png",
+//         msgText: "April fool's day",
+//         msgTime: "Today, 9:52pm",
+//         msgAttach: [],
+//         msgUnread: ["userid1"],
+//       },
+//       {
+//         msgFrom: "User2",
+//         msgIcon: "/chat_bot.png",
+//         msgText: "April fool's day",
+//         msgTime: "Today, 9:52pm",
+//         msgAttach: [],
+//         msgUnread: ["userid1"],
+//       },
+//     ],
+//   },
+//   {
+//     _id: "id3",
+//     userIds: ["userid1", "userid4"],
+//     msgs: [
+//       {
+//         msgFrom: "User3",
+//         msgIcon: "/chat_bot.png",
+//         msgText: "April fool's day",
+//         msgTime: "Today, 9:52pm",
+//         msgAttach: [],
+//         msgUnread: ["userid1"],
+//       },
+//     ],
+//   },
+// ];
 
-const users = [
-  {
-    _id: "userid1",
-    userName: "User1",
-    userIcon: "/chat_bot.png",
-  },
-  {
-    _id: "userid2",
-    userName: "User2",
-    userIcon: "/chat_bot.png",
-  },
-  {
-    _id: "userid3",
-    userName: "User3",
-    userIcon: "/chat_bot.png",
-  },
-  {
-    _id: "userid4",
-    userName: "User4",
-    userIcon: "/chat_bot.png",
-  },
-];
+// const users = [
+//   {
+//     _id: "userid1",
+//     userName: "User1",
+//     userIcon: "/chat_bot.png",
+//   },
+//   {
+//     _id: "userid2",
+//     userName: "User2",
+//     userIcon: "/chat_bot.png",
+//   },
+//   {
+//     _id: "userid3",
+//     userName: "User3",
+//     userIcon: "/chat_bot.png",
+//   },
+//   {
+//     _id: "userid4",
+//     userName: "User4",
+//     userIcon: "/chat_bot.png",
+//   },
+// ];
 
-const currentUserId = "userid1";
+// const currentUserId = "userid1";
 
 export default function DirectMessages({
   onclickDmUser,
@@ -102,14 +102,42 @@ export default function DirectMessages({
 
   const [users, setUsers] = useState([]);
 
-  const findUsers = async () => {
-    const { user } = await getUsers();
-    setUsers(user);
-  };
-
+  // Fetch user library
   useEffect(() => {
-    findUsers();
+    async function fetchUserLibrary() {
+      try {
+        const response = await fetch(`/api/users`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.NEXT_PUBLIC_API_KEY, // Include the API key in the headers
+          },
+          credentials: "include", // Ensure cookies are included in the request
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+
+        const userLibData = await response.json();
+        console.log("userLibData", userLibData);
+        if (Array.isArray(userLibData)) {
+          // Check if userLibData is an array
+          setUsers(userLibData);
+        } else {
+          console.error("User library data is not an array:", userLibData);
+          setUsers([]); // Set to empty array if not an array
+        }
+      } catch (error) {
+        console.error("Error fetching user library:", error);
+      }
+    }
+    fetchUserLibrary();
   }, []);
+
+  // useEffect(() => {
+  //   findUsers();
+  // }, []);
 
   return (
     <div className="bg-white p-2 rounded-3xl shadow-md shadow-sky-400/40 overflow-hidden flex-1">

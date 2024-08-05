@@ -1,40 +1,48 @@
 "use client";
 import FriendListItem from "./FriendListItem";
 import Image from "next/image";
+import { createContext, useContext } from "react";
 
-export default function BlockedUsers() {
-  const buttons = ["Unblock"];
-  const blockArr = [
-    {
-      icon: "/chat_bot.png",
-      name: "User1",
-      status: "Online",
-    },
-    {
-      icon: "/chat_bot.png",
-      name: "User2",
-      status: "Online",
-    },
-    {
-      icon: "/chat_bot.png",
-      name: "User3",
-      status: "Online",
-    },
-  ];
+export const BlockedUsersContext = createContext();
+
+export default function BlockedUsers(
+  userStatus,
+  handleOnStatusChange,
+  handleAcceptFriend,
+  handleRejectFriend,
+  handleAddFriend,
+  handleRemoveFriend,
+  handleRemoveRequest,
+  handleBlock,
+  handleUnblock,
+  handleDm
+) {
+  const blockedUsers = useContext(BlockedUsersContext);
   return (
     <div className="flex flex-col gap-5 px-5 -mb-2 mt-10 h-full overflow-scroll custom-scrollbar">
       <div className="font-bold text-xl">Blocked Users</div>
       <div className="flex flex-col gap-3 h-full overflow-scroll custom-scrollbar">
-        {blockArr.map((block, index) => (
-          <FriendListItem
-            key={index}
-            icon={block.icon}
-            name={block.name}
-            status={block.status}
-            buttons={buttons}
-          />
-        ))}
-        {blockArr.length === 0 && (
+        {blockedUsers.length > 0 &&
+          blockedUsers.map((block, index) => (
+            <FriendListItem
+              key={index}
+              icon={block.icon}
+              name={block.displayName}
+              email={block.email}
+              status={block.onlineStatus || "Online"}
+              userStatus={userStatus}
+              onStatusChange={handleOnStatusChange}
+              handleAcceptFriend={() => handleAcceptFriend(friend._id)}
+              handleRejectFriend={() => handleRejectFriend(friend._id)}
+              handleAddFriend={() => handleAddFriend(friend._id)}
+              handleRemoveFriend={() => handleRemoveFriend(friend._id)}
+              handleRemoveRequest={() => handleRemoveRequest(friend._id)}
+              handleBlock={() => handleBlock(friend._id)}
+              handleUnblock={() => handleUnblock(friend._id)}
+              handleDm={() => handleDm(friend._id)}
+            />
+          ))}
+        {blockedUsers.length === 0 && (
           <div className="flex flex-col items-center justify-center w-full h-full">
             <Image
               width={300}
@@ -43,7 +51,7 @@ export default function BlockedUsers() {
               src="/no_blocked.png"
             />
             <div className="text-gray-400 text-center w-60">
-              WOW, seems you are pleased with everyone here.
+              Seems like you haven&apos;t blocked anyone yet.
             </div>
           </div>
         )}

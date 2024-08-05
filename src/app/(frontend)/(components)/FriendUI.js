@@ -4,7 +4,7 @@ import { FaUserFriends } from "react-icons/fa";
 
 export default function FriendUI() {
   const name = "Friends";
-  const category = ["Online", "All", "Pending", "Blocked", "Add Friend"];
+  const category = ["All", "Pending", "Blocked", "Add Friend"];
 
   return (
     <div className="h-full pt-3 min-w-[480px]">

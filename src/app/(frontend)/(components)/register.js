@@ -354,6 +354,8 @@ export function Register({ handleBack }) {
           if (file) {
             const data = await handleFileUpload(file);
             iconUrl = data.url;
+          } else {
+            setIcon("/chat_bot.png");
           }
 
           // Generate verification token

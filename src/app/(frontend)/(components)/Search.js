@@ -1,6 +1,8 @@
 "use client";
 import { useState, useContext, useRef, useEffect } from "react"; // Hook
 import { Button } from "@/components/ui/button";
+// import { createContext, useContext } from "react";
+
 // import style from "./Form.module.css";
 import ServerContext from "../(context)/ServerContext";
 
@@ -9,6 +11,7 @@ export default function Search({
   buttonName,
   submitValue,
   setSubmitValue,
+  inputIntermediate,
 }) {
   const { servers } = useContext(ServerContext);
 
@@ -17,6 +20,8 @@ export default function Search({
   const [serverSuggestions, setServerSuggestions] = useState([]);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const dropdownRef = useRef(null);
+
+  // inputIntermediate = useContext(FriendContext);
 
   function handleChange(event) {
     handleServerSearchChange(event.target.value);
@@ -74,6 +79,7 @@ export default function Search({
           placeholder={placeholder}
           value={value}
           onChange={handleChange}
+          onKeyUp={inputIntermediate}
           className="w-full lg:text-sm text-xs rounded-2xl shadow-5 p-5 border-2 h-13 shadow-md shadow-sky-300/50 focus:outline-none"
         />
         <Button

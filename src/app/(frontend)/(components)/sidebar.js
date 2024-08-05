@@ -102,7 +102,11 @@ function Sidebar({
         <div className="cursor-pointer" onClick={onclickProfile}>
           <div className="relative top-3 left-7 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
           <Image
-            src="/chat_bot.png"
+            src={
+              currentUser && currentUser.icon
+                ? currentUser.icon
+                : "/chat_bot.png"
+            }
             alt="Profile"
             width={40}
             height={40}

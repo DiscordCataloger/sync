@@ -1,5 +1,4 @@
 "use client";
-
 import Image from "next/image";
 
 export default function AddFriend() {
@@ -12,7 +11,7 @@ export default function AddFriend() {
         src="/friend_robot.png"
       />
       <div className="text-gray-400">
-        It's a bit barren over here. Find some friends!
+        It&apos;s a bit barren over here. Find some friends!
       </div>
     </div>
   );

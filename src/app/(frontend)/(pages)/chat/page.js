@@ -47,12 +47,44 @@ export default function Page() {
   const [dmFriendIcon, setDmFriendIcon] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
 
+  // useEffect(() => {
+  //   const getUser = async () => {
+  //     const user = await getCurrentUser();
+  //     setCurrentUser(user);
+  //   };
+  //   getUser();
+  // }, []);
+
+  // Fetch current user
   useEffect(() => {
-    const getUser = async () => {
-      const user = await getCurrentUser();
-      setCurrentUser(user);
-    };
-    getUser();
+    async function fetchUser() {
+      try {
+        const response = await fetch(`/api/user`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.NEXT_PUBLIC_API_KEY, // Include the API key in the headers
+          },
+          credentials: "include", // Ensure cookies are included in the request
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+
+        const userData = await response.json();
+        if (userData) {
+          // Check if userData is not null
+          console.log("Fetched User Data:", userData); // Log fetched user data
+          setCurrentUser(userData);
+        } else {
+          console.error("User data is null or undefined");
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    }
+    fetchUser();
   }, []);
 
   useEffect(() => {

@@ -39,9 +39,10 @@ const ChannelBar = ({
 
   useEffect(() => {
     // Fetch channel data whenever servers or selectedLeftComponent changes
-    const fetchChannelData = async () => {
+    const fetchChannelData = () => {
+      setSelectedServer(null);
       if (servers.length > 0 && selectedLeftComponent !== "chat") {
-        const selectserver = servers.find(
+        const selectserver = servers?.find(
           (server) => server._id === selectedLeftComponent
         );
 
@@ -57,6 +58,7 @@ const ChannelBar = ({
       console.log("selectedServer: ", selectedServer);
       setIsChannelLoading(true);
 
+      setServerChannels([]);
       const fetchChannelData = async () => {
         const serverChannelIds = selectedServer.serverChannels || [];
         try {
@@ -68,9 +70,9 @@ const ChannelBar = ({
           const channelData = await Promise.all(channelDataPromises);
 
           if (channelData && channelData.length > 0) {
-            handleChannelClick(channelData[0].channelName, channelData[0]._id);
             setServerChannels(channelData);
 
+            handleChannelClick(channelData[0].channelName, channelData[0]._id);
             setIsChannelLoading(false);
           }
         } catch (error) {

@@ -43,6 +43,7 @@ export default function Page() {
   const [serverChannels, setServerChannels] = useState([]);
   const [userMessages, setUserMessages] = useState([]);
   const [messagesId, setMessagesId] = useState(null);
+  const [msg, setMsg] = useState([]);
 
   const [dmFriendName, setDmFriendName] = useState("");
   const [dmFriendIcon, setDmFriendIcon] = useState("");
@@ -108,6 +109,7 @@ export default function Page() {
   };
 
   const handleServerClick = (index) => {
+    setMsg([]);
     setSelectedLeftComponent(index);
     setMiddleComponent("channel");
   };
@@ -189,6 +191,7 @@ export default function Page() {
 
     // get selected friend id
     console.log(id);
+    const friend = await getUserById(id);
 
     // find if messages already exist
     const isMessagesExist =
@@ -214,6 +217,7 @@ export default function Page() {
 
       setUserMessages((prevUserMessages) => [...prevUserMessages, newMessages]);
       setSelectedMiddleComponent(newMessages._id);
+      setMessagesId(newMessages._id);
     } else {
       // if messages exist, set messagesId
       const existingMessage =
@@ -225,13 +229,13 @@ export default function Page() {
         );
       const messageId = existingMessage._id;
       setMessagesId(messageId);
-
-      // set icon, name
-      const friend = await getUserById(id);
-      setDmFriendIcon(friend.icon);
-      setDmFriendName(friend.displayName);
-      console.log("friend", friend);
+      setSelectedMiddleComponent(messageId);
     }
+    // set icon, name
+    (friend.icon && setDmFriendIcon(friend.icon)) ||
+      setDmFriendIcon("/robot_bot.png");
+    setDmFriendName(friend.displayName);
+    console.log("friend", friend);
   };
 
   const togglePopupComponent = (component) => {
@@ -324,6 +328,8 @@ export default function Page() {
               name={channelName}
               serverChannels={serverChannels}
               setServerChannels={setServerChannels}
+              msg={msg}
+              setMsg={setMsg}
             />
           </div>
         )}

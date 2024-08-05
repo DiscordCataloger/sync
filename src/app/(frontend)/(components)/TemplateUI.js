@@ -750,7 +750,7 @@ export default function TemplateUI({
                 handleUnblock={(userId) => handleUnblock(userId)}
               />
             )}
-            {currentCategory === "Add Friend" && !filteredUsers ? (
+            {currentCategory === "Add Friend" && filteredUsers.length === 0 ? (
               <AddFriend />
             ) : (
               ""

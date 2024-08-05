@@ -21,10 +21,15 @@ const font = Josefin_Sans({
 const NUMBER_OF_MSG_TO_FETCH = 20;
 const socket = io();
 
-export default function ChannelUI({ channelId, name, setServerChannels }) {
+export default function ChannelUI({
+  channelId,
+  name,
+  setServerChannels,
+  msg,
+  setMsg,
+}) {
   const { servers, setServers, selectedServer, currentUser } =
     useContext(ServerContext);
-  const [msg, setMsg] = useState([]);
   const [offset, setOffset] = useState(NUMBER_OF_MSG_TO_FETCH);
   const [input, setInput] = useState("");
   const [attachments, setAttachments] = useState([]);

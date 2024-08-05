@@ -10,6 +10,9 @@ const nextConfig = {
       },
     ],
   },
+  cssLoaderOptions: {
+    url: false,
+  },
 };
 
 export default nextConfig;

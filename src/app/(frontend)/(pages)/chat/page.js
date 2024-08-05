@@ -22,6 +22,7 @@ import { addMessages } from "../../../../../api/addMessages";
 import addMessagesId from "../../../../../api/addMessagesId";
 import { getMessages } from "../../../../../api/getMessages";
 import deleteMsgUnreadDm from "../../../../../api/deleteMsgUnreadDm";
+import { getUserById } from "../../../../../api/getUserById";
 
 const font = Josefin_Sans({
   weight: "400",
@@ -29,7 +30,7 @@ const font = Josefin_Sans({
 });
 
 export default function Page() {
-  const friendidDemo = "66b02530f5db302c900f1aab";
+  // const friendidDemo = "66b02530f5db302c900f1aab";
 
   const [middleComponent, setMiddleComponent] = useState("menu");
   const [rightComponent, setRightComponent] = useState("server");
@@ -213,6 +214,23 @@ export default function Page() {
 
       setUserMessages((prevUserMessages) => [...prevUserMessages, newMessages]);
       setSelectedMiddleComponent(newMessages._id);
+    } else {
+      // if messages exist, set messagesId
+      const existingMessage =
+        Array.isArray(userMessages) &&
+        userMessages.find(
+          (message) =>
+            message.userIds.includes(currentUser._id) &&
+            message.userIds.includes(id)
+        );
+      const messageId = existingMessage._id;
+      setMessagesId(messageId);
+
+      // set icon, name
+      const friend = await getUserById(id);
+      setDmFriendIcon(friend.icon);
+      setDmFriendName(friend.displayName);
+      console.log("friend", friend);
     }
   };
 
@@ -311,7 +329,7 @@ export default function Page() {
         )}
         {rightComponent === "friend" && (
           <div className="h-full w-full">
-            <FriendUI />
+            <FriendUI handleDmFriendClick={handleDmFriendClick} />
           </div>
         )}
         {rightComponent === "server" && (
@@ -321,12 +339,12 @@ export default function Page() {
             />
           </div>
         )}
-        <div
+        {/* <div
           onClick={() => handleDmFriendClick(friendidDemo)}
           className="fixed bottom-0 right-0"
         >
           <button>DM friend</button>
-        </div>
+        </div> */}
       </div>
     </ServerProvider>
   );

@@ -180,7 +180,7 @@ export default function DirectMessages({
               </div>
               <div>
                 <div className="time text-gray-400 text-sm">
-                  {lastMsg?.msgTime || ""}
+                  {lastMsg?.msgTime || "Start a conversation"}
                 </div>
                 <div
                   style={{

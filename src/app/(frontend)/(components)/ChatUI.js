@@ -114,7 +114,9 @@ export default function ChatUI({
       }, 200);
     };
     fetchMessagesMsgData();
+  }, [messagesId]);
 
+  useEffect(() => {
     socket.on("receiveUserMessage", (newMessage) => {
       // console.log("newMessage22222222: ", newMessage);
       setMsg((prevMsgs) => {

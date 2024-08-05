@@ -16,7 +16,13 @@ import { AllFriendsContext } from "./(friendui)/AllFriends";
 import { PendingFriendsContext } from "./(friendui)/PendingFriends";
 import { BlockedUsersContext } from "./(friendui)/BlockedUsers";
 
-export default function TemplateUI({ icon, name, category, onclickAddServer }) {
+export default function TemplateUI({
+  icon,
+  name,
+  category,
+  onclickAddServer,
+  handleDmFriendClick,
+}) {
   const [currentCategory, setCurrentCategory] = useState("");
   const [submitValue, setSubmitValue] = useState("");
   const [currentUser, setCurrentUser] = useState({});
@@ -673,10 +679,10 @@ export default function TemplateUI({ icon, name, category, onclickAddServer }) {
               <div className="flex flex-col gap-4 p-5 mt-5">
                 <div className="font-bold text-xl">Discover Servers</div>
                 <div className="text-gray-400 text-sm">
-                  You can join servers with server name.
+                  You can find servers with server name.
                 </div>
                 <Search
-                  buttonName="Join Server"
+                  buttonName="Search Server"
                   placeholder="You can join servers with server name."
                   submitValue={submitValue}
                   setSubmitValue={setSubmitValue}
@@ -711,7 +717,7 @@ export default function TemplateUI({ icon, name, category, onclickAddServer }) {
                 userStatus={{ removeFriend: true, dm: true, block: true }}
                 handleOnStatusChange={handleStatusChange}
                 handleRemoveFriend={(userId) => handleRemoveFriend(userId)}
-                // handleDm={handleDm}
+                handleDm={handleDmFriendClick}
                 handleBlock={(userId) => handleBlock(userId)}
               />
             ) : (
@@ -770,6 +776,7 @@ export default function TemplateUI({ icon, name, category, onclickAddServer }) {
                       onStatusChange={handleStatusChange}
                       handleBlock={() => handleBlock(user._id)}
                       handleUnblock={() => handleUnblock(user._id)}
+                      handleDm={() => handleDmFriendClick(user._id)}
                     />
                   );
                 })}

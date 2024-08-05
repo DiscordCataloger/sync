@@ -1,6 +1,6 @@
 const deleteMessagesfmUser = async (userId, messageId) => {
   try {
-    const res = await fetch(`/api/users/${userId}`, {
+    const res = await fetch(`/api/userss/${userId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

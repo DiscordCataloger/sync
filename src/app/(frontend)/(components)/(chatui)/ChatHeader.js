@@ -13,7 +13,7 @@ export default function ChatHeader({ icon, name, status }) {
           <div className="flex flex-col md:text-lg text-md font-bold text-black mt-1">
             {name}
 
-            <div
+            {/* <div
               className={`flex items-center gap-3 font-normal text-xs text-gray-400`}
             >
               <div
@@ -32,8 +32,7 @@ export default function ChatHeader({ icon, name, status }) {
                 ></div>
                 {status}
               </div>
-              {/* - last seen, {lastSeen} */}
-            </div>
+            </div> */}
           </div>
         </div>
         <EllipsisVertical className="text-blue-500" />

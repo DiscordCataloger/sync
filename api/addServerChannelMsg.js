@@ -4,6 +4,7 @@ export async function addServerChannelMsg(id, msg) {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
       },
       body: JSON.stringify({ newMessage: msg }),
     });

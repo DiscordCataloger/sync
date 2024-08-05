@@ -7,6 +7,7 @@ const messageSchema = new Schema({
   msgText: String,
   msgAttach: [String], // Array of urls
   msgUnread: [String], // Array of user IDs
+  userId: String,
 });
 
 const messagesSchema = new Schema(

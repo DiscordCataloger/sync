@@ -4,6 +4,9 @@ export async function deleteServerChannel(id) {
       `http://localhost:3000/api/serverChannels?id=${id}`,
       {
         method: "DELETE",
+        headers: {
+          "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
+        },
       }
     );
 

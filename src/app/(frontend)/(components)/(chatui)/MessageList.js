@@ -15,6 +15,7 @@ export default function MessageList({
   offset,
   setOffset,
   NUMBER_OF_MSG_TO_FETCH,
+  currentUserId,
 }) {
   const bottomRef = useRef(null);
   const scrollContainerRef = useRef(null);
@@ -42,8 +43,8 @@ export default function MessageList({
       }
     } catch (error) {
       console.error("Error fetching messages:", error);
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -69,12 +70,15 @@ export default function MessageList({
         msg.map((message) => (
           <motion.div
             key={message._id || message.uid}
-            initial={{ opacity: 0, x: message.msgFrom === "me" ? 20 : -20 }}
+            initial={{
+              opacity: 0,
+              x: message.userId === currentUserId ? 20 : -20,
+            }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ type: "spring", bounce: 0.4, duration: 0.8 }}
             className={`flex ${
-              message.msgFrom === "me" ? "justify-end" : "justify-start"
+              message.userId === currentUserId ? "justify-end" : "justify-start"
             }`}
           >
             <MessageItem
@@ -83,6 +87,8 @@ export default function MessageList({
               text={message.msgText}
               time={message.msgTime}
               file={message.msgAttach}
+              userId={message.userId}
+              currentUserId={currentUserId}
             />
           </motion.div>
         ))}

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import io from "socket.io-client";
 import ChatHeader from "./(chatui)/ChatHeader";
 import InputMessage from "./InputMessage";
@@ -9,6 +9,9 @@ import { getMessagesMsgs } from "../../../../api/getMessagesMsgs";
 import { addMessagesMsg } from "../../../../api/addMessagesMsg";
 import { Player } from "@lottiefiles/react-lottie-player";
 import { v4 as uuidv4 } from "uuid"; // Import the uuid library
+import ServerContext from "../(context)/ServerContext";
+import { deleteMessages } from "../../../../api/deleteMessages";
+import deleteMessagesfmUser from "../../../../api/deleteMessagesfmUser";
 
 const font = Josefin_Sans({
   weight: "400",
@@ -18,7 +21,16 @@ const font = Josefin_Sans({
 const NUMBER_OF_MSG_TO_FETCH = 20;
 const socket = io("http://localhost:3000");
 
-export default function ChatUI({ messagesId, icon, name, status }) {
+// messageid, otherUser id, otherUser icon,
+export default function ChatUI({
+  messagesId,
+  icon,
+  name,
+  userMessages,
+  setUserMessages,
+}) {
+  const { servers, setServers, selectedServer, currentUser } =
+    useContext(ServerContext);
   const [msg, setMsg] = useState([]);
   const [offset, setOffset] = useState(NUMBER_OF_MSG_TO_FETCH);
   const [input, setInput] = useState("");
@@ -26,6 +38,42 @@ export default function ChatUI({ messagesId, icon, name, status }) {
   const [addMsg, setAddMsg] = useState(0);
   const [loading, setLoading] = useState(true); // Loading state
   const [isDragOver, setIsDragOver] = useState(false);
+  const [otherUser, setOtherUser] = useState(null);
+  const [messages, setMessages] = useState(null);
+
+  useEffect(() => {
+    if (messagesId) {
+      socket.emit("joinMessage", { messageId: messagesId });
+    }
+
+    return () => {
+      if (messagesId) {
+        socket.emit("leaveMessage", { messageId: messagesId });
+      }
+    };
+  }, [messagesId]);
+
+  // get message obj
+  useEffect(() => {
+    userMessages?.forEach((message) => {
+      if (message._id === messagesId) {
+        setMessages(message);
+      }
+    });
+  }, [messagesId, userMessages]);
+
+  // get other user id
+  useEffect(() => {
+    if (messages) {
+      console.log("currentUser: ", currentUser._id);
+      messages?.userIds?.forEach((userId) => {
+        if (userId !== currentUser._id) {
+          console.log("userId: ", userId);
+          setOtherUser(userId);
+        }
+      });
+    }
+  }, [messages]);
 
   // Drag and Drop
   const handleDragOver = (event) => {
@@ -47,6 +95,7 @@ export default function ChatUI({ messagesId, icon, name, status }) {
     setAttachments((prevFiles) => [...prevFiles, ...newAttachments]);
   };
 
+  // fetch messages.msgs data
   useEffect(() => {
     const fetchMessagesMsgData = async () => {
       setLoading(true);
@@ -62,11 +111,12 @@ export default function ChatUI({ messagesId, icon, name, status }) {
       }
       setTimeout(() => {
         setLoading(false);
-      }, 1000);
+      }, 200);
     };
     fetchMessagesMsgData();
 
-    socket.on("receiveMessage", (newMessage) => {
+    socket.on("receiveUserMessage", (newMessage) => {
+      // console.log("newMessage22222222: ", newMessage);
       setMsg((prevMsgs) => {
         const messageIndex = prevMsgs.findIndex(
           (msg) => msg.uid === newMessage.uid
@@ -83,15 +133,35 @@ export default function ChatUI({ messagesId, icon, name, status }) {
       });
       setOffset((prevOffset) => prevOffset + 1);
       setAddMsg((prevCounter) => prevCounter + 1);
+      setUserMessages((prevUserMessages) => {
+        const updatedUserMessages = [...prevUserMessages];
+        const messageIndex = updatedUserMessages.findIndex(
+          (msg) => msg._id === newMessage.messageId
+        );
+        if (messageIndex !== -1) {
+          updatedUserMessages[messageIndex] = {
+            ...updatedUserMessages[messageIndex],
+            msgs: [...updatedUserMessages[messageIndex].msgs, newMessage],
+          };
+        }
+        return updatedUserMessages;
+      });
     });
 
     return () => {
-      socket.off("receiveMessage");
+      socket.off("receiveUserMessage");
     };
-  }, [messagesId]);
+  }, [messagesId, setUserMessages]);
 
   const sendMessage = async () => {
-    if (input.trim() || attachments.length > 0) {
+    console.log("sendMessage");
+    console.log("input: ", input);
+    console.log("otherUser: ", otherUser);
+    console.log("messages-obj: ", messages);
+    console.log("messagesId: ", messagesId);
+    console.log("currentUser: ", currentUser);
+    console.log("msgs: ", msg);
+    if (currentUser && messagesId && (input.trim() || attachments.length > 0)) {
       const currentTime = new Date();
       const months = [
         "Jan",
@@ -114,17 +184,22 @@ export default function ChatUI({ messagesId, icon, name, status }) {
       ).padStart(2, "0")}`;
 
       const newMsgLocal = {
-        msgFrom: "me",
-        msgIcon: "/chat_bot.png",
+        msgFrom: currentUser.displayName,
+        msgIcon: currentUser.icon || "/chat_bot.png",
         msgTime: formattedTime,
         msgText: input,
         msgAttach: attachments.length > 0 ? ["loadImg"] : ["noImg"],
-        msgUnread: ["User1"],
+        msgUnread: [otherUser],
         uid: uuidv4(),
+        userId: currentUser._id,
       };
-
+      // console.log("newMsgLocal: ", newMsgLocal);
       // Emit the initial message to live chat & added msg (state) without attachments
-      socket.emit("sendMessage", newMsgLocal);
+      socket.emit("sendUserMessage", {
+        messageId: messagesId,
+        otherUserId: otherUser,
+        ...newMsgLocal,
+      });
 
       // Clear the input field and make scroll to bottom
       setInput("");
@@ -151,7 +226,11 @@ export default function ChatUI({ messagesId, icon, name, status }) {
           const updatedMsg = { ...newMsgLocal, msgAttach: uploadedUrls };
 
           // Modify live chat & previous added msg (state) with uploadedurls
-          socket.emit("sendMessage", updatedMsg);
+          socket.emit("sendUserMessage", {
+            messageId: messagesId,
+            otherUserId: otherUser,
+            ...updatedMsg,
+          });
 
           // Create newMsg without the uid
           const { uid, ...newMsg } = updatedMsg;
@@ -180,7 +259,7 @@ export default function ChatUI({ messagesId, icon, name, status }) {
         isDragOver ? "border-2 border-dashed border-blue-500" : "border-none"
       } min-w-[400px] h-full bg-white rounded-2xl flex flex-col shadow-md shadow-sky-400/40`}
     >
-      <ChatHeader icon={icon} name={name} status={status} />
+      <ChatHeader icon={icon} name={name} />
       {loading && (
         <div className={`flex flex-col justify-center items-center h-full`}>
           <Player
@@ -201,6 +280,7 @@ export default function ChatUI({ messagesId, icon, name, status }) {
           offset={offset}
           setOffset={setOffset}
           NUMBER_OF_MSG_TO_FETCH={NUMBER_OF_MSG_TO_FETCH}
+          currentUserId={currentUser._id}
         />
       )}
       <InputMessage

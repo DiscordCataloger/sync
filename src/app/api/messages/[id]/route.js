@@ -27,6 +27,7 @@ export async function PUT(req, { params }) {
       msgText: newMessage.msgText,
       msgAttach: newMessage.msgAttach,
       msgUnread: newMessage.msgUnread,
+      userId: newMessage.userId,
     });
   }
 

@@ -24,15 +24,21 @@ export async function PUT(req, { params }) {
   }
 
   // Add the new message to the channelMsgs array
+  let addedMessage = null;
   if (newMessage) {
-    serverChannel.channelMsgs.push({
+    addedMessage = {
       msgFrom: newMessage.msgFrom,
       msgIcon: newMessage.msgIcon,
       msgTime: newMessage.msgTime,
       msgText: newMessage.msgText,
       msgAttach: newMessage.msgAttach,
       msgUnread: newMessage.msgUnread,
-    });
+      userId: newMessage.userId,
+    };
+    serverChannel.channelMsgs.push(addedMessage);
+    await serverChannel.save();
+    addedMessage._id =
+      serverChannel.channelMsgs[serverChannel.channelMsgs.length - 1]._id;
   }
 
   // Delete unread messages for the specified users
@@ -46,7 +52,7 @@ export async function PUT(req, { params }) {
 
   await serverChannel.save();
 
-  return new Response(JSON.stringify({ message: "ServerChannel Updated" }), {
+  return new Response(JSON.stringify(addedMessage), {
     status: 200,
   });
 }

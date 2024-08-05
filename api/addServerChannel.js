@@ -4,6 +4,7 @@ export async function addServerChannel(name) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
       },
       body: JSON.stringify({ channelName: name, channelMsgs: [] }),
     });

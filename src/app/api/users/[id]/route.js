@@ -12,7 +12,8 @@ export async function GET(req, { params }) {
 // PATCH request handler for adding or removing a server to/from a user's joinedServerList
 export async function PATCH(req, { params }) {
   const { id } = params; // userId
-  const { serverId, removeServerId } = await req.json();
+  const { serverId, removeServerId, messageId, removeMessageId } =
+    await req.json();
 
   await connectMongoDB();
   const user = await User.findById(id);
@@ -82,9 +83,64 @@ export async function PATCH(req, { params }) {
     }
   }
 
+  // Handle adding a message
+  if (messageId) {
+    if (!user.messages.includes(messageId)) {
+      user.messages.push(messageId);
+      await user.save();
+      return new Response(
+        JSON.stringify({
+          message: "Message added to user's messages",
+          success: true,
+        }),
+        {
+          status: 200,
+        }
+      );
+    } else {
+      return new Response(
+        JSON.stringify({
+          message: "Message already in user's messages",
+          success: false,
+        }),
+        {
+          status: 200,
+        }
+      );
+    }
+  }
+
+  // Handle removing a message
+  if (removeMessageId) {
+    if (user.messages.includes(removeMessageId)) {
+      user.messages = user.messages.filter((id) => id !== removeMessageId);
+      await user.save();
+      return new Response(
+        JSON.stringify({
+          message: "Message removed from user's messages",
+          success: true,
+        }),
+        {
+          status: 200,
+        }
+      );
+    } else {
+      return new Response(
+        JSON.stringify({
+          message: "Message not found in user's messages",
+          success: false,
+        }),
+        {
+          status: 200,
+        }
+      );
+    }
+  }
+
   return new Response(
     JSON.stringify({
-      message: "Server ID or removeServerId is required",
+      message:
+        "Server ID, removeServerId, messageId, or removeMessageId is required",
       success: false,
     }),
     {

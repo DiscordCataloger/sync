@@ -14,6 +14,7 @@ export async function addMessagesMsg(id, msg) {
     }
 
     const data = await res.json();
+    console.log(data);
     return data;
   } catch (error) {
     console.log("Error adding message to messages: ", error);

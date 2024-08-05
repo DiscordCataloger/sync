@@ -87,7 +87,8 @@ const ChannelBar = ({
     setChannelMsgUnreads(
       serverChannels.map(
         (channel) =>
-          channel.channelMsgs.filter((msg) =>
+          channel &&
+          channel?.channelMsgs.filter((msg) =>
             msg.msgUnread?.includes(currentUser._id)
           ).length
       )

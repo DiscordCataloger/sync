@@ -1,5 +1,7 @@
 import { VscCheckAll } from "react-icons/vsc";
 import { BsFill1CircleFill } from "react-icons/bs";
+import { getUsers } from "../../../../api/getUsers";
+import { useState, useEffect } from "react";
 
 const userMessages = ["id1", "id2", "id3"];
 
@@ -92,22 +94,44 @@ const currentUserId = "userid1";
 export default function DirectMessages({
   onclickDmUser,
   selectedMiddleComponent,
+  currentUser,
+  userMessages,
 }) {
+  // console.log("currentUser", currentUser);
+  // console.log("userMessages", userMessages);
+
+  const [users, setUsers] = useState([]);
+
+  const findUsers = async () => {
+    const { user } = await getUsers();
+    setUsers(user);
+  };
+
+  useEffect(() => {
+    findUsers();
+  }, []);
+
   return (
     <div className="bg-white p-2 rounded-3xl shadow-md shadow-sky-400/40 overflow-hidden flex-1">
       <div className="font-bold text-md p-3 text-black">Direct Messages</div>
       <hr />
       <div className="overflow-y-auto h-full custom-scrollbar">
-        {messages.map((message) => {
+        {userMessages.map((message) => {
           const lastMsg = message.msgs[message.msgs.length - 1];
           const unreadCount = message.msgs.filter((msg) =>
-            msg.msgUnread.includes(currentUserId)
+            msg.msgUnread.includes(currentUser._id)
           ).length;
           const otherUserId = message.userIds.filter(
-            (id) => id !== currentUserId
+            (id) => id !== currentUser._id
           )[0];
-          const icon = users.find((user) => user._id === otherUserId).userIcon;
-          const name = users.find((user) => user._id === otherUserId).userName;
+          // console.log("otherUserId", otherUserId);
+          // console.log("users", users);
+          const icon =
+            users.find((user) => user._id === otherUserId)?.icon ||
+            "/chat_bot.png";
+          const name = users.find(
+            (user) => user._id === otherUserId
+          )?.displayName;
 
           return (
             <div
@@ -115,31 +139,32 @@ export default function DirectMessages({
               className={`cursor-pointer message-item flex items-center p-3 hover:bg-blue-200 transition-colors ${
                 selectedMiddleComponent === message._id ? "bg-blue-200" : ""
               }`}
-              onClick={() => onclickDmUser(message._id)}
+              onClick={() => onclickDmUser(message._id, name, icon)}
             >
               <div className="avatar w-10 h-10 rounded-full mr-3">
                 <img src={icon} alt="avatar" />
               </div>
               <div className="details flex-grow">
                 <div className="font-bold text-black">{name}</div>
-                <div className="text-sm text-gray-400">{lastMsg.msgText}</div>
+                <div className="text-sm text-gray-400">
+                  {lastMsg?.msgText || "No messages"}
+                </div>
               </div>
               <div>
                 <div className="time text-gray-400 text-sm">
-                  {lastMsg.msgTime}
+                  {lastMsg?.msgTime || ""}
                 </div>
                 <div
                   style={{
                     color: unreadCount !== 0 ? "red" : "blue",
                   }}
                 >
-                  {unreadCount !== 0 ? (
+                  {unreadCount !== 0 && (
                     <div className="w-4 h-4 bg-red-500 text-white rounded-full flex items-center justify-center pt-2 pb-2 text-sm">
                       {unreadCount}
                     </div>
-                  ) : (
-                    <VscCheckAll />
                   )}
+                  {unreadCount === 0 && <VscCheckAll />}
                 </div>
               </div>
             </div>

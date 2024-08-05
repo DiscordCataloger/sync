@@ -1,4 +1,4 @@
-export async function addMessages(userIds) {
+export async function addMessages(userId1, userId2) {
   try {
     const res = await fetch(`http://localhost:3000/api/messages/`, {
       method: "POST",
@@ -6,7 +6,7 @@ export async function addMessages(userIds) {
         "Content-Type": "application/json",
         "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
       },
-      body: JSON.stringify({ userIds: userIds, msgs: [] }),
+      body: JSON.stringify({ userIds: [userId1, userId2], msgs: [] }),
     });
 
     if (!res.ok) {

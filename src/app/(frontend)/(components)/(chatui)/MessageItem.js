@@ -58,7 +58,15 @@ const fileIcons = {
   txt: FaFileAlt,
 };
 
-export default function MessageItem({ icon, userName, text, time, file }) {
+export default function MessageItem({
+  icon,
+  userName,
+  text,
+  time,
+  file,
+  userId,
+  currentUserId,
+}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedVideo, setSelectedVideo] = useState(null);
@@ -113,7 +121,7 @@ export default function MessageItem({ icon, userName, text, time, file }) {
 
   return (
     <div className={`flex justify-start items-start mt-5`}>
-      {userName !== "me" && (
+      {currentUserId !== userId && (
         <img
           src={icon}
           className="mr-3 mt-3 md:w-12 md:h-12 w-10 h-10 rounded-full"
@@ -122,7 +130,7 @@ export default function MessageItem({ icon, userName, text, time, file }) {
       <div className={`flex flex-col items-start`}>
         <div
           className={`flex w-full justify-between items-center gap-3 text-xs mt-1 px-2 ${
-            userName === "me" ? "flex-row-reverse" : ""
+            currentUserId === userId ? "flex-row-reverse" : ""
           }`}
         >
           <div className="font-bold text-gray-500">{userName}</div>
@@ -133,7 +141,7 @@ export default function MessageItem({ icon, userName, text, time, file }) {
             minWidth: `${(userName.length + displayDate.length) * 6 + 30}px`,
           }}
           className={`flex flex-col gap-2 p-2 rounded-xl text-wrap ${
-            userName === "me"
+            userId === currentUserId
               ? "bg-blue-400 text-white"
               : "bg-blue-100 text-black"
           }`}
@@ -202,12 +210,16 @@ export default function MessageItem({ icon, userName, text, time, file }) {
                     >
                       <Icon
                         className={`w-12 h-12 ${
-                          userName === "me" ? "text-white" : "text-indigo-500"
+                          currentUserId === userId
+                            ? "text-white"
+                            : "text-indigo-500"
                         }`}
                       />
                       <p
                         className={`w-36 text-xs mt-2 text-center break-words ${
-                          userName === "me" ? "text-white" : "text-indigo-500"
+                          currentUserId === userId
+                            ? "text-white"
+                            : "text-indigo-500"
                         }`}
                       >
                         {fileName}
@@ -223,7 +235,7 @@ export default function MessageItem({ icon, userName, text, time, file }) {
         </div>
       </div>
 
-      {userName === "me" && (
+      {userId === currentUserId && (
         <img
           src={icon}
           className="ml-3 mt-3 md:w-12 md:h-12 w-10 h-10 rounded-full"

@@ -143,13 +143,15 @@ export const ServerProvider = ({ children }) => {
 
           const data = await res.json();
           const uploadedUrl = data.url; // Get the URL from the response
-
+          console.log("uploadedUrl", uploadedUrl);
           // Add the uploaded URL to the new server object
-          newServer.serverIcon = uploadedUrl;
+          if (uploadedUrl) {
+            newServer.serverIcon = uploadedUrl;
+          }
         }
 
         // Debug logs before state update
-        // console.log("Before setting servers:", servers);
+        console.log("Before setting servers:", newServer);
 
         const server = await addServer(newServer);
         await addJoinedServer(userId, server._id);

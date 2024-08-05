@@ -47,6 +47,26 @@ const initSocketServer = (server) => {
         });
       });
 
+      // New event: joinChat
+      socket.on("joinMessage", ({ messageId }) => {
+        socket.join(`message_${messageId}`);
+        console.log(`User joined message room: message_${messageId}`);
+      });
+
+      // New event: leaveMessage
+      socket.on("leaveMessage", ({ messageId }) => {
+        socket.leave(`message_${messageId}`);
+        console.log(`User left message room: message_${messageId}`);
+      });
+      // New event: sendUserMessage
+      socket.on("sendUserMessage", (message) => {
+        const { messageId, otherUserId } = message;
+        io.to(`message_${messageId}`).emit("receiveUserMessage", {
+          ...message,
+          otherUserId,
+        });
+      });
+
       socket.on("disconnect", () => {
         console.log(`User disconnected: ${socket.id}`);
       });

@@ -17,9 +17,11 @@ import ServerUI from "../../(components)/ServerUI";
 import LoggedOutSessionCheck from "../../(components)/LoggedOutSessionCheck";
 import getCurrentUser from "../../../../../api/getCurrentUser";
 import { ServerProvider } from "../../(context)/ServerContext";
-import { ChannelProvider } from "../../(context)/ChannelContext";
-import { getUserById } from "../../../../../api/getUserById";
 import deleteMsgUnread from "../../../../../api/deleteMsgUnread";
+import { addMessages } from "../../../../../api/addMessages";
+import addMessagesId from "../../../../../api/addMessagesId";
+import { getMessages } from "../../../../../api/getMessages";
+import deleteMsgUnreadDm from "../../../../../api/deleteMsgUnreadDm";
 
 const font = Josefin_Sans({
   weight: "400",
@@ -27,18 +29,7 @@ const font = Josefin_Sans({
 });
 
 export default function Page() {
-  // const { channelName, setChannelName } = useContext(ChannelContext);
-  // const { channelId, setChannelId } = useContext(ChannelContext);
-  // const channelChatting = "Channel Name";
-  // const channelId = "66a612628172d2d8611febff";
-  const friendChatting = [
-    {
-      icon: "/chat_bot.png",
-      name: "Chuuthiya",
-      status: "Online",
-    },
-  ];
-  const messagesId = "66aa614bb90bcb9be0a4ec64";
+  const friendidDemo = "66b02530f5db302c900f1aab";
 
   const [middleComponent, setMiddleComponent] = useState("menu");
   const [rightComponent, setRightComponent] = useState("server");
@@ -49,6 +40,31 @@ export default function Page() {
   const [channelName, setChannelName] = useState([]);
   const [channelId, setChannelId] = useState([]);
   const [serverChannels, setServerChannels] = useState([]);
+  const [userMessages, setUserMessages] = useState([]);
+  const [messagesId, setMessagesId] = useState(null);
+
+  const [dmFriendName, setDmFriendName] = useState("");
+  const [dmFriendIcon, setDmFriendIcon] = useState("");
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const user = await getCurrentUser();
+      setCurrentUser(user);
+    };
+    getUser();
+  }, []);
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      const { messages } = await getMessages();
+      const newMessages = messages.filter((message) =>
+        message.userIds.includes(currentUser?._id)
+      );
+      setUserMessages(newMessages);
+    };
+    fetchMessages();
+  }, [currentUser, selectedLeftComponent]);
 
   const handleChatClick = () => {
     setSelectedLeftComponent("chat");
@@ -103,9 +119,69 @@ export default function Page() {
     setRightComponent("server");
   };
 
-  const handleDmClick = (id) => {
+  const handleDmClick = async (id, name, icon) => {
+    setMessagesId(id);
+    setDmFriendName(name);
+    setDmFriendIcon(icon);
     setSelectedMiddleComponent(id);
     setRightComponent("chat");
+
+    if (currentUser) {
+      await deleteMsgUnreadDm(id, currentUser._id);
+    }
+
+    // Update the userMessages state to remove msgUnread for the current user
+    setUserMessages((prevUserMessages) =>
+      prevUserMessages.map((message) =>
+        message._id === id
+          ? {
+              ...message,
+              msgs: message.msgs.map((msg) => ({
+                ...msg,
+                msgUnread: msg.msgUnread.filter(
+                  (userId) => userId !== currentUser._id
+                ),
+              })),
+            }
+          : message
+      )
+    );
+  };
+
+  // in friend list, click on friend dm to open chat
+  const handleDmFriendClick = async (id) => {
+    setRightComponent("chat");
+    console.log("currentUser", currentUser);
+    console.log("userMessages", userMessages);
+
+    // get selected friend id
+    console.log(id);
+
+    // find if messages already exist
+    const isMessagesExist =
+      Array.isArray(userMessages) &&
+      userMessages.some(
+        (message) =>
+          message.userIds.includes(currentUser._id) &&
+          message.userIds.includes(id)
+      );
+    console.log("isMessagesExist", isMessagesExist);
+    console.log("messages", userMessages.length);
+
+    if (!isMessagesExist || userMessages.length === 0) {
+      // create one messages in database, return new messages obj
+      const newMessages = await addMessages(currentUser._id, id);
+      console.log("newMessages", newMessages);
+
+      // add created messages id to currentUser, return updated currentUser obj
+      await addMessagesId(currentUser._id, newMessages._id);
+
+      // add created messages id to selected friend
+      await addMessagesId(id, newMessages._id);
+
+      setUserMessages((prevUserMessages) => [...prevUserMessages, newMessages]);
+      setSelectedMiddleComponent(newMessages._id);
+    }
   };
 
   const togglePopupComponent = (component) => {
@@ -162,6 +238,8 @@ export default function Page() {
             <DirectMessages
               onclickDmUser={handleDmClick}
               selectedMiddleComponent={selectedMiddleComponent}
+              currentUser={currentUser}
+              userMessages={userMessages}
             />
           </div>
         )}
@@ -182,9 +260,10 @@ export default function Page() {
           <div className="h-full w-full">
             <ChatUI
               messagesId={messagesId}
-              icon={friendChatting[0].icon}
-              name={friendChatting[0].name}
-              status={friendChatting[0].status}
+              icon={dmFriendIcon}
+              name={dmFriendName}
+              userMessages={userMessages}
+              setUserMessages={setUserMessages}
             />
           </div>
         )}
@@ -210,6 +289,12 @@ export default function Page() {
             />
           </div>
         )}
+        <div
+          onClick={() => handleDmFriendClick(friendidDemo)}
+          className="fixed bottom-0 right-0"
+        >
+          <button>DM friend</button>
+        </div>
       </div>
     </ServerProvider>
   );

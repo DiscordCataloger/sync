@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useContext } from "react";
-import io from "socket.io-client";
+// import io from "socket.io-client";
 import ChannelHeader from "./(channelui)/ChannelHeader";
 import InputMessage from "./InputMessage";
 import MessageList from "./(channelui)/MessageList";
@@ -19,7 +19,7 @@ const font = Josefin_Sans({
 });
 
 const NUMBER_OF_MSG_TO_FETCH = 20;
-const socket = io();
+// const socket = io();
 
 export default function ChannelUI({
   channelId,

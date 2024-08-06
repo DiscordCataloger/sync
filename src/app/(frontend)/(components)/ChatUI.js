@@ -148,7 +148,7 @@ export default function ChatUI({
     //   });
     // });
 
-    const intervalId = setInterval(fetchMessagesMsgData, 5000);
+    const intervalId = setInterval(fetchMessagesMsgData, 100);
     return () => {
       // socket.off("receiveUserMessage");
       clearInterval(intervalId);

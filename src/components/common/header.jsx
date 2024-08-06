@@ -9,7 +9,7 @@ import { getSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { signOut } from "next-auth/react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const pacifico = Pacifico({ subsets: ["latin"], weight: ["400"] });
 

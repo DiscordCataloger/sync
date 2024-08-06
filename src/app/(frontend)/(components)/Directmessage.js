@@ -172,13 +172,13 @@ export default function DirectMessages({
               <div className="avatar w-10 h-10 rounded-full mr-3">
                 <img src={icon} alt="avatar" />
               </div>
-              <div className="details flex-grow">
+              <div className="details flex-grow pt-2">
                 <div className="font-bold text-black">{name}</div>
-                <div className="text-sm text-gray-400">
+                <div className="text-sm text-gray-400 text-ellipsis h-5 w-36 overflow-hidden">
                   {lastMsg?.msgText || "No messages"}
                 </div>
               </div>
-              <div>
+              <div className="flex items-end flex-col justify-center">
                 <div className="time text-gray-400 text-sm">
                   {lastMsg?.msgTime || "Start conversation"}
                 </div>

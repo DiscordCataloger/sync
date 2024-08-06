@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useContext } from "react";
-import io from "socket.io-client";
+// import io from "socket.io-client";
 import ChatHeader from "./(chatui)/ChatHeader";
 import InputMessage from "./InputMessage";
 import MessageList from "./(chatui)/MessageList";
@@ -148,7 +148,7 @@ export default function ChatUI({
     //   });
     // });
 
-    const intervalId = setInterval(fetchMessagesMsgData, 100);
+    const intervalId = setInterval(fetchMessagesMsgData, 5000);
     return () => {
       // socket.off("receiveUserMessage");
       clearInterval(intervalId);

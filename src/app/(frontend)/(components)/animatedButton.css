@@ -1,4 +1,4 @@
-.animated-button {
+.animatedButton {
   width: 30px;
   height: 30px;
   background-color: #f44336;
@@ -12,11 +12,11 @@
   transition: transform 0.3s ease;
 }
 
-.animated-button:hover {
+.animatedButton:hover {
   transform: scale(1.1);
 }
 
-.animated-button::before {
+.animatedButton::before {
   content: "";
   position: absolute;
   width: 200%;
@@ -29,7 +29,7 @@
   transition: transform 0.3s ease;
 }
 
-.animated-button:hover::before {
+.animatedButton:hover::before {
   transform: translate(-50%, -50%) scale(1);
 }
 

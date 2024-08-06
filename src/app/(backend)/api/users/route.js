@@ -4,15 +4,17 @@ import server from "libs/mongodb/server";
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
+  console.log("Connecting to the database...");
+  await server(); // Ensure the database connection is established
+  console.log("Database connected.");
+
+  console.log("Getting token...");
+  const token = await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
+  console.log("Token:", token);
   try {
-    console.log("Connecting to the database...");
-    await server(); // Ensure the database connection is established
-    console.log("Database connected.");
-
-    console.log("Getting token...");
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-    console.log("Token:", token);
-
     if (!token) {
       console.log("No token found.");
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });

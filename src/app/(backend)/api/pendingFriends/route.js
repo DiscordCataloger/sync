@@ -27,10 +27,10 @@ async function getPendingFriends(user) {
 }
 
 export async function GET(req) {
-  try {
-    await connectToDatabase();
+  await connectToDatabase();
 
-    const user = await getUserFromToken(req);
+  const user = await getUserFromToken(req);
+  try {
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }

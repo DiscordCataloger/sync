@@ -34,24 +34,24 @@ export default function ChannelUI({
   const [input, setInput] = useState("");
   const [attachments, setAttachments] = useState([]);
   const [addMsg, setAddMsg] = useState(0);
-  const [loading, setLoading] = useState(true); // Loading state
+  // const [loading, setLoading] = useState(true); // Loading state
   const [isDragOver, setIsDragOver] = useState(false);
   const [serverMembersExceptCurrentUser, setServerMembersExceptCurrentUser] =
     useState([]);
 
-  useEffect(() => {
-    if (selectedServer && channelId) {
-      socket.emit("joinServer", { serverId: selectedServer._id });
-      socket.emit("joinChannel", { channelId, userId: currentUser._id });
-    }
+  // useEffect(() => {
+  //   if (selectedServer && channelId) {
+  //     socket.emit("joinServer", { serverId: selectedServer._id });
+  //     socket.emit("joinChannel", { channelId, userId: currentUser._id });
+  //   }
 
-    return () => {
-      if (selectedServer && channelId) {
-        socket.emit("leaveServer", { serverId: selectedServer._id });
-        socket.emit("leaveChannel", { channelId });
-      }
-    };
-  }, [selectedServer, channelId, currentUser]);
+  //   return () => {
+  //     if (selectedServer && channelId) {
+  //       socket.emit("leaveServer", { serverId: selectedServer._id });
+  //       socket.emit("leaveChannel", { channelId });
+  //     }
+  //   };
+  // }, [selectedServer, channelId, currentUser]);
 
   useEffect(() => {
     if (selectedServer && currentUser._id) {
@@ -110,7 +110,7 @@ export default function ChannelUI({
 
   useEffect(() => {
     const fetchServerChannelMsgData = async () => {
-      setLoading(true);
+      // setLoading(true);
       try {
         const response = await getServerChannelMsgs(channelId);
         const { msgs } = response;
@@ -118,58 +118,19 @@ export default function ChannelUI({
       } catch (error) {
         console.error("Error fetching server channel messages:", error);
       } finally {
-        setTimeout(() => {
-          setLoading(false);
-        }, 200);
+        // setTimeout(() => {
+        // setLoading(false);
+        // }, 200);
       }
     };
     fetchServerChannelMsgData();
 
-    socket.on("receiveMessage", (newMessage) => {
-      setMsg((prevMsgs) => {
-        const messageIndex = prevMsgs.findIndex(
-          (msg) => msg.uid === newMessage.uid
-        );
-        if (messageIndex !== -1) {
-          // Update existing message
-          const updatedMsgs = [...prevMsgs];
-          updatedMsgs[messageIndex] = newMessage;
-          return updatedMsgs;
-        } else {
-          // Add new message
-          return [newMessage, ...prevMsgs];
-        }
-      });
-      setOffset((prevOffset) => prevOffset + 1);
-      setAddMsg((prevCounter) => prevCounter + 1);
-    });
-
-    socket.on("receiveServerMessage", (newMessage) => {
-      const { channelId: messageChannelId } = newMessage;
-      // Update the server's channels with the new message
-      setServerChannels((prevChannels) => {
-        const updatedChannels = [...prevChannels];
-        const channelIndex = updatedChannels.findIndex(
-          (channel) => channel._id === messageChannelId
-        );
-        if (channelIndex !== -1) {
-          updatedChannels[channelIndex] = {
-            ...updatedChannels[channelIndex],
-            channelMsgs: [
-              ...updatedChannels[channelIndex].channelMsgs,
-              newMessage,
-            ],
-          };
-        }
-
-        // console.log("updatedChannels: ", updatedChannels);
-        return updatedChannels;
-      });
-    });
+    const intervalId = setInterval(fetchServerChannelMsgData, 100);
 
     return () => {
-      socket.off("receiveMessage");
-      socket.off("receiveServerMessage");
+      // socket.off("receiveMessage");
+      // socket.off("receiveServerMessage");
+      clearInterval(intervalId);
     };
   }, [channelId, selectedServer, setServerChannels]);
 
@@ -207,12 +168,12 @@ export default function ChannelUI({
       };
 
       // Emit the initial message to live chat & added msg (state) without attachments
-      socket.emit("sendMessage", { channelId, ...newMsgLocal });
-      socket.emit("sendServerMessage", {
-        serverId: selectedServer._id,
-        channelId, // Include the channelId in the message
-        ...newMsgLocal,
-      });
+      // socket.emit("sendMessage", { channelId, ...newMsgLocal });
+      // socket.emit("sendServerMessage", {
+      //   serverId: selectedServer._id,
+      //   channelId, // Include the channelId in the message
+      //   ...newMsgLocal,
+      // });
 
       // Clear the input field and make scroll to bottom
       setInput("");
@@ -235,12 +196,12 @@ export default function ChannelUI({
           );
           const updatedMsg = { ...newMsgLocal, msgAttach: uploadedUrls };
 
-          socket.emit("sendMessage", { channelId, ...updatedMsg });
-          socket.emit("sendServerMessage", {
-            serverId: selectedServer._id,
-            channelId, // Include the channelId in the message
-            ...updatedMsg,
-          });
+          // socket.emit("sendMessage", { channelId, ...updatedMsg });
+          // socket.emit("sendServerMessage", {
+          //   serverId: selectedServer._id,
+          //   channelId, // Include the channelId in the message
+          //   ...updatedMsg,
+          // });
 
           const { uid, ...newMsg } = updatedMsg;
           setAddMsg((prevCounter) => prevCounter + 1);
@@ -267,8 +228,8 @@ export default function ChannelUI({
       } min-w-[400px] h-full bg-white rounded-2xl flex flex-col shadow-md shadow-sky-400/40`}
     >
       <ChannelHeader name={name} handleDeleteChannel={handleDeleteChannel} />
-      {loading && (
-        <div className={`flex flex-col justify-center items-center h-full`}>
+      {/* {loading && ( */}
+      {/* <div className={`flex flex-col justify-center items-center h-full`}>
           <Player
             autoplay
             loop
@@ -276,20 +237,20 @@ export default function ChannelUI({
             src="/loader_robot.json"
             style={{ height: "300px", width: "300px" }}
           />
-        </div>
-      )}
-      {!loading && (
-        <MessageList
-          id={channelId}
-          msg={msg}
-          setMsg={setMsg}
-          addMsg={addMsg}
-          offset={offset}
-          setOffset={setOffset}
-          NUMBER_OF_MSG_TO_FETCH={NUMBER_OF_MSG_TO_FETCH}
-          currentUserId={currentUser._id}
-        />
-      )}
+        </div> */}
+      {/* )} */}
+      {/* {!loading && ( */}
+      <MessageList
+        id={channelId}
+        msg={msg}
+        setMsg={setMsg}
+        addMsg={addMsg}
+        offset={offset}
+        setOffset={setOffset}
+        NUMBER_OF_MSG_TO_FETCH={NUMBER_OF_MSG_TO_FETCH}
+        currentUserId={currentUser._id}
+      />
+      {/* )} */}
       <InputMessage
         input={input}
         setInput={setInput}

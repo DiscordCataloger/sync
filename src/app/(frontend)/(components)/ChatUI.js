@@ -19,7 +19,7 @@ const font = Josefin_Sans({
 });
 
 const NUMBER_OF_MSG_TO_FETCH = 20;
-const socket = io();
+// const socket = io();
 
 // messageid, otherUser id, otherUser icon,
 export default function ChatUI({
@@ -41,17 +41,17 @@ export default function ChatUI({
   const [otherUser, setOtherUser] = useState(null);
   const [messages, setMessages] = useState(null);
 
-  useEffect(() => {
-    if (messagesId) {
-      socket.emit("joinMessage", { messageId: messagesId });
-    }
+  // useEffect(() => {
+  //   if (messagesId) {
+  //     socket.emit("joinMessage", { messageId: messagesId });
+  //   }
 
-    return () => {
-      if (messagesId) {
-        socket.emit("leaveMessage", { messageId: messagesId });
-      }
-    };
-  }, [messagesId]);
+  //   return () => {
+  //     if (messagesId) {
+  //       socket.emit("leaveMessage", { messageId: messagesId });
+  //     }
+  //   };
+  // }, [messagesId]);
 
   // get message obj
   useEffect(() => {
@@ -109,49 +109,49 @@ export default function ChatUI({
       } catch (error) {
         console.error("Error fetching messages:", error);
       }
-      setTimeout(() => {
-        setLoading(false);
-      }, 200);
+      // setTimeout(() => {
+      //   setLoading(false);
+      // }, 200);
     };
     fetchMessagesMsgData();
-  }, [messagesId]);
 
-  useEffect(() => {
-    socket.on("receiveUserMessage", (newMessage) => {
-      // console.log("newMessage22222222: ", newMessage);
-      setMsg((prevMsgs) => {
-        const messageIndex = prevMsgs.findIndex(
-          (msg) => msg.uid === newMessage.uid
-        );
-        if (messageIndex !== -1) {
-          // Update existing message
-          const updatedMsgs = [...prevMsgs];
-          updatedMsgs[messageIndex] = newMessage;
-          return updatedMsgs;
-        } else {
-          // Add new message
-          return [newMessage, ...prevMsgs];
-        }
-      });
-      setOffset((prevOffset) => prevOffset + 1);
-      setAddMsg((prevCounter) => prevCounter + 1);
-      setUserMessages((prevUserMessages) => {
-        const updatedUserMessages = [...prevUserMessages];
-        const messageIndex = updatedUserMessages.findIndex(
-          (msg) => msg._id === newMessage.messageId
-        );
-        if (messageIndex !== -1) {
-          updatedUserMessages[messageIndex] = {
-            ...updatedUserMessages[messageIndex],
-            msgs: [...updatedUserMessages[messageIndex].msgs, newMessage],
-          };
-        }
-        return updatedUserMessages;
-      });
-    });
+    // socket.on("receiveUserMessage", (newMessage) => {
+    //   // console.log("newMessage22222222: ", newMessage);
+    //   setMsg((prevMsgs) => {
+    //     const messageIndex = prevMsgs.findIndex(
+    //       (msg) => msg.uid === newMessage.uid
+    //     );
+    //     if (messageIndex !== -1) {
+    //       // Update existing message
+    //       const updatedMsgs = [...prevMsgs];
+    //       updatedMsgs[messageIndex] = newMessage;
+    //       return updatedMsgs;
+    //     } else {
+    //       // Add new message
+    //       return [newMessage, ...prevMsgs];
+    //     }
+    //   });
+    //   setOffset((prevOffset) => prevOffset + 1);
+    //   setAddMsg((prevCounter) => prevCounter + 1);
+    //   setUserMessages((prevUserMessages) => {
+    //     const updatedUserMessages = [...prevUserMessages];
+    //     const messageIndex = updatedUserMessages.findIndex(
+    //       (msg) => msg._id === newMessage.messageId
+    //     );
+    //     if (messageIndex !== -1) {
+    //       updatedUserMessages[messageIndex] = {
+    //         ...updatedUserMessages[messageIndex],
+    //         msgs: [...updatedUserMessages[messageIndex].msgs, newMessage],
+    //       };
+    //     }
+    //     return updatedUserMessages;
+    //   });
+    // });
 
+    const intervalId = setInterval(fetchMessagesMsgData, 100);
     return () => {
-      socket.off("receiveUserMessage");
+      // socket.off("receiveUserMessage");
+      clearInterval(intervalId);
     };
   }, [messagesId, setUserMessages]);
 
@@ -197,11 +197,11 @@ export default function ChatUI({
       };
       // console.log("newMsgLocal: ", newMsgLocal);
       // Emit the initial message to live chat & added msg (state) without attachments
-      socket.emit("sendUserMessage", {
-        messageId: messagesId,
-        otherUserId: otherUser,
-        ...newMsgLocal,
-      });
+      // socket.emit("sendUserMessage", {
+      //   messageId: messagesId,
+      //   otherUserId: otherUser,
+      //   ...newMsgLocal,
+      // });
 
       // Clear the input field and make scroll to bottom
       setInput("");
@@ -228,11 +228,11 @@ export default function ChatUI({
           const updatedMsg = { ...newMsgLocal, msgAttach: uploadedUrls };
 
           // Modify live chat & previous added msg (state) with uploadedurls
-          socket.emit("sendUserMessage", {
-            messageId: messagesId,
-            otherUserId: otherUser,
-            ...updatedMsg,
-          });
+          // socket.emit("sendUserMessage", {
+          //   messageId: messagesId,
+          //   otherUserId: otherUser,
+          //   ...updatedMsg,
+          // });
 
           // Create newMsg without the uid
           const { uid, ...newMsg } = updatedMsg;
@@ -262,7 +262,7 @@ export default function ChatUI({
       } min-w-[400px] h-full bg-white rounded-2xl flex flex-col shadow-md shadow-sky-400/40`}
     >
       <ChatHeader icon={icon} name={name} />
-      {loading && (
+      {/* {loading && (
         <div className={`flex flex-col justify-center items-center h-full`}>
           <Player
             autoplay
@@ -272,19 +272,19 @@ export default function ChatUI({
             style={{ height: "300px", width: "300px" }}
           />
         </div>
-      )}
-      {!loading && (
-        <MessageList
-          id={messagesId}
-          msg={msg}
-          setMsg={setMsg}
-          addMsg={addMsg}
-          offset={offset}
-          setOffset={setOffset}
-          NUMBER_OF_MSG_TO_FETCH={NUMBER_OF_MSG_TO_FETCH}
-          currentUserId={currentUser._id}
-        />
-      )}
+      )} */}
+      {/* {!loading && ( */}
+      <MessageList
+        id={messagesId}
+        msg={msg}
+        setMsg={setMsg}
+        addMsg={addMsg}
+        offset={offset}
+        setOffset={setOffset}
+        NUMBER_OF_MSG_TO_FETCH={NUMBER_OF_MSG_TO_FETCH}
+        currentUserId={currentUser._id}
+      />
+
       <InputMessage
         input={input}
         setInput={setInput}

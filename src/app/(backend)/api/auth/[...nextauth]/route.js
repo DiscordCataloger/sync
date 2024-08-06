@@ -66,7 +66,7 @@ const options = {
       console.log("signIn callback triggered"); // Initial log
       if (account.provider === "google") {
         try {
-          const res = await fetch(`${process.env.NEXTAUTH_URL}/api/register`, {
+          const res = await fetch(`/api/register`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -93,7 +93,7 @@ const options = {
           // Assuming 'profile.picture.data' is the object you receive from Facebook
           const profilePictureData = profile.picture.data; // This should be the object containing the URL
 
-          const res = await fetch(`${process.env.NEXTAUTH_URL}/api/register`, {
+          const res = await fetch(`/api/register`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -118,7 +118,7 @@ const options = {
       if (account.provider === "github") {
         console.log(profile.login);
         try {
-          const res = await fetch(`${process.env.NEXTAUTH_URL}/api/register`, {
+          const res = await fetch(`/api/register`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

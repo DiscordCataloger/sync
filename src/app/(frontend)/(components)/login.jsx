@@ -49,7 +49,7 @@ export function Login() {
     e.preventDefault();
     setIsLoading(true);
     // Check if the email is verified
-    
+
     const resUserCheck = await fetch("/api/accountExists", {
       method: "POST",
       headers: {
@@ -94,22 +94,22 @@ export function Login() {
           console.log("Login successful");
           console.log("isOn:", isOn);
           setTimeout(() => {
-          if (isOn) {
-            Cookies.set("rememberMe", "on", {
-              expires: 14,
-              sameSite: "None",
-              secure: true,
-            }); // Set cookie with SameSite attribute
-          } else {
-            Cookies.set("rememberMe", "on", {
-              expires: 7,
-              sameSite: "None",
-              secure: true,
-            });
-          }
-          router.push("/chat");
-        }, 1000);
-      }
+            if (isOn) {
+              Cookies.set("rememberMe", "on", {
+                expires: 14,
+                sameSite: "None",
+                secure: true,
+              }); // Set cookie with SameSite attribute
+            } else {
+              Cookies.set("rememberMe", "on", {
+                expires: 7,
+                sameSite: "None",
+                secure: true,
+              });
+            }
+            router.push("/chat");
+          }, 1000);
+        }
       } catch (error) {
         console.log(error);
         setIsLoading(false);
@@ -219,7 +219,7 @@ export function Login() {
   // Function to handle Google sign-in
   const handleGoogleSignIn = async () => {
     try {
-      await signIn("google");
+      await signIn("google", { callbackUrl: "/chat" });
     } catch (error) {
       console.log(error);
     }
@@ -228,7 +228,7 @@ export function Login() {
   // Function to handle Facebook sign-in
   const handleFacebookSignIn = async () => {
     try {
-      await signIn("facebook");
+      await signIn("facebook", { callbackUrl: "/chat" });
     } catch (error) {
       console.log(error);
     }
@@ -237,7 +237,7 @@ export function Login() {
   // Function to handle Github sign-in
   const handleGithubSignIn = async () => {
     try {
-      await signIn("github");
+      await signIn("github", { callbackUrl: "/chat" });
     } catch (error) {
       console.log(error);
     }
@@ -247,77 +247,83 @@ export function Login() {
     <div className="bg-[#F6F6F6] md:mt-[5%] md:mr-6 pt-[24px] rounded-lg h-auto">
       {isLoading ? (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-100 z-50">
-        <Loading />
+          <Loading />
         </div>
-      ): (
-      <form method="POST" noValidate onSubmit={loginSubmit}>
-        <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
-          <label
-            for="email"
-            className="text-[12px] md:text-[16px] pb-1 text-[#1E1E1E]"
-          >
-            Email
-            {emailRequired ? <Required error={`Required`} /> : ""}
-            {emailValidate ? <Required error={`Invalid email format!`} /> : ""}
-            {isNotVerified && (
-              <Required
-                error={`You have not verified your email address yet. Please check your inbox again.`}
-              />
-            )}
-            {accountIsNotVerified && <Required>Invalid credentials!</Required>}
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="Email"
-            className="text-[12px] md:text-[16px] pl-2 text-gray-950 rounded-md md:h-[40px] h-[25px] w-full border-2 border-[#B3B3B3]"
-            value={email}
-            onChange={emailOnChange}
-            ref={ref}
-          ></input>
-        </div>
-        <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
-          <label
-            for
-            password="password"
-            className="text-[12px] md:text-[16px] pb-1 text-[#1E1E1E]"
-          >
-            Password
-            {passwordRequired ? <Required error={`Required`} /> : ""}
-          </label>
+      ) : (
+        <form method="POST" noValidate onSubmit={loginSubmit}>
+          <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
+            <label
+              for="email"
+              className="text-[12px] md:text-[16px] pb-1 text-[#1E1E1E]"
+            >
+              Email
+              {emailRequired ? <Required error={`Required`} /> : ""}
+              {emailValidate ? (
+                <Required error={`Invalid email format!`} />
+              ) : (
+                ""
+              )}
+              {isNotVerified && (
+                <Required
+                  error={`You have not verified your email address yet. Please check your inbox again.`}
+                />
+              )}
+              {accountIsNotVerified && (
+                <Required>Invalid credentials!</Required>
+              )}
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Email"
+              className="text-[12px] md:text-[16px] pl-2 text-gray-950 rounded-md md:h-[40px] h-[25px] w-full border-2 border-[#B3B3B3]"
+              value={email}
+              onChange={emailOnChange}
+              ref={ref}
+            ></input>
+          </div>
+          <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
+            <label
+              for
+              password="password"
+              className="text-[12px] md:text-[16px] pb-1 text-[#1E1E1E]"
+            >
+              Password
+              {passwordRequired ? <Required error={`Required`} /> : ""}
+            </label>
 
-          <input
-            id="password"
-            name="password"
-            type="password"
-            placeholder="Password"
-            className="text-[12px] md:text-[16px] pl-2 text-gray-950 rounded-md h-[25px] md:h-[40px] w-full border-2 border-[#B3B3B3]"
-            value={password}
-            onChange={passwordOnChange}
-          ></input>
-        </div>
-        <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
-          <Button
-            id="signInButton"
-            size="default"
-            variant="default"
-            className="text-[12px] md:text-[16px] bg-[#1D33A8] text-[#F5F5F5] rounded-md h-[25px] md:h-[40px] w-full"
-          >
-            Sign In
-          </Button>
-          <div className="flex justify-start items-center mt-[24px]">
-            <Switch
-              isOn={isOn}
-              handleToggle={() => setIsOn(!isOn)}
-              onColor="rgb(59, 130, 246)"
-            />
-            <div className="text-[#1E1E1E] mx-3 md:pt-1 text-[13px] md:text-[20px]">
-              Remember Me
+            <input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Password"
+              className="text-[12px] md:text-[16px] pl-2 text-gray-950 rounded-md h-[25px] md:h-[40px] w-full border-2 border-[#B3B3B3]"
+              value={password}
+              onChange={passwordOnChange}
+            ></input>
+          </div>
+          <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
+            <Button
+              id="signInButton"
+              size="default"
+              variant="default"
+              className="text-[12px] md:text-[16px] bg-[#1D33A8] text-[#F5F5F5] rounded-md h-[25px] md:h-[40px] w-full"
+            >
+              Sign In
+            </Button>
+            <div className="flex justify-start items-center mt-[24px]">
+              <Switch
+                isOn={isOn}
+                handleToggle={() => setIsOn(!isOn)}
+                onColor="rgb(59, 130, 246)"
+              />
+              <div className="text-[#1E1E1E] mx-3 md:pt-1 text-[13px] md:text-[20px]">
+                Remember Me
+              </div>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
       )}
       <div className="mx-[24px] flex justify-between items-center">
         <div className="h-0 w-16 md:w-44 border border-gray-300"></div>

@@ -6,7 +6,7 @@ export default function RegisterSocialMobile() {
   // Function to handle Google sign-in
   const handleGoogleSignIn = async () => {
     try {
-      await signIn("google");
+      await signIn("google", { callbackUrl: "/chat" });
     } catch (error) {
       console.log(error);
     }
@@ -15,7 +15,7 @@ export default function RegisterSocialMobile() {
   // Function to handle Facebook sign-in
   const handleFacebookSignIn = async () => {
     try {
-      await signIn("facebook");
+      await signIn("facebook", { callbackUrl: "/chat" });
     } catch (error) {
       console.log(error);
     }
@@ -24,7 +24,7 @@ export default function RegisterSocialMobile() {
   // Function to handle Github sign-in
   const handleGithubSignIn = async () => {
     try {
-      await signIn("github");
+      await signIn("github", { callbackUrl: "/chat" });
     } catch (error) {
       console.log(error);
     }

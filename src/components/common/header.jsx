@@ -52,6 +52,12 @@ export function Header({ className }) {
     fetchTokenAndCookie();
   }, [rememberMe]);
 
+  async function logoutHandle(e) {
+    e.preventDefault();
+    await signOut();
+    router.push("/login");
+  }
+
   const getLogo = () => (
     <Link href="/" className="pointer flex items-center">
       <img src="/robo_icon.png" className="mr-3 w-16 h-16" />
@@ -72,15 +78,7 @@ export function Header({ className }) {
               height={120}
             />
           </Link>
-          <Link
-            href="/"
-            target="_blank"
-            onClick={async (e) => {
-              e.preventDefault();
-              await signOut();
-              router.push("/");
-            }}
-          >
+          <Link href="/" target="_blank" onClick={(e) => logoutHandle(e)}>
             <Button
               size="lg"
               variant="outline"

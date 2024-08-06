@@ -1,6 +1,6 @@
 import React from "react";
 import { FaTrash } from "react-icons/fa";
-import styles from "./AnimatedButton.css";
+import styles from "./animatedButton.css";
 
 const AnimatedButton = () => {
   return (

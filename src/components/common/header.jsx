@@ -73,8 +73,9 @@ export function Header({ className }) {
           <Link
             href="/"
             target="_blank"
-            onClick={() => {
-              signOut();
+            onClick={async (e) => {
+              e.preventDefault();
+              await signOut();
             }}
           >
             <Button

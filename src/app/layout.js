@@ -4,7 +4,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning className="antialiased">
       <body>
-        <main className={`flex flex-col`}>{children}</main>
+        <div className={`flex flex-col`}>{children}</div>
       </body>
     </html>
   );

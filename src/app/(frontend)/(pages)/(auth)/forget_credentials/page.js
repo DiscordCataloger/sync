@@ -1,6 +1,6 @@
 import ForgetPageComponent from "@/app/(frontend)/(components)/forget";
 import SlideProvider from "../(slide)/slideProvider";
-// import LoggedInSessionCheck from "@/app/(frontend)/(components)/LoggedInSessionCheck";
+import LoggedInSessionCheck from "@/app/(frontend)/(components)/LoggedInSessionCheck";
 
 export const metadata = {
   title: "Account Recovery",
@@ -10,7 +10,7 @@ export const metadata = {
 export default function ForgetCreds() {
   return (
     <SlideProvider>
-      {/* <LoggedInSessionCheck /> */}
+      <LoggedInSessionCheck />
       <ForgetPageComponent />
     </SlideProvider>
   );

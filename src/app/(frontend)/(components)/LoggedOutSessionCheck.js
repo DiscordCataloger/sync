@@ -14,7 +14,7 @@ export default function LoggedOutSessionCheck() {
       console.log("Session:", session); // Debugging log
       console.log("rememberMe cookie:", rememberMe); // Debugging log
 
-      if (!rememberMe && !session) {
+      if ((!rememberMe && !session) || !session) {
         console.log("Redirecting to /login");
         router.push("/login");
       }

@@ -52,14 +52,14 @@ export function Header({ className }) {
     fetchTokenAndCookie();
   }, [rememberMe]);
 
-  async function logoutHandle(e) {
-    e.preventDefault();
-    await signOut({ redirect: false });
-    router.push("/login");
+  async function handleLogout() {
+    document.cookie =
+      "rememberMe=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    await signOut();
   }
 
   const getLogo = () => (
-    <Link href="/" className="pointer flex items-center">
+    <Link href="/login" className="pointer flex items-center">
       <img src="/robo_icon.png" className="mr-3 w-16 h-16" />
       <Typography className="!text-black !text-xl font-medium">Sync</Typography>
     </Link>
@@ -78,7 +78,7 @@ export function Header({ className }) {
               height={120}
             />
           </Link>
-          <Link href="/" target="_blank" onClick={(e) => logoutHandle(e)}>
+          <Link href="/" onClick={handleLogout}>
             <Button
               size="lg"
               variant="outline"
@@ -93,7 +93,7 @@ export function Header({ className }) {
       ) : (
         <>
           {" "}
-          <Link href="/login" target="_blank">
+          <Link href="/login">
             <Button size="lg" variant="outline">
               <Typography variant="p" className="text-blue-600">
                 Login

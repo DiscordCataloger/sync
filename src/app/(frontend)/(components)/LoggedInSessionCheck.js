@@ -10,16 +10,10 @@ export default function LoggedInSessionCheck() {
   useEffect(() => {
     async function checkSession() {
       const session = await getSession(); // Ensure this is awaited
-      const rememberMe = Cookies.get("rememberMe");
       console.log("Session:", session); // Debugging log
-      console.log("rememberMe cookie:", rememberMe); // Debugging log
-
-      if (rememberMe && session) {
-        console.log("Redirecting to /chat");
-        router.push("/chat");
-      }
 
       if (session) {
+        console.log("Redirecting to /chat");
         router.push("/chat");
       }
     }

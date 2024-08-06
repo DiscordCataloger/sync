@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import ServerContext from "../../(context)/ServerContext";
 import ServerCard from "./ServerCard";
-import { getServers } from "../../../../../api/getServers";
+import { getServers } from "../../../../api/getServers";
 
 export default function Discover({ position, submitValue, setSubmitValue }) {
   const { servers, setServers, serverLoading, setServerLoading } =

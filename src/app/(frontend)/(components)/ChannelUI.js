@@ -5,13 +5,13 @@ import ChannelHeader from "./(channelui)/ChannelHeader";
 import InputMessage from "./InputMessage";
 import MessageList from "./(channelui)/MessageList";
 import { Josefin_Sans } from "next/font/google";
-import { getServerChannelMsgs } from "../../../../api/getServerChannelMsgs";
-import { addServerChannelMsg } from "../../../../api/addServerChannelMsg";
+import { getServerChannelMsgs } from "../../../api/getServerChannelMsgs";
+import { addServerChannelMsg } from "../../../api/addServerChannelMsg";
 import { Player } from "@lottiefiles/react-lottie-player";
 import { v4 as uuidv4 } from "uuid"; // Import the uuid library
 import ServerContext from "../(context)/ServerContext";
-import { deleteServerChannel } from "../../../../api/deleteServerChannel";
-import deleteServerChannelfromServer from "../../../../api/deleteServerChannelfromServer";
+import { deleteServerChannel } from "../../../api/deleteServerChannel";
+import deleteServerChannelfromServer from "../../../api/deleteServerChannelfromServer";
 
 const font = Josefin_Sans({
   weight: "400",

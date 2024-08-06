@@ -5,11 +5,11 @@ import React, {
   useContext,
   useEffect,
 } from "react";
-import addJoinedServer from "../../../../api/addJoinedServers";
-import { addServer } from "../../../../api/addServer";
-import { getServers } from "../../../../api/getServers";
-import { addServerChannel } from "../../../../api/addServerChannel";
-import getCurrentUser from "../../../../api/getCurrentUser";
+import addJoinedServer from "../../../api/addJoinedServers";
+import { addServer } from "../../../api/addServer";
+import { getServers } from "../../../api/getServers";
+import { addServerChannel } from "../../../api/addServerChannel";
+import getCurrentUser from "../../../api/getCurrentUser";
 
 const ServerContext = createContext();
 

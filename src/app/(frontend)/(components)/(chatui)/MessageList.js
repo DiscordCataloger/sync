@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import style from "../ChannelUI.module.css";
 import MessageItem from "./MessageItem";
 import { useInView } from "react-intersection-observer";
-import { getMessagesMsgs } from "../../../../../api/getMessagesMsgs";
+import { getMessagesMsgs } from "../../../../api/getMessagesMsgs";
 import { Player } from "@lottiefiles/react-lottie-player";
 
 export default function MessageList({

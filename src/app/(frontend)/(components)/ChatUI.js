@@ -5,13 +5,13 @@ import ChatHeader from "./(chatui)/ChatHeader";
 import InputMessage from "./InputMessage";
 import MessageList from "./(chatui)/MessageList";
 import { Josefin_Sans } from "next/font/google";
-import { getMessagesMsgs } from "../../../../api/getMessagesMsgs";
-import { addMessagesMsg } from "../../../../api/addMessagesMsg";
+import { getMessagesMsgs } from "../../../api/getMessagesMsgs";
+import { addMessagesMsg } from "../../../api/addMessagesMsg";
 import { Player } from "@lottiefiles/react-lottie-player";
 import { v4 as uuidv4 } from "uuid"; // Import the uuid library
 import ServerContext from "../(context)/ServerContext";
-import { deleteMessages } from "../../../../api/deleteMessages";
-import deleteMessagesfmUser from "../../../../api/deleteMessagesfmUser";
+import { deleteMessages } from "../../../api/deleteMessages";
+import deleteMessagesfmUser from "../../../api/deleteMessagesfmUser";
 
 const font = Josefin_Sans({
   weight: "400",

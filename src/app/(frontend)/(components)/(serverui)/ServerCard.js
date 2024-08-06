@@ -1,8 +1,8 @@
 "use client";
 import { MdOutlineJoinLeft } from "react-icons/md";
-import addServerMember from "../../../../../api/addServerMember";
-import addJoinedServer from "../../../../../api/addJoinedServers";
-import { getServerById } from "../../../../../api/getServerbyId";
+import addServerMember from "../../../../api/addServerMember";
+import addJoinedServer from "../../../../api/addJoinedServers";
+import { getServerById } from "../../../../api/getServerbyId";
 import { useState, useEffect, useRef, useContext } from "react";
 import PopupModal from "../PopupModal";
 import ServerContext from "../../(context)/ServerContext";

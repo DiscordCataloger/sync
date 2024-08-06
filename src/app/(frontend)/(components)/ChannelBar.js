@@ -1,17 +1,17 @@
 import React, { useContext, useState, useEffect } from "react";
 import ServerContext from "../(context)/ServerContext";
-import { getServerChannelById } from "../../../../api/getServerChannelById";
-import { deleteServer } from "../../../../api/deleteServer";
-import { getUserById } from "../../../../api/getUserById";
-import deleteJoinedServer from "../../../../api/deleteJoinedServers";
-import { deleteServerChannel } from "../../../../api/deleteServerChannel";
+import { getServerChannelById } from "../../../api/getServerChannelById";
+import { deleteServer } from "../../../api/deleteServer";
+import { getUserById } from "../../../api/getUserById";
+import deleteJoinedServer from "../../../api/deleteJoinedServers";
+import { deleteServerChannel } from "../../../api/deleteServerChannel";
 import PopupModalConfirm from "./PopupModelConfirm";
-import { addServerChannel } from "../../../../api/addServerChannel";
-import addServerChanneltoServer from "../../../../api/addServerChanneltoServer";
+import { addServerChannel } from "../../../api/addServerChannel";
+import addServerChanneltoServer from "../../../api/addServerChanneltoServer";
 import PopupModalInput from "./PopupModalInput";
 import { LuCopyPlus } from "react-icons/lu";
 import style from "./ChannelUI.module.css";
-import deleteServerMember from "../../../../api/deleteServerMember";
+import deleteServerMember from "../../../api/deleteServerMember";
 
 const serverIcon = "/chat_bot.png";
 

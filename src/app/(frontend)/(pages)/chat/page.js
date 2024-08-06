@@ -15,14 +15,14 @@ import DirectMessageAdd from "../../(components)/DirectMessageAdd";
 import FriendUI from "../../(components)/FriendUI";
 import ServerUI from "../../(components)/ServerUI";
 import LoggedOutSessionCheck from "../../(components)/LoggedOutSessionCheck";
-import getCurrentUser from "../../../../../api/getCurrentUser";
+import getCurrentUser from "../../../../api/getCurrentUser";
 import { ServerProvider } from "../../(context)/ServerContext";
-import deleteMsgUnread from "../../../../../api/deleteMsgUnread";
-import { addMessages } from "../../../../../api/addMessages";
-import addMessagesId from "../../../../../api/addMessagesId";
-import { getMessages } from "../../../../../api/getMessages";
-import deleteMsgUnreadDm from "../../../../../api/deleteMsgUnreadDm";
-import { getUserById } from "../../../../../api/getUserById";
+import deleteMsgUnread from "../../../../api/deleteMsgUnread";
+import { addMessages } from "../../../../api/addMessages";
+import addMessagesId from "../../../../api/addMessagesId";
+import { getMessages } from "../../../../api/getMessages";
+import deleteMsgUnreadDm from "../../../../api/deleteMsgUnreadDm";
+import { getUserById } from "../../../../api/getUserById";
 
 const font = Josefin_Sans({
   weight: "400",

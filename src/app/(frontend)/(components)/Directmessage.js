@@ -1,6 +1,6 @@
 import { VscCheckAll } from "react-icons/vsc";
 import { BsFill1CircleFill } from "react-icons/bs";
-import { getUsers } from "../../../../api/getUsers";
+import { getUsers } from "../../../api/getUsers";
 import { useState, useEffect } from "react";
 
 // const userMessages = ["id1", "id2", "id3"];

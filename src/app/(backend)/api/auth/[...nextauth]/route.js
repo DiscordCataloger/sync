@@ -64,82 +64,56 @@ const options = {
   callbacks: {
     async signIn({ user, account, profile }) {
       console.log("signIn callback triggered"); // Initial log
-      if (account.provider === "google") {
+      const registerUser = async (data) => {
         try {
           const res = await fetch(`/api/register`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              email: profile.email,
-              displayName: profile.name,
-              icon: profile.picture,
-            }),
+            body: JSON.stringify(data),
           });
-          if (res.ok) {
-            return true;
+
+          if (res.headers.get("content-type")?.includes("application/json")) {
+            const result = await res.json();
+            if (res.ok) {
+              return true;
+            } else {
+              console.error("Failed to register user", result);
+              return false;
+            }
           } else {
-            console.error("Failed to register user");
+            console.error("Unexpected response format");
             return false;
           }
         } catch (error) {
           console.log(error);
           return false;
         }
+      };
+
+      if (account.provider === "google") {
+        return registerUser({
+          email: profile.email,
+          displayName: profile.name,
+          icon: profile.picture,
+        });
       }
       if (account.provider === "facebook") {
-        try {
-          // Assuming 'profile.picture.data' is the object you receive from Facebook
-          const profilePictureData = profile.picture.data; // This should be the object containing the URL
-
-          const res = await fetch(`/api/register`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: profile.email,
-              displayName: profile.name,
-              icon: profilePictureData.url,
-            }),
-          });
-          if (res.ok) {
-            return true;
-          } else {
-            console.error("Failed to register user");
-            return false;
-          }
-        } catch (error) {
-          console.log(error);
-          return false;
-        }
+        const profilePictureData = profile.picture.data; // This should be the object containing the URL
+        return registerUser({
+          email: profile.email,
+          displayName: profile.name,
+          icon: profilePictureData.url,
+        });
       }
       if (account.provider === "github") {
         console.log(profile.login);
-        try {
-          const res = await fetch(`/api/register`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email:
-                profile.email || `${profile.login}@users.noreply.github.com`, // Fallback to a generated email if not provided,
-              displayName: profile.name || profile.login,
-              icon: profile.avatar_url,
-            }),
-          });
-          if (res.ok) {
-            return true;
-          } else {
-            console.error("Failed to register user");
-            return false;
-          }
-        } catch (error) {
-          console.log(error);
-          return false;
-        }
+        return registerUser({
+          email: profile.email || `${profile.login}@users.noreply.github.com`, // Fallback to a generated email if not provided,
+          displayName: profile.name || profile.login,
+          icon: profile.avatar_url,
+        });
       }
       return true;
     },

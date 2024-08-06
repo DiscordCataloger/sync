@@ -14,13 +14,17 @@ export default function LoggedInSessionCheck() {
       // console.log("Session:", session); // Debugging log
       // console.log("rememberMe cookie:", rememberMe); // Debugging log
 
-      if (rememberMe && session) {
-        console.log("Redirecting to /chat");
-        router.push("/chat");
-      }
-
       if (session) {
-        router.push("/chat");
+        if (rememberMe) {
+          console.log("Redirecting to /chat");
+          router.push("/chat");
+        } else {
+          console.log("Session exists but rememberMe is not set");
+          // Handle the case where session exists but rememberMe is not set
+        }
+      } else {
+        console.log("No session found, redirecting to login");
+        router.push("/login");
       }
     }
 

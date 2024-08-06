@@ -9,14 +9,19 @@ export default function LoggedOutSessionCheck() {
 
   useEffect(() => {
     async function checkSession() {
-      const session = await getSession(); // Ensure this is awaited
-      const rememberMe = Cookies.get("rememberMe");
-      // console.log("Session:", session); // Debugging log
-      // console.log("rememberMe cookie:", rememberMe); // Debugging log
+      try {
+        const session = await getSession(); // Ensure this is awaited
+        const rememberMe = Cookies.get("rememberMe");
+        // console.log("Session:", session); // Debugging log
+        // console.log("rememberMe cookie:", rememberMe); // Debugging log
 
-      if (!rememberMe && !session) {
-        console.log("Redirecting to /login");
-        router.push("/login");
+        if (!rememberMe && !session) {
+          console.log("Redirecting to /login");
+          router.push("/login");
+        }
+      } catch (error) {
+        console.error("Error checking session:", error);
+        // Optionally handle the error, e.g., redirect to an error page
       }
     }
 

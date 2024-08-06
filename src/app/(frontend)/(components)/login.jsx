@@ -219,7 +219,23 @@ export function Login() {
   // Function to handle Google sign-in
   const handleGoogleSignIn = async () => {
     try {
-      await signIn("google");
+      const res = await signIn("google", { redirect: false });
+      if (res.ok) {
+        if (isOn) {
+          Cookies.set("rememberMe", "on", {
+            expires: 14,
+            sameSite: "None",
+            secure: true,
+          });
+        } else {
+          Cookies.set("rememberMe", "on", {
+            expires: 7,
+            sameSite: "None",
+            secure: true,
+          });
+        }
+        router.push("/chat");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -228,7 +244,23 @@ export function Login() {
   // Function to handle Facebook sign-in
   const handleFacebookSignIn = async () => {
     try {
-      await signIn("facebook");
+      const res = await signIn("facebook", { redirect: false });
+      if (res.ok) {
+        if (isOn) {
+          Cookies.set("rememberMe", "on", {
+            expires: 14,
+            sameSite: "None",
+            secure: true,
+          });
+        } else {
+          Cookies.set("rememberMe", "on", {
+            expires: 7,
+            sameSite: "None",
+            secure: true,
+          });
+        }
+        router.push("/chat");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -237,7 +269,23 @@ export function Login() {
   // Function to handle Github sign-in
   const handleGithubSignIn = async () => {
     try {
-      await signIn("github");
+      const res = await signIn("github", { redirect: false });
+      if (res.ok) {
+        if (isOn) {
+          Cookies.set("rememberMe", "on", {
+            expires: 14,
+            sameSite: "None",
+            secure: true,
+          });
+        } else {
+          Cookies.set("rememberMe", "on", {
+            expires: 7,
+            sameSite: "None",
+            secure: true,
+          });
+        }
+        router.push("/chat");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -253,7 +301,7 @@ export function Login() {
         <form method="POST" noValidate onSubmit={loginSubmit}>
           <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
             <label
-              for="email"
+              htmlFor="email"
               className="text-[12px] md:text-[16px] pb-1 text-[#1E1E1E]"
             >
               Email
@@ -285,8 +333,7 @@ export function Login() {
           </div>
           <div className="flex flex-col justify-start items-start mx-[24px] my-[24px]">
             <label
-              for
-              password="password"
+              htmlFor="password"
               className="text-[12px] md:text-[16px] pb-1 text-[#1E1E1E]"
             >
               Password
@@ -333,34 +380,31 @@ export function Login() {
         <div className="h-0 w-16 md:w-44 border border-gray-300"></div>
       </div>
       <div className="mx-[80px] mt-[10px] flex md:justify-between justify-center items-center">
-        <button>
+        <button onClick={handleGoogleSignIn}>
           <Image
             src="/googleicon.png"
             width={50}
             height={50}
             alt="Google login"
             className="mx-4 md:mx-0"
-            onClick={handleGoogleSignIn} // Add onClick handler
           />
         </button>
-        <button>
+        <button onClick={handleFacebookSignIn}>
           <Image
             src="/facebookicon.png"
             width={50}
             height={50}
             alt="Facebook login"
             className="mx-4 md:mx-0"
-            onClick={handleFacebookSignIn} // Add onClick handler
           />
         </button>
-        <button>
+        <button onClick={handleGithubSignIn}>
           <Image
             src="/githubicon.png"
             width={50}
             height={50}
             alt="GitHub login"
             className="mx-4 md:mx-0"
-            onClick={handleGithubSignIn}
           />
         </button>
       </div>

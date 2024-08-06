@@ -1,11 +1,11 @@
-import NextAuth from "next-auth/next";
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import FacebookProvider from "next-auth/providers/facebook";
+import GithubProvider from "next-auth/providers/github";
 import server from "../../../../../../libs/mongodb/server";
 import User from "../../../../../../models/user";
 import bcrypt from "bcrypt";
-import FacebookProvider from "next-auth/providers/facebook";
-import GithubProvider from "next-auth/providers/github";
 
 const options = {
   providers: [
@@ -40,15 +40,33 @@ const options = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          redirect_uri:
+            "https://sync-fewd-11.vercel.app/api/auth/callback/google",
+        },
+      },
     }),
     FacebookProvider({
       clientId: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+      authorization: {
+        params: {
+          redirect_uri:
+            "https://sync-fewd-11.vercel.app/api/auth/callback/facebook",
+        },
+      },
       scope: "email",
     }),
     GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      authorization: {
+        params: {
+          redirect_uri:
+            "https://sync-fewd-11.vercel.app/api/auth/callback/github",
+        },
+      },
     }),
   ],
   session: {

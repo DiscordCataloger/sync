@@ -6,6 +6,7 @@ import { signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import React from "react";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 const ProfileCard = ({ onClose, username, onSave, onLogout }) => {
   const [currentUser, setCurrentUser] = useState({});
@@ -53,6 +54,7 @@ const ProfileCard = ({ onClose, username, onSave, onLogout }) => {
 
     // Sign out the user
     await signOut();
+    redirect("/");
   }
 
   const handleImageUploadClick = async (e) => {

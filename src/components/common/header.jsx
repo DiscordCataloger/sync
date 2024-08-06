@@ -9,10 +9,12 @@ import { getSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const pacifico = Pacifico({ subsets: ["latin"], weight: ["400"] });
 
 export function Header({ className }) {
+  const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [session, setSession] = useState(null);
   const [rememberMe, setRememberMe] = useState(null);
@@ -76,6 +78,7 @@ export function Header({ className }) {
             onClick={async (e) => {
               e.preventDefault();
               await signOut();
+              router.push("/");
             }}
           >
             <Button

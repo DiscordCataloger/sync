@@ -35,5 +35,6 @@ export const config = {
     "/api/serverChannels/:path*",
     "/api/users/:path*",
     "/api/user/:path*", // Ensure this is correctly configured
+    "/api/userss/:path*",
   ],
 };

@@ -1,11 +1,11 @@
-import NextAuth from "next-auth/next";
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import FacebookProvider from "next-auth/providers/facebook";
+import GithubProvider from "next-auth/providers/github";
 import server from "../../../../../../libs/mongodb/server";
 import User from "../../../../../../models/user";
 import bcrypt from "bcrypt";
-import FacebookProvider from "next-auth/providers/facebook";
-import GithubProvider from "next-auth/providers/github";
 
 const options = {
   providers: [
@@ -32,7 +32,7 @@ const options = {
 
           return user;
         } catch (error) {
-          console.log(error);
+          console.log("Error in authorize:", error);
           return null;
         }
       },
@@ -42,26 +42,26 @@ const options = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       authorization: {
         params: {
-          redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/google`,
+          redirect_uri: "https://sync-fewd-11.vercel.app/chat",
         },
       },
     }),
     FacebookProvider({
       clientId: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      scope: "email",
       authorization: {
         params: {
-          redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/facebook`,
+          redirect_uri: "https://sync-fewd-11.vercel.app/chat",
         },
       },
+      scope: "email",
     }),
     GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
       authorization: {
         params: {
-          redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/github`,
+          redirect_uri: "https://sync-fewd-11.vercel.app/chat",
         },
       },
     }),
@@ -78,7 +78,7 @@ const options = {
   },
   callbacks: {
     async signIn({ user, account, profile }) {
-      console.log("signIn callback triggered"); // Initial log
+      console.log("signIn callback triggered for provider:", account.provider); // Log provider
       const registerUser = async (data) => {
         try {
           const res = await fetch(`/api/register`, {
@@ -102,12 +102,13 @@ const options = {
             return false;
           }
         } catch (error) {
-          console.log(error);
+          console.log("Error in registerUser:", error);
           return false;
         }
       };
 
       if (account.provider === "google") {
+        console.log("Google profile:", profile);
         return registerUser({
           email: profile.email,
           displayName: profile.name,
@@ -115,6 +116,7 @@ const options = {
         });
       }
       if (account.provider === "facebook") {
+        console.log("Facebook profile:", profile);
         const profilePictureData = profile.picture.data; // This should be the object containing the URL
         return registerUser({
           email: profile.email,
@@ -123,7 +125,7 @@ const options = {
         });
       }
       if (account.provider === "github") {
-        console.log(profile.login);
+        console.log("GitHub profile:", profile);
         return registerUser({
           email: profile.email || `${profile.login}@users.noreply.github.com`, // Fallback to a generated email if not provided,
           displayName: profile.name || profile.login,
@@ -149,6 +151,9 @@ const options = {
   },
 };
 
-const handler = (req, res) => NextAuth(req, res, options);
+const handler = (req, res) => {
+  console.log("NextAuth handler triggered"); // Log handler trigger
+  return NextAuth(req, res, options);
+};
 
 export { handler as GET, handler as POST };

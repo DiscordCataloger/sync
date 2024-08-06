@@ -29,6 +29,7 @@ export default function RegisterSocial() {
       console.log(error);
     }
   };
+
   return (
     <div className="flex mt-0 max-w-[45%] md:mt-[2.67%] flex-1">
       <div className="flex flex-row h-[100%]">
@@ -53,7 +54,7 @@ export default function RegisterSocial() {
               height={30}
               width={30}
               alt="Google_register"
-            ></Image>
+            />
           </Button>
           <Button
             size="default"
@@ -68,7 +69,7 @@ export default function RegisterSocial() {
               height={30}
               width={30}
               alt="facebookregister"
-            ></Image>
+            />
           </Button>
           <Button
             size="default"
@@ -83,7 +84,7 @@ export default function RegisterSocial() {
               height={30}
               width={30}
               alt="githubregister"
-            ></Image>
+            />
           </Button>
         </div>
       </div>

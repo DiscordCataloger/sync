@@ -1,7 +1,7 @@
 export async function getMessagesMsgs(id, offset = 0, limit = 20) {
   try {
     const res = await fetch(
-      `http://localhost:3000/api/messages/${id}/msgs?offset=${offset}&limit=${limit}`,
+      `/api/messages/${id}/msgs?offset=${offset}&limit=${limit}`,
       {
         cache: "no-store",
         headers: {

@@ -1,6 +1,6 @@
 export async function addServerChannel(name) {
   try {
-    const res = await fetch(`http://localhost:3000/api/serverChannels/`, {
+    const res = await fetch(`/api/serverChannels/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

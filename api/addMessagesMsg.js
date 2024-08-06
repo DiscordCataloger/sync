@@ -1,6 +1,6 @@
 export async function addMessagesMsg(id, msg) {
   try {
-    const res = await fetch(`http://localhost:3000/api/messages/${id}`, {
+    const res = await fetch(`/api/messages/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

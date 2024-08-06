@@ -1,6 +1,6 @@
 export async function getServerChannelById(id) {
   try {
-    const res = await fetch(`http://localhost:3000/api/serverChannels/${id}`, {
+    const res = await fetch(`/api/serverChannels/${id}`, {
       cache: "no-store",
       headers: {
         "x-api-key": process.env.NEXT_PUBLIC_API_KEY,

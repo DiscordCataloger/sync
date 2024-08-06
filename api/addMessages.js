@@ -1,6 +1,6 @@
 export async function addMessages(userId1, userId2) {
   try {
-    const res = await fetch(`http://localhost:3000/api/messages/`, {
+    const res = await fetch(`/api/messages/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

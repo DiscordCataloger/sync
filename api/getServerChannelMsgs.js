@@ -1,7 +1,7 @@
 export async function getServerChannelMsgs(id, offset = 0, limit = 20) {
   try {
     const res = await fetch(
-      `http://localhost:3000/api/serverChannels/${id}/msgs?offset=${offset}&limit=${limit}`,
+      `/api/serverChannels/${id}/msgs?offset=${offset}&limit=${limit}`,
       {
         cache: "no-store",
         headers: {

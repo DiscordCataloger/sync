@@ -1,6 +1,6 @@
 export async function addServer(newServer) {
   try {
-    const res = await fetch(`http://localhost:3000/api/servers/`, {
+    const res = await fetch(`/api/servers/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

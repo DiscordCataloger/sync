@@ -1,7 +1,7 @@
 export async function deleteServerChannel(id) {
   try {
     const res = await fetch(
-      `http://localhost:3000/api/serverChannels?id=${id}`,
+      `/api/serverChannels?id=${id}`,
       {
         method: "DELETE",
         headers: {

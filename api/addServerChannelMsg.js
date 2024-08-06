@@ -1,6 +1,6 @@
 export async function addServerChannelMsg(id, msg) {
   try {
-    const res = await fetch(`http://localhost:3000/api/serverChannels/${id}`, {
+    const res = await fetch(`/api/serverChannels/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

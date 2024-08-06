@@ -6,7 +6,7 @@ export default function RegisterSocial() {
   // Function to handle Google sign-in
   const handleGoogleSignIn = async () => {
     try {
-      await signIn("google", { callbackUrl: "/chat" });
+      await signIn("google");
     } catch (error) {
       console.log(error);
     }
@@ -15,7 +15,7 @@ export default function RegisterSocial() {
   // Function to handle Facebook sign-in
   const handleFacebookSignIn = async () => {
     try {
-      await signIn("facebook", { callbackUrl: "/chat" });
+      await signIn("facebook");
     } catch (error) {
       console.log(error);
     }
@@ -24,11 +24,12 @@ export default function RegisterSocial() {
   // Function to handle Github sign-in
   const handleGithubSignIn = async () => {
     try {
-      await signIn("github", { callbackUrl: "/chat" });
+      await signIn("github");
     } catch (error) {
       console.log(error);
     }
   };
+
   return (
     <div className="flex mt-0 max-w-[45%] md:mt-[2.67%] flex-1">
       <div className="flex flex-row h-[100%]">
@@ -53,7 +54,7 @@ export default function RegisterSocial() {
               height={30}
               width={30}
               alt="Google_register"
-            ></Image>
+            />
           </Button>
           <Button
             size="default"
@@ -68,7 +69,7 @@ export default function RegisterSocial() {
               height={30}
               width={30}
               alt="facebookregister"
-            ></Image>
+            />
           </Button>
           <Button
             size="default"
@@ -83,7 +84,7 @@ export default function RegisterSocial() {
               height={30}
               width={30}
               alt="githubregister"
-            ></Image>
+            />
           </Button>
         </div>
       </div>

@@ -219,7 +219,7 @@ export function Login() {
   // Function to handle Google sign-in
   const handleGoogleSignIn = async () => {
     try {
-      await signIn("google", { callbackUrl: "/chat" });
+      await signIn("google");
     } catch (error) {
       console.log(error);
     }
@@ -228,7 +228,7 @@ export function Login() {
   // Function to handle Facebook sign-in
   const handleFacebookSignIn = async () => {
     try {
-      await signIn("facebook", { callbackUrl: "/chat" });
+      await signIn("facebook");
     } catch (error) {
       console.log(error);
     }
@@ -237,7 +237,7 @@ export function Login() {
   // Function to handle Github sign-in
   const handleGithubSignIn = async () => {
     try {
-      await signIn("github", { callbackUrl: "/chat" });
+      await signIn("github");
     } catch (error) {
       console.log(error);
     }

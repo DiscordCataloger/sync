@@ -54,7 +54,7 @@ export function Header({ className }) {
 
   async function logoutHandle(e) {
     e.preventDefault();
-    await signOut();
+    await signOut({ redirect: false });
     router.push("/login");
   }
 

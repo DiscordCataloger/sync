@@ -19,7 +19,7 @@ const font = Josefin_Sans({
 });
 
 const NUMBER_OF_MSG_TO_FETCH = 20;
-const socket = io("http://localhost:3000");
+const socket = io();
 
 // messageid, otherUser id, otherUser icon,
 export default function ChatUI({

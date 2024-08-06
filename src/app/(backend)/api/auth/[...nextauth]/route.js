@@ -42,8 +42,7 @@ const options = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       authorization: {
         params: {
-          redirect_uri:
-            "https://sync-fewd-11.vercel.app/api/auth/callback/google",
+          redirect_uri: "https://sync-fewd-11.vercel.app/chat",
         },
       },
     }),
@@ -52,8 +51,7 @@ const options = {
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
       authorization: {
         params: {
-          redirect_uri:
-            "https://sync-fewd-11.vercel.app/api/auth/callback/facebook",
+          redirect_uri: "https://sync-fewd-11.vercel.app/chat",
         },
       },
       scope: "email",
@@ -63,8 +61,7 @@ const options = {
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
       authorization: {
         params: {
-          redirect_uri:
-            "https://sync-fewd-11.vercel.app/api/auth/callback/github",
+          redirect_uri: "https://sync-fewd-11.vercel.app/chat",
         },
       },
     }),

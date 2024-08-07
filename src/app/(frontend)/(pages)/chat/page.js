@@ -280,7 +280,7 @@ export default function Page() {
             {popupComponent === "directMessageAdd" && (
               <DirectMessageAdd
                 onClose={() => setPopupComponent("")}
-                handleDm={handleDmFriendClick}
+                handleDm={handleDmClick}
               />
             )}
           </div>

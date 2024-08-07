@@ -19,7 +19,11 @@ async function connectToDatabase() {
 async function getUserFromToken(req) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   if (!token) throw new Error("Unauthorized");
-  return await User.findOne({ email: token.email });
+  if (token.email) {
+    return await User.findOne({ email: token.email });
+  } else {
+    return await User.findOne({ displayName: token.name });
+  }
 }
 
 export async function PUT(req) {

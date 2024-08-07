@@ -9,14 +9,12 @@ export const useScreenDetector = (initialValue) => {
       setWidth(window.innerWidth);
     };
 
-    if (typeof window !== "undefined") {
-      setWidth(window.innerWidth);
-      window.addEventListener("resize", handleWindowSizeChange);
+    setWidth(window.innerWidth);
+    window.addEventListener("resize", handleWindowSizeChange);
 
-      return () => {
-        window.removeEventListener("resize", handleWindowSizeChange);
-      };
-    }
+    return () => {
+      window.removeEventListener("resize", handleWindowSizeChange);
+    };
   }, []);
 
   const isMobile = width <= 768;

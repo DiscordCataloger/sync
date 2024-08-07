@@ -387,6 +387,7 @@ export function Login() {
             height={50}
             alt="Google login"
             className="mx-4 md:mx-0"
+            priority // Added priority attribute
           />
         </button>
         <button onClick={handleFacebookSignIn}>
@@ -396,6 +397,7 @@ export function Login() {
             height={50}
             alt="Facebook login"
             className="mx-4 md:mx-0"
+            priority // Added priority attribute
           />
         </button>
         <button onClick={handleGithubSignIn}>
@@ -405,6 +407,7 @@ export function Login() {
             height={50}
             alt="GitHub login"
             className="mx-4 md:mx-0"
+            priority // Added priority attribute
           />
         </button>
       </div>

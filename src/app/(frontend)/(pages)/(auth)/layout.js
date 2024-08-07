@@ -18,6 +18,7 @@ export default function RootLayout({ children }) {
             width={64}
             height={64}
             className="mr-3 w-10 h-10 md:w-16 md:h-16"
+            priority // Added priority attribute
           />
           <h1
             className={`${kanit.className} text-[#EBEBFF] text-[30px] md:text-[41px] font-medium`}

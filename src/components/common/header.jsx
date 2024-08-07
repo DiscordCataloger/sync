@@ -91,8 +91,7 @@ export function Header({ className }) {
           </Link>
         </div>
       ) : (
-        <>
-          {" "}
+        <div className="flex gap-3 items-center">
           <Link href="/login">
             <Button size="lg" variant="outline">
               <Typography variant="p" className="text-blue-600">
@@ -100,12 +99,12 @@ export function Header({ className }) {
               </Typography>
             </Button>
           </Link>
-          <Link href="/register" target="_blank">
+          <Link href="/register">
             <Button size="lg" variant="default">
               <Typography variant="p">Sign Up</Typography>
             </Button>
           </Link>
-        </>
+        </div>
       )}
     </div>
   );

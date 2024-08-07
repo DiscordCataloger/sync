@@ -12,8 +12,8 @@ export const metadata = {
 export default async function LoginPage() {
   return (
     <AuthProvider>
-      <LoggedInSessionCheck />
       <SlideProvider>
+        <LoggedInSessionCheck />
         <LoginPageComponent />
       </SlideProvider>
     </AuthProvider>

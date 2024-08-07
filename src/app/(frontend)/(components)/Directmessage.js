@@ -52,7 +52,7 @@ export default function DirectMessages({
   }, []);
 
   return (
-    <div className="bg-white p-2 rounded-3xl shadow-md shadow-sky-400/40 overflow-hidden flex-1">
+    <div className="bg-white p-2 rounded-3xl shadow-md shadow-sky-400/40 overflow-y-scroll custom-scrollbar flex-1">
       <div className="font-bold text-md p-3 text-black">Direct Messages</div>
       <hr />
       <div className="overflow-y-auto h-full custom-scrollbar">
@@ -82,7 +82,7 @@ export default function DirectMessages({
             return (
               <div
                 key={message._id}
-                className={`cursor-pointer message-item flex items-center py-2 px-3 hover:bg-blue-200 transition-colors ${
+                className={`cursor-pointer rounded-lg message-item flex items-center py-2 px-3 hover:bg-blue-200 transition-colors ${
                   selectedMiddleComponent === message._id ? "bg-blue-200" : ""
                 }`}
                 onClick={() => onclickDmUser(message._id, name, icon)}
@@ -120,17 +120,17 @@ export default function DirectMessages({
       <hr />
       <style jsx>{`
         .custom-scrollbar::-webkit-scrollbar {
-          width: 8px;
+          width: 0px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-          background: white;
+          background: none;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: white;
-          border-radius: 4px;
+          background: none;
+          border-radius: 0px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #cce6ff;
+          background: none;
         }
       `}</style>
     </div>

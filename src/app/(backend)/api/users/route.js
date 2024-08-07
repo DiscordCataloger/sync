@@ -22,20 +22,12 @@ export async function GET(req) {
     }
 
     // Extract the user ID from the token
-    let currentUserId = token.sub; // Adjust this based on your token structure
-    console.log("Current User ID:", currentUserId);
-
-    // Convert currentUserId to ObjectId if it's a valid 24-character hex string
-    if (mongoose.Types.ObjectId.isValid(currentUserId)) {
-      currentUserId = new mongoose.Types.ObjectId(currentUserId);
-    } else {
-      console.log("Current User ID is not a valid ObjectId.");
-      return NextResponse.json({ message: "Invalid user ID" }, { status: 400 });
-    }
+    let currentUserEmail = token.email; // Adjust this based on your token structure
+    console.log("Current User ID:", currentUserEmail);
 
     console.log("Finding users...");
     // Find all users except the current user
-    const users = await User.find({ _id: { $ne: currentUserId } });
+    const users = await User.find({ _id: { $ne: currentUserEmail } });
     console.log("Users:", users);
 
     return NextResponse.json(users, { status: 200 });

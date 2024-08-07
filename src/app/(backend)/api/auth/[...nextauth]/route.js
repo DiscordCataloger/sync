@@ -67,7 +67,6 @@ const options = {
       const registerUser = async (data) => {
         try {
           const existingUser = await User.findOne({ email: data.email });
-
           if (existingUser) {
             console.log("User already exists:", existingUser.email);
             return true; // User already exists, no need to register
@@ -128,9 +127,8 @@ const options = {
     },
     async jwt({ token, user }) {
       if (user) {
-        token.id = user._id;
+        token.id = user.id;
         token.email = user.email;
-        token.name = user.displayName;
       }
       return token;
     },

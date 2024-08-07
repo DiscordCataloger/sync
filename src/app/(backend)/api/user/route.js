@@ -16,12 +16,13 @@ async function connectToDatabase() {
 
 async function getUserFromToken(req) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  if (!token) throw new Error("Unauthorized");
+  const session = await getSession({ req });
+  if (!token && !session) throw new Error("Unauthorized");
 
   if (token.email) {
     return await User.findOne({ email: token.email });
-  } else {
-    return await User.findOne({ displayName: token.name });
+  } else if (session.user.email) {
+    return await User.findOne({ email: session.user.email });
   }
 }
 

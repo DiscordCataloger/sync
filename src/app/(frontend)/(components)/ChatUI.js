@@ -55,10 +55,10 @@ export default function ChatUI({
   // get other user id
   useEffect(() => {
     if (messages) {
-      console.log("currentUser: ", currentUser._id);
+      // console.log("currentUser: ", currentUser._id);
       messages?.userIds?.forEach((userId) => {
         if (userId !== currentUser._id) {
-          console.log("userId: ", userId);
+          // console.log("userId: ", userId);
           setOtherUser(userId);
         }
       });
@@ -110,7 +110,6 @@ export default function ChatUI({
     pusherclient.subscribe(toPusherKey(`dm:${messagesId}:incoming_dm_msgs`));
 
     const sendMsg = (newMessage) => {
-      // console.log("addedMessage:", addedMessage);
       setMsg((prevMsgs) => {
         const messageIndex = prevMsgs.findIndex(
           (msg) => msg.uid === newMessage.uid
@@ -127,19 +126,6 @@ export default function ChatUI({
       });
       setOffset((prevOffset) => prevOffset + 1);
       setAddMsg((prevCounter) => prevCounter + 1);
-      setUserMessages((prevUserMessages) => {
-        const updatedUserMessages = [...prevUserMessages];
-        const messageIndex = updatedUserMessages.findIndex(
-          (msg) => msg._id === newMessage.messageId
-        );
-        if (messageIndex !== -1) {
-          updatedUserMessages[messageIndex] = {
-            ...updatedUserMessages[messageIndex],
-            msgs: [...updatedUserMessages[messageIndex].msgs, newMessage],
-          };
-        }
-        return updatedUserMessages;
-      });
     };
 
     pusherclient.bind("incoming_dm_msgs", sendMsg);
@@ -152,14 +138,44 @@ export default function ChatUI({
     };
   }, [messagesId, setUserMessages]);
 
+  // handle badge update
+  useEffect(() => {
+    const serverId =
+      selectedServer && selectedServer._id ? selectedServer._id : "chat";
+    const subscriptionKey = toPusherKey(
+      `server:${serverId}:incoming_channel_badges`
+    );
+    // console.log("Subscribing to:", subscriptionKey);
+
+    pusherclient.subscribe(subscriptionKey);
+
+    const handleBadgeUpdate = (message) => {
+      // console.log("Received badge update:", message.message);
+      // console.log("messageId: ", userMessages);
+      setUserMessages((prevMessages) => {
+        return prevMessages.map((msg) => {
+          if (msg._id === message.messageId) {
+            // console.log(`Updating msg: ${msg._id}`);
+            return {
+              ...msg,
+              msgs: [...msg.msgs, message.message],
+            };
+          }
+          return msg;
+        });
+      });
+    };
+
+    pusherclient.bind("incoming_channel_badges", handleBadgeUpdate);
+
+    return () => {
+      // console.log("Cleaning up subscription:", subscriptionKey);
+      pusherclient.unsubscribe(subscriptionKey);
+      pusherclient.unbind("incoming_channel_badges", handleBadgeUpdate);
+    };
+  }, [messagesId, selectedServer, setMessages, msg]);
+
   const sendMessage = async () => {
-    console.log("sendMessage");
-    console.log("input: ", input);
-    console.log("otherUser: ", otherUser);
-    console.log("messages-obj: ", messages);
-    console.log("messagesId: ", messagesId);
-    console.log("currentUser: ", currentUser);
-    console.log("msgs: ", msg);
     if (currentUser && messagesId && (input.trim() || attachments.length > 0)) {
       const currentTime = new Date();
       const months = [
@@ -192,13 +208,6 @@ export default function ChatUI({
         uid: uuidv4(),
         userId: currentUser._id,
       };
-      // console.log("newMsgLocal: ", newMsgLocal);
-      // Emit the initial message to live chat & added msg (state) without attachments
-      // socket.emit("sendUserMessage", {
-      //   messageId: messagesId,
-      //   otherUserId: otherUser,
-      //   ...newMsgLocal,
-      // });
 
       // Trigger Pusher event by calling the new server-side endpoint
       await fetch("/api/triggerPusher", {
@@ -236,13 +245,6 @@ export default function ChatUI({
           // Add msgAttach urls after getting url
           const updatedMsg = { ...newMsgLocal, msgAttach: uploadedUrls };
 
-          // Modify live chat & previous added msg (state) with uploadedurls
-          // socket.emit("sendUserMessage", {
-          //   messageId: messagesId,
-          //   otherUserId: otherUser,
-          //   ...updatedMsg,
-          // });
-
           // Trigger Pusher event by calling the new server-side endpoint
           await fetch("/api/triggerPusher", {
             method: "POST",
@@ -250,9 +252,10 @@ export default function ChatUI({
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              message: newMsgLocal,
-              triggerType: "dm",
               messageId: messagesId,
+              selectedServerId: "chat",
+              message: updatedMsg,
+              triggerType: "server",
             }),
           });
 
@@ -265,8 +268,18 @@ export default function ChatUI({
 
       // Create newMsg without the uid
       const updatedMsg = { ...newMsgLocal, msgAttach: [] };
-      // const { uid, ...newMsg } = updatedMsg;
-      // console.log("without attachments", newMsg);
+      await fetch("/api/triggerPusher", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messageId: messagesId,
+          selectedServerId: "chat",
+          message: updatedMsg,
+          triggerType: "server",
+        }),
+      });
       return await addMessagesMsg(messagesId, updatedMsg);
     }
   };

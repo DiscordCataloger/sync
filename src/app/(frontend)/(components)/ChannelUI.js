@@ -42,20 +42,6 @@ export default function ChannelUI({
   const [serverMembersExceptCurrentUser, setServerMembersExceptCurrentUser] =
     useState([]);
 
-  // useEffect(() => {
-  //   if (selectedServer && channelId) {
-  //     socket.emit("joinServer", { serverId: selectedServer._id });
-  //     socket.emit("joinChannel", { channelId, userId: currentUser._id });
-  //   }
-
-  //   return () => {
-  //     if (selectedServer && channelId) {
-  //       socket.emit("leaveServer", { serverId: selectedServer._id });
-  //       socket.emit("leaveChannel", { channelId });
-  //     }
-  //   };
-  // }, [selectedServer, channelId, currentUser]);
-
   //messsage pusher
   useEffect(() => {
     pusherclient.subscribe(
@@ -99,14 +85,15 @@ export default function ChannelUI({
     );
 
     const handleBadgeUpdate = (message) => {
-      console.log("Received badge update:", message);
+      // console.log("Received badge update:", message.message);
+      // console.log("channelId:", message.channelId);
       setServerChannels((prevChannels) => {
         return prevChannels.map((channel) => {
           if (channel._id === message.channelId) {
-            console.log(`Updating channel: ${channel._id}`);
+            // console.log(`Updating channel: ${channel._id}`);
             return {
               ...channel,
-              channelMsgs: [...channel.channelMsgs, message],
+              channelMsgs: [...channel.channelMsgs, message.message],
             };
           }
           return channel;
@@ -230,14 +217,6 @@ export default function ChannelUI({
         uid: uuidv4(),
       };
 
-      // Emit the initial message to live chat & added msg (state) without attachments
-      // socket.emit("sendMessage", { channelId, ...newMsgLocal });
-      // socket.emit("sendServerMessage", {
-      //   serverId: selectedServer._id,
-      //   channelId, // Include the channelId in the message
-      //   ...newMsgLocal,
-      // });
-
       // Trigger Pusher event by calling the new server-side endpoint
       await fetch("/api/triggerPusher", {
         method: "POST",
@@ -273,12 +252,6 @@ export default function ChannelUI({
           );
           const updatedMsg = { ...newMsgLocal, msgAttach: uploadedUrls };
 
-          // socket.emit("sendMessage", { channelId, ...updatedMsg });
-          // socket.emit("sendServerMessage", {
-          //   serverId: selectedServer._id,
-          //   channelId, // Include the channelId in the message
-          //   ...updatedMsg,
-          // });
           await fetch("/api/triggerPusher", {
             method: "POST",
             headers: {

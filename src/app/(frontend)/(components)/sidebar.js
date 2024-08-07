@@ -17,8 +17,13 @@ function Sidebar({
   onclickProfile,
   selectedLeftComponent,
 }) {
-  const { servers, currentUser, serverTrigger, setServerTrigger } =
-    useContext(ServerContext);
+  const {
+    servers,
+    currentUser,
+    serverTrigger,
+    setServerTrigger,
+    setSelectedServer,
+  } = useContext(ServerContext);
   const [filteredServers, setFilteredServers] = useState([]);
 
   useEffect(() => {
@@ -41,7 +46,10 @@ function Sidebar({
             ? "bg-blue-700 border-l-4 border-orange-600"
             : ""
         }`}
-        onClick={onclickChat}
+        onClick={() => {
+          onclickChat();
+          setSelectedServer(null); // Set selected server to null
+        }}
       >
         <AiFillMessage size={36} className="text-white" />
       </div>

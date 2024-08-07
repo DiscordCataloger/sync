@@ -7,23 +7,25 @@ export async function POST(req) {
       await req.json(); // Include triggerType in the destructuring
 
     if (triggerType === "channel" && channelId) {
-      pusher.trigger(
-        toPusherKey(`channel:${channelId}:incoming_channel_msgs`),
-        "incoming_channel_msgs",
-        message
+      const channelKey = toPusherKey(
+        `channel:${channelId}:incoming_channel_msgs`
       );
+      console.log("Triggering Pusher event for channel:", channelKey);
+      pusher.trigger(channelKey, "incoming_channel_msgs", message);
     } else if (triggerType === "server" && selectedServerId) {
-      pusher.trigger(
-        toPusherKey(`server:${selectedServerId}:incoming_channel_badges`),
-        "incoming_channel_badges",
-        message
+      const serverKey = toPusherKey(
+        `server:${selectedServerId}:incoming_channel_badges`
       );
+      console.log("Triggering Pusher event for server:", serverKey);
+      pusher.trigger(serverKey, "incoming_channel_badges", {
+        message,
+        channelId,
+        messageId,
+      });
     } else if (triggerType === "dm" && messageId) {
-      pusher.trigger(
-        toPusherKey(`dm:${messageId}:incoming_dm_msgs`),
-        "incoming_dm_msgs",
-        message
-      );
+      const dmKey = toPusherKey(`dm:${messageId}:incoming_dm_msgs`);
+      console.log("Triggering Pusher event for DM:", dmKey);
+      pusher.trigger(dmKey, "incoming_dm_msgs", message);
     }
 
     return new Response(JSON.stringify({ success: true }), {

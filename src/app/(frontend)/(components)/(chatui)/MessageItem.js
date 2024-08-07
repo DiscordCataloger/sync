@@ -123,7 +123,7 @@ export default function MessageItem({
     <div className={`flex justify-start items-start mt-5`}>
       {currentUserId !== userId && (
         <img
-          src={icon}
+          src={icon || "/chat_bot.png"}
           className="mr-3 mt-3 md:w-12 md:h-12 w-10 h-10 rounded-full"
         />
       )}
@@ -138,7 +138,7 @@ export default function MessageItem({
         </div>
         <div
           style={{
-            minWidth: `${(userName.length + displayDate.length) * 6 + 30}px`,
+            minWidth: `${(userName?.length + displayDate.length) * 6 + 30}px`,
           }}
           className={`flex flex-col gap-2 p-2 rounded-xl text-wrap ${
             userId === currentUserId
@@ -237,7 +237,7 @@ export default function MessageItem({
 
       {userId === currentUserId && (
         <img
-          src={icon}
+          src={icon || "/chat_bot.png"}
           className="ml-3 mt-3 md:w-12 md:h-12 w-10 h-10 rounded-full"
         />
       )}

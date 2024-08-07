@@ -6,6 +6,8 @@ import MessageItem from "./MessageItem";
 import { useInView } from "react-intersection-observer";
 import { getMessagesMsgs } from "../../../../api/getMessagesMsgs";
 import { Player } from "@lottiefiles/react-lottie-player";
+import { getUserById } from "@/api/getUserById";
+import { getMessageById } from "@/api/getMessageById";
 
 export default function MessageList({
   id,
@@ -21,6 +23,29 @@ export default function MessageList({
   const scrollContainerRef = useRef(null);
   const { ref, inView } = useInView();
   const [loading, setLoading] = useState(true); // Loading state
+  const [currentUser, setCurrentUser] = useState(null);
+  const [otherUser, setOtherUser] = useState(null);
+
+  useEffect(() => {
+    getUser();
+    getOtherUser();
+  }, [id]);
+
+  const getUser = async () => {
+    const user = await getUserById(currentUserId);
+    // console.log("currentUser: ", user);
+    setCurrentUser(user);
+  };
+
+  const getOtherUser = async () => {
+    const message = await getMessageById(id);
+    const otherUserIds = message.userIds.filter(
+      (userId) => userId !== currentUserId
+    );
+    const otherUser = await getUserById(otherUserIds[0]);
+    // console.log("otherUser: ", otherUser);
+    setOtherUser(otherUser);
+  };
 
   const loadMoreMsg = async () => {
     try {
@@ -67,6 +92,8 @@ export default function MessageList({
     >
       <div ref={bottomRef}></div>
       {msg &&
+        currentUser &&
+        otherUser &&
         msg.map((message) => (
           <motion.div
             key={message._id || message.uid}
@@ -82,8 +109,16 @@ export default function MessageList({
             }`}
           >
             <MessageItem
-              icon={message.msgIcon}
-              userName={message.msgFrom}
+              icon={
+                message.userId === currentUserId
+                  ? currentUser.icon
+                  : otherUser.icon
+              }
+              userName={
+                message.userId === currentUserId
+                  ? currentUser?.displayName
+                  : otherUser?.displayName
+              }
               text={message.msgText}
               time={message.msgTime}
               file={message.msgAttach}

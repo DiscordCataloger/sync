@@ -72,7 +72,7 @@ export default function DirectMessages({
           return (
             <div
               key={message._id}
-              className={`cursor-pointer message-item flex items-center p-3 hover:bg-blue-200 transition-colors ${
+              className={`cursor-pointer message-item flex items-center py-2 px-3 hover:bg-blue-200 transition-colors ${
                 selectedMiddleComponent === message._id ? "bg-blue-200" : ""
               }`}
               onClick={() => onclickDmUser(message._id, name, icon)}

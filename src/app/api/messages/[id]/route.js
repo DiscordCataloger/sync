@@ -1,5 +1,7 @@
 import connectMongoDB from "../../../../../libs/mongodb";
 import Messages from "../../../../../models/messages";
+import { pusher } from "@/lib/pusher";
+import { toPusherKey } from "@/lib/utils";
 
 // GET request handler
 export async function GET(req, { params }) {
@@ -30,6 +32,12 @@ export async function PUT(req, { params }) {
       userId: newMessage.userId,
     });
   }
+
+  pusher.trigger(
+    toPusherKey(`dm:${id}:incoming_dm_msgs`),
+    "incoming_dm_msgs",
+    newMessage
+  );
 
   // Delete unread messages for the specified users
   if (deleteUnreadFor) {

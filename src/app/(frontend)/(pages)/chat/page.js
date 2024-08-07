@@ -134,7 +134,7 @@ export default function Page() {
               ...channel,
               channelMsgs: channel.channelMsgs.map((msg) => ({
                 ...msg,
-                msgUnread: msg.msgUnread.filter(
+                msgUnread: msg.msgUnread?.filter(
                   (userId) => userId !== currentUser._id
                 ),
               })),

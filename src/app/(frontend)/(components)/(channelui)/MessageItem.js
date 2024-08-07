@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { Player } from "@lottiefiles/react-lottie-player";
+import { getUserById } from "@/api/getUserById";
 import {
   FaFileAlt,
   FaFilePdf,
@@ -74,6 +75,17 @@ export default function MessageItem({
   const videoRef = useRef(null);
   // console.log("userId", userId);
   // console.log("currentUserId", currentUserId);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    getUser();
+  }, [userId]);
+
+  const getUser = async () => {
+    const user = await getUserById(userId);
+    setUser(user);
+    // console.log("user", user);
+  };
 
   const currentTime = new Date();
   const months = [
@@ -124,12 +136,12 @@ export default function MessageItem({
   return (
     <div className={`flex justify-start items-start mt-5`}>
       <img
-        src={icon}
+        src={icon || "/chat_bot.png"}
         className="mr-3 mt-3 md:w-12 md:h-12 w-10 h-10 rounded-full"
       />
       <div className={`flex flex-col items-start`}>
         <div className="flex w-full justify-between items-center gap-3 text-xs mt-1 px-2">
-          <div className="font-bold text-gray-500">{userName}</div>
+          <div className="font-bold text-gray-500">{user?.displayName}</div>
           <div className="font-thin text-gray-400/80">{displayDate}</div>
         </div>
         <div

@@ -66,7 +66,7 @@ const options = {
       console.log("signIn callback triggered for provider:", account.provider); // Log provider
       const registerUser = async (data) => {
         try {
-          const res = await fetch(`/api/register`, {
+          const res = await fetch(`${process.env.NEXTAUTH_URL}/api/register`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

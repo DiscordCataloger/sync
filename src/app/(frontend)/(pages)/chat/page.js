@@ -234,8 +234,9 @@ export default function Page() {
       setSelectedMiddleComponent(messageId);
     }
     // set icon, name
-    (friend.icon && setDmFriendIcon(friend.icon)) ||
-      setDmFriendIcon("/robot_bot.png");
+    friend.icon
+      ? setDmFriendIcon(friend.icon)
+      : setDmFriendIcon("/robot_bot.png");
     setDmFriendName(friend.displayName);
     console.log("friend", friend);
   };

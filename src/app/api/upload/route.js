@@ -71,6 +71,3 @@ export async function POST(req) {
     return NextResponse.json({ success: false, error: error.message });
   }
 }
-
-export const runtime = "edge";
-export const maxSize = "50mb";

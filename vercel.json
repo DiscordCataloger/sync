@@ -1,8 +1,0 @@
-{
-  "functions": {
-    "src/app/api/upload/route.js": {
-      "maxDuration": 10,
-      "memory": 1024
-    }
-  }
-}

@@ -75,6 +75,7 @@ export function Login() {
       !accountIsNotVerified
     ) {
       setAccountIsNotVerified(false);
+      setIsNotVerified(false);
 
       try {
         const res = await signIn("credentials", {

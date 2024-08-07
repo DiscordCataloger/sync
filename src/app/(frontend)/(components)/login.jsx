@@ -78,7 +78,7 @@ export function Login() {
         const res = await signIn("credentials", {
           email,
           password,
-          // redirect: false,
+          redirect: false,
         });
         if (res.error) {
           console.log(res.error);

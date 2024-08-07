@@ -87,7 +87,7 @@ export default function DirectMessages({
                 }`}
                 onClick={() => onclickDmUser(message._id, name, icon)}
               >
-                <div className="avatar w-10 h-10 rounded-full mr-3">
+                <div className="avatar w-10 h-10 rounded-full overflow-hidden mr-3">
                   <img src={icon} alt="avatar" />
                 </div>
                 <div className="details flex-grow pt-2">

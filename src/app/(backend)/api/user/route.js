@@ -2,6 +2,7 @@ import { getToken } from "next-auth/jwt";
 import User from "models/user";
 import server from "libs/mongodb/server";
 import { NextResponse } from "next/server";
+import { getSession } from "next-auth/react";
 
 let isConnected = false;
 

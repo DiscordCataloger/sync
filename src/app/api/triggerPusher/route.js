@@ -11,13 +11,13 @@ export async function POST(req) {
         `channel:${channelId}:incoming_channel_msgs`
       );
       console.log("Triggering Pusher event for channel:", channelKey);
-      pusher.trigger(channelKey, "incoming_channel_msgs", message);
+      await pusher.trigger(channelKey, "incoming_channel_msgs", message);
     } else if (triggerType === "server" && selectedServerId) {
       const serverKey = toPusherKey(
         `server:${selectedServerId}:incoming_channel_badges`
       );
       console.log("Triggering Pusher event for server:", serverKey);
-      pusher.trigger(serverKey, "incoming_channel_badges", {
+      await pusher.trigger(serverKey, "incoming_channel_badges", {
         message,
         channelId,
         messageId,
@@ -25,7 +25,7 @@ export async function POST(req) {
     } else if (triggerType === "dm" && messageId) {
       const dmKey = toPusherKey(`dm:${messageId}:incoming_dm_msgs`);
       console.log("Triggering Pusher event for DM:", dmKey);
-      pusher.trigger(dmKey, "incoming_dm_msgs", message);
+      await pusher.trigger(dmKey, "incoming_dm_msgs", message);
     }
 
     return new Response(JSON.stringify({ success: true }), {

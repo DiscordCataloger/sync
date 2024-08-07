@@ -38,7 +38,7 @@ export async function PUT(req, { params }) {
       userId: newMessage.userId,
     };
 
-    pusher.trigger(
+    await pusher.trigger(
       toPusherKey(`channel:${id}:incoming_channel_msgs`),
       "incoming_channel_msgs",
       newMessage

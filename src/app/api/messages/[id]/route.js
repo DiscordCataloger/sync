@@ -33,7 +33,7 @@ export async function PUT(req, { params }) {
     });
   }
 
-  pusher.trigger(
+  await pusher.trigger(
     toPusherKey(`dm:${id}:incoming_dm_msgs`),
     "incoming_dm_msgs",
     newMessage

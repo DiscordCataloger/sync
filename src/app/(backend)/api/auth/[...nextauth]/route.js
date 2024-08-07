@@ -79,6 +79,30 @@ const options = {
   callbacks: {
     async signIn({ user, account, profile }) {
       console.log("signIn callback triggered for provider:", account.provider); // Log provider
+
+      const checkUserExists = async (email) => {
+        try {
+          const res = await fetch(`/api/accountExists`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email }),
+          });
+
+          if (res.headers.get("content-type")?.includes("application/json")) {
+            const result = await res.json();
+            return result.exists;
+          } else {
+            console.error("Unexpected response format");
+            return false;
+          }
+        } catch (error) {
+          console.log("Error in checkUserExists:", error);
+          return false;
+        }
+      };
+
       const registerUser = async (data) => {
         try {
           const res = await fetch(`/api/register`, {
@@ -106,6 +130,13 @@ const options = {
           return false;
         }
       };
+
+      const email = profile.email;
+
+      if (await checkUserExists(email)) {
+        console.log("User already registered:", email);
+        return "/chat";
+      }
 
       if (account.provider === "google") {
         console.log("Google profile:", profile);

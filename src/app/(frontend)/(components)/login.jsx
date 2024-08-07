@@ -214,7 +214,7 @@ export function Login() {
   // Function to handle Google sign-in
   const handleGoogleSignIn = async () => {
     try {
-      const res = await signIn("google", { redirect: false });
+      const res = await signIn("google");
       if (res.ok) {
         if (isOn) {
           Cookies.set("rememberMe", "on", {
@@ -239,7 +239,7 @@ export function Login() {
   // Function to handle Facebook sign-in
   const handleFacebookSignIn = async () => {
     try {
-      const res = await signIn("facebook", { redirect: false });
+      const res = await signIn("facebook");
       if (res.ok) {
         if (isOn) {
           Cookies.set("rememberMe", "on", {
@@ -264,7 +264,7 @@ export function Login() {
   // Function to handle Github sign-in
   const handleGithubSignIn = async () => {
     try {
-      const res = await signIn("github", { redirect: false });
+      const res = await signIn("github");
       if (res.ok) {
         if (isOn) {
           Cookies.set("rememberMe", "on", {

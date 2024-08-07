@@ -64,6 +64,18 @@ const options = {
   callbacks: {
     async signIn({ user, account, profile }) {
       console.log("signIn callback triggered for provider:", account.provider); // Log provider
+
+      const findUserByEmail = async (email) => {
+        try {
+          await server();
+          const existingUser = await User.findOne({ email });
+          return existingUser;
+        } catch (error) {
+          console.log("Error in findUserByEmail:", error);
+          return null;
+        }
+      };
+
       const registerUser = async (data) => {
         try {
           const res = await fetch(`${process.env.NEXTAUTH_URL}/api/register`, {
@@ -91,6 +103,14 @@ const options = {
           return false;
         }
       };
+
+      const email = profile.email;
+      const existingUser = await findUserByEmail(email);
+
+      if (existingUser) {
+        console.log("User already exists:", existingUser);
+        return true;
+      }
 
       if (account.provider === "google") {
         console.log("Google profile:", profile);

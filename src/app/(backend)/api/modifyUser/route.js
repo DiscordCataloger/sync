@@ -20,7 +20,10 @@ async function getUserFromToken(req) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   if (!token) throw new Error("Unauthorized");
   if (token.email) {
-    return await User.findOne({ email: token.email });
+    return (
+      (await User.findOne({ email: token.email })) ||
+      (await User.findOne({ githubId: token.sub }))
+    );
   }
 }
 

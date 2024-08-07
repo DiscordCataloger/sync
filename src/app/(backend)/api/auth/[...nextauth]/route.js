@@ -67,6 +67,7 @@ const options = {
       const registerUser = async (data) => {
         try {
           const existingUser = await User.findOne({ email: data.email });
+
           if (existingUser) {
             console.log("User already exists:", existingUser.email);
             return true; // User already exists, no need to register
@@ -129,6 +130,10 @@ const options = {
       if (user) {
         token.id = user.id;
         token.email = user.email;
+        token.name = user.name;
+      }
+      if (account?.provider === "github" && profile?.email) {
+        token.email = profile.email;
       }
       return token;
     },

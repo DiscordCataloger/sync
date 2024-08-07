@@ -31,7 +31,9 @@ export async function POST(req) {
   try {
     await mongoose.connect(process.env.MONGODB_URI); // Ensure you have your MongoDB URI set
 
-    const user = await User.findById(userId);
+    const user =
+      (await User.findById(userId)) ||
+      (await User.findOne({ displayName: token.name }));
     if (!user) {
       return new NextResponse("User not found", { status: 404 });
     }

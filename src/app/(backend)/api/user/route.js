@@ -21,7 +21,7 @@ async function getUserFromToken(req) {
   if (token.email) {
     return await User.findOne({ email: token.email });
   } else {
-    return await User.findOne({ email: token.sub });
+    return await User.findOne({ displayName: token.name });
   }
 }
 

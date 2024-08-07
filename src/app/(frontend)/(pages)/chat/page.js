@@ -162,6 +162,8 @@ export default function Page() {
     setRightComponent("chat");
 
     if (currentUser) {
+      // console.log("currentUser", currentUser._id);
+      // console.log("id", id);
       await deleteMsgUnreadDm(id, currentUser._id);
     }
 

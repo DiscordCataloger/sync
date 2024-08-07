@@ -81,7 +81,7 @@ export default function ChannelUI({
   // Badge Pusher
   useEffect(() => {
     pusherclient.subscribe(
-      toPusherKey(`server:${selectedServer._id}:incoming_channel_badges`)
+      toPusherKey(`server:${selectedServer?._id}:incoming_channel_badges`)
     );
 
     const handleBadgeUpdate = (message) => {
@@ -105,14 +105,14 @@ export default function ChannelUI({
 
     return () => {
       pusherclient.unsubscribe(
-        toPusherKey(`server:${selectedServer._id}:incoming_channel_badges`)
+        toPusherKey(`server:${selectedServer?._id}:incoming_channel_badges`)
       );
       pusherclient.unbind("incoming_channel_badges", handleBadgeUpdate);
     };
   }, [channelId, selectedServer, setServerChannels]);
 
   useEffect(() => {
-    if (selectedServer && currentUser._id) {
+    if (selectedServer && currentUser?._id) {
       const serverMembersExceptCurrentUser = selectedServer.members.filter(
         (member) => member !== currentUser._id
       );
@@ -142,12 +142,12 @@ export default function ChannelUI({
 
   const handleDeleteChannel = async () => {
     try {
-      await deleteServerChannelfromServer(selectedServer._id, channelId);
+      await deleteServerChannelfromServer(selectedServer?._id, channelId);
       await deleteServerChannel(channelId);
       console.log("channel deleted", channelId);
 
       const server = servers.find(
-        (server) => server._id === selectedServer._id
+        (server) => server?._id === selectedServer?._id
       );
       const updatedServer = {
         ...server,
@@ -158,7 +158,7 @@ export default function ChannelUI({
       // Update the server's channels
       setServers(
         servers.map((server) =>
-          server._id === selectedServer._id ? updatedServer : server
+          server?._id === selectedServer?._id ? updatedServer : server
         )
       );
     } catch (error) {
@@ -213,7 +213,7 @@ export default function ChannelUI({
         msgText: input,
         msgAttach: attachments.length > 0 ? ["loadImg"] : ["noImg"],
         msgUnread: serverMembersExceptCurrentUser,
-        userId: currentUser._id,
+        userId: currentUser && currentUser._id,
         uid: uuidv4(),
       };
 
@@ -225,7 +225,7 @@ export default function ChannelUI({
         },
         body: JSON.stringify({
           channelId: channelId,
-          selectedServerId: selectedServer._id,
+          selectedServerId: selectedServer && selectedServer._id,
           message: newMsgLocal,
           triggerType: "channel",
         }),
@@ -259,7 +259,7 @@ export default function ChannelUI({
             },
             body: JSON.stringify({
               channelId: channelId,
-              selectedServerId: selectedServer._id,
+              selectedServerId: selectedServer && selectedServer._id,
               message: updatedMsg,
               triggerType: "server",
             }),
@@ -280,7 +280,7 @@ export default function ChannelUI({
         },
         body: JSON.stringify({
           channelId: channelId,
-          selectedServerId: selectedServer._id,
+          selectedServerId: selectedServer && selectedServer._id,
           message: updatedMsg,
           triggerType: "server",
         }),
@@ -319,7 +319,7 @@ export default function ChannelUI({
           offset={offset}
           setOffset={setOffset}
           NUMBER_OF_MSG_TO_FETCH={NUMBER_OF_MSG_TO_FETCH}
-          currentUserId={currentUser._id}
+          currentUserId={currentUser && currentUser._id}
         />
       )}
       <InputMessage

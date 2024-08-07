@@ -31,13 +31,27 @@ export async function PUT(req, { params }) {
       msgUnread: newMessage.msgUnread,
       userId: newMessage.userId,
     });
-  }
 
-  await pusher.trigger(
-    toPusherKey(`dm:${id}:incoming_dm_msgs`),
-    "incoming_dm_msgs",
-    newMessage
-  );
+    try {
+      await pusher.trigger(
+        toPusherKey(`dm:${id}:incoming_dm_msgs`),
+        "incoming_dm_msgs",
+        newMessage
+      );
+      console.log("Pusher event triggered successfully");
+    } catch (error) {
+      console.error("Error triggering Pusher event:", error);
+      return new Response(
+        JSON.stringify({ success: false, error: error.message }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+  }
 
   // Delete unread messages for the specified users
   if (deleteUnreadFor) {

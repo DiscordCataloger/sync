@@ -51,6 +51,8 @@ export async function PUT(req, { params }) {
   }
 
   // Delete unread messages for the specified users
+  // console.log("deleteUnreadFor", deleteUnreadFor);
+  // console.log("serverChannel.channelMsgs", serverChannel.channelMsgs);
   if (deleteUnreadFor) {
     serverChannel.channelMsgs.forEach((msg) => {
       msg.msgUnread = msg.msgUnread.filter(

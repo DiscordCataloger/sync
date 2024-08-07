@@ -76,6 +76,17 @@ const options = {
         }
       };
 
+      const findUserByUsername = async (username) => {
+        try {
+          await server();
+          const existingUser = await User.findOne({ username });
+          return existingUser;
+        } catch (error) {
+          console.log("Error in findUserByUsername:", error);
+          return null;
+        }
+      };
+
       const registerUser = async (data) => {
         try {
           const res = await fetch(`${process.env.NEXTAUTH_URL}/api/register`, {
@@ -104,32 +115,15 @@ const options = {
         }
       };
 
-      const getGithubEmail = async (token) => {
-        try {
-          const res = await fetch("https://api.github.com/user/emails", {
-            headers: {
-              Authorization: `token ${token}`,
-            },
-          });
-          const emails = await res.json();
-          if (res.ok) {
-            // Find the primary email
-            const primaryEmail = emails.find((email) => email.primary)?.email;
-            return primaryEmail || emails[0]?.email;
-          } else {
-            console.error("Failed to fetch GitHub emails", emails);
-            return null;
-          }
-        } catch (error) {
-          console.log("Error in getGithubEmail:", error);
-          return null;
-        }
-      };
-
       let email = profile.email;
 
       if (account.provider === "github" && !email) {
-        email = await getGithubEmail(account.access_token);
+        const existingUser = await findUserByUsername(profile.login);
+        if (existingUser) {
+          email = existingUser.email;
+        } else {
+          email = `${profile.login}@users.noreply.github.com`; // Fallback to a generated email if not provided
+        }
       }
 
       const existingUser = await findUserByEmail(email);

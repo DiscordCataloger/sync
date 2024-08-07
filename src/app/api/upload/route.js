@@ -72,10 +72,5 @@ export async function POST(req) {
   }
 }
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: "50mb", // Set desired size limit
-    },
-  },
-};
+export const runtime = "edge";
+export const maxSize = "50mb";

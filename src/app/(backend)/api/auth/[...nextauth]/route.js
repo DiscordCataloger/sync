@@ -128,9 +128,9 @@ const options = {
     },
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
+        token.id = user._id;
         token.email = user.email;
-        token.name = user.name;
+        token.name = user.displayName;
       }
       return token;
     },

@@ -5,11 +5,20 @@ import { NextResponse } from "next/server";
 
 export async function POST(req) {
   const token = await getToken({ req }); // Get the token from the request
-  console.log("Token:", token); // Log the token to inspect its structure
+  if (!token || !token.sub) throw new Error("Unauthorized");
 
-  if (!token || !token.sub) {
-    return new NextResponse("Unauthorized", { status: 401 }); // Return 401 if not authenticated
+  // Extract the user email from the token
+  const currentUserEmail = token.email; // Adjust this based on your token structure
+  console.log("Current User Email:", currentUserEmail);
+
+  // Find the current user in the database using their email
+  const currentUser = await User.findOne({ email: currentUserEmail });
+  if (!currentUser) {
+    console.log("Current user not found in the database.");
+    return NextResponse.json({ message: "User not found" }, { status: 404 });
   }
+
+  console.log("Current User ID:", currentUser._id);
 
   const { friendId } = await req.json(); // Only friendId is expected
   console.log("Friend ID:", friendId); // Log the friendId
@@ -18,7 +27,7 @@ export async function POST(req) {
     return new NextResponse("Friend ID is required", { status: 400 });
   }
 
-  const userId = token.sub; // Use the user ID from the token
+  const userId = currentUser._id; // Use the user ID from the token
   console.log("User ID:", userId); // Log the userId
 
   try {

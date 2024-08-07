@@ -13,7 +13,21 @@ async function getUserFromToken(req) {
   if (!token || !token.sub) {
     throw new Error("Unauthorized");
   }
-  return token.sub; // Return user ID from token
+
+  // Extract the user email from the token
+  const currentUserEmail = token.email; // Adjust this based on your token structure
+  console.log("Current User Email:", currentUserEmail);
+
+  // Find the current user in the database using their email
+  const currentUser = await User.findOne({ email: currentUserEmail });
+  if (!currentUser) {
+    console.log("Current user not found in the database.");
+    return NextResponse.json({ message: "User not found" }, { status: 404 });
+  }
+
+  console.log("Current User ID:", currentUser._id);
+
+  return currentUser._id; // Return user ID from token
 }
 
 async function findUserById(userId) {

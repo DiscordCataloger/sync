@@ -47,6 +47,9 @@ const userSchema = new Schema(
     verificationTokenExpires: {
       type: Date,
     },
+    githubId: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

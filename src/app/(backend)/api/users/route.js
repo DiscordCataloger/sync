@@ -2,6 +2,7 @@ import { getToken } from "next-auth/jwt";
 import User from "models/user";
 import server from "libs/mongodb/server";
 import { NextResponse } from "next/server";
+import mongoose from "mongoose";
 
 export async function GET(req) {
   console.log("Connecting to the database...");
@@ -21,8 +22,16 @@ export async function GET(req) {
     }
 
     // Extract the user ID from the token
-    const currentUserId = token.sub; // Adjust this based on your token structure
+    let currentUserId = token.sub; // Adjust this based on your token structure
     console.log("Current User ID:", currentUserId);
+
+    // Convert currentUserId to ObjectId if it's a valid 24-character hex string
+    if (mongoose.Types.ObjectId.isValid(currentUserId)) {
+      currentUserId = new mongoose.Types.ObjectId(currentUserId);
+    } else {
+      console.log("Current User ID is not a valid ObjectId.");
+      return NextResponse.json({ message: "Invalid user ID" }, { status: 400 });
+    }
 
     console.log("Finding users...");
     // Find all users except the current user

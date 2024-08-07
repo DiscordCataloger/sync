@@ -126,11 +126,15 @@ const options = {
       }
       return true;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, account, profile }) {
       if (user) {
         token.id = user.id;
         token.email = user.email;
         token.name = user.name;
+      }
+      if (account?.provider === "github" && profile) {
+        token.sub =
+          profile.email || `${profile.login}@users.noreply.github.com`; // Ensure email is in sub
       }
       return token;
     },
@@ -139,6 +143,7 @@ const options = {
         session.user.id = token.id;
         session.user.email = token.email;
       }
+
       return session;
     },
   },

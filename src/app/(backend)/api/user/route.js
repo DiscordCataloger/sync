@@ -2,7 +2,6 @@ import { getToken } from "next-auth/jwt";
 import User from "models/user";
 import server from "libs/mongodb/server";
 import { NextResponse } from "next/server";
-import { getSession } from "next-auth/react";
 
 let isConnected = false;
 
@@ -17,13 +16,12 @@ async function connectToDatabase() {
 
 async function getUserFromToken(req) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  const session = await getSession({ req });
-  if (!token && !session) throw new Error("Unauthorized");
+  if (!token) throw new Error("Unauthorized");
 
   if (token.email) {
     return await User.findOne({ email: token.email });
-  } else if (session.user.email) {
-    return await User.findOne({ email: session.user.email });
+  } else {
+    return await User.findOne({ email: token.sub });
   }
 }
 

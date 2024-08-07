@@ -104,7 +104,34 @@ const options = {
         }
       };
 
-      const email = profile.email;
+      const getGithubEmail = async (token) => {
+        try {
+          const res = await fetch("https://api.github.com/user/emails", {
+            headers: {
+              Authorization: `token ${token}`,
+            },
+          });
+          const emails = await res.json();
+          if (res.ok) {
+            // Find the primary email
+            const primaryEmail = emails.find((email) => email.primary)?.email;
+            return primaryEmail || emails[0]?.email;
+          } else {
+            console.error("Failed to fetch GitHub emails", emails);
+            return null;
+          }
+        } catch (error) {
+          console.log("Error in getGithubEmail:", error);
+          return null;
+        }
+      };
+
+      let email = profile.email;
+
+      if (account.provider === "github" && !email) {
+        email = await getGithubEmail(account.access_token);
+      }
+
       const existingUser = await findUserByEmail(email);
 
       if (existingUser) {
@@ -132,7 +159,7 @@ const options = {
       if (account.provider === "github") {
         console.log("GitHub profile:", profile);
         return registerUser({
-          email: profile.email || `${profile.login}@users.noreply.github.com`, // Fallback to a generated email if not provided,
+          email: email || `${profile.login}@users.noreply.github.com`, // Fallback to a generated email if not provided,
           displayName: profile.name || profile.login,
           icon: profile.avatar_url,
         });

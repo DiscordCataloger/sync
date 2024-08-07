@@ -19,10 +19,7 @@ async function connectToDatabase() {
 async function getUserFromToken(req) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   if (!token) throw new Error("Unauthorized");
-  return (
-    (await User.findOne({ email: token.email })) ||
-    (await User.findOne({ displayName: token.name }))
-  );
+  return await User.findOne({ email: token.email });
 }
 
 async function getPendingFriends(user) {

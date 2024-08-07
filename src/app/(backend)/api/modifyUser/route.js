@@ -21,8 +21,6 @@ async function getUserFromToken(req) {
   if (!token) throw new Error("Unauthorized");
   if (token.email) {
     return await User.findOne({ email: token.email });
-  } else {
-    return await User.findOne({ displayName: token.name });
   }
 }
 

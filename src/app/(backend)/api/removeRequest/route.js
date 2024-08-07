@@ -12,9 +12,7 @@ export async function POST(req) {
   console.log("Current User Email:", currentUserEmail);
 
   // Find the current user in the database using their email
-  const currentUser =
-    (await User.findOne({ email: currentUserEmail })) ||
-    (await User.findOne({ displayName: token.name }));
+  const currentUser = await User.findOne({ email: currentUserEmail });
   if (!currentUser) {
     console.log("Current user not found in the database.");
     return NextResponse.json({ message: "User not found" }, { status: 404 });

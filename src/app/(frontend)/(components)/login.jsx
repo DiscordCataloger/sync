@@ -36,13 +36,13 @@ export function Login() {
   // Event value change of email field
   function emailOnChange(e) {
     setEmail(e.target.value);
-    setIsNotVerified(false); // Reset isNotVerified when user types in email
+    setIsNotVerified(false);
   }
 
   // Event value change of password field
   function passwordOnChange(e) {
     setPassword(e.target.value);
-    setIsNotVerified(false); // Reset isNotVerified when user types in password
+    setIsNotVerified(false);
   }
 
   // Submitting the login form
@@ -74,9 +74,6 @@ export function Login() {
       !isNotVerified &&
       !accountIsNotVerified
     ) {
-      setAccountIsNotVerified(false);
-      setIsNotVerified(false);
-
       try {
         const res = await signIn("credentials", {
           email,

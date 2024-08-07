@@ -132,9 +132,6 @@ const options = {
         token.email = user.email;
         token.name = user.name;
       }
-      if (account?.provider === "github" && profile?.email) {
-        token.email = profile.email;
-      }
       return token;
     },
     async session({ session, token }) {

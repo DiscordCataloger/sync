@@ -36,11 +36,13 @@ export function Login() {
   // Event value change of email field
   function emailOnChange(e) {
     setEmail(e.target.value);
+    setIsNotVerified(false); // Reset isNotVerified when user types in email
   }
 
   // Event value change of password field
   function passwordOnChange(e) {
     setPassword(e.target.value);
+    setIsNotVerified(false); // Reset isNotVerified when user types in password
   }
 
   // Submitting the login form

@@ -76,17 +76,6 @@ const options = {
         }
       };
 
-      const findUserByUsername = async (username) => {
-        try {
-          await server();
-          const existingUser = await User.findOne({ username });
-          return existingUser;
-        } catch (error) {
-          console.log("Error in findUserByUsername:", error);
-          return null;
-        }
-      };
-
       const registerUser = async (data) => {
         try {
           const res = await fetch(`${process.env.NEXTAUTH_URL}/api/register`, {
@@ -115,17 +104,7 @@ const options = {
         }
       };
 
-      let email = profile.email;
-
-      if (account.provider === "github" && !email) {
-        const existingUser = await findUserByUsername(profile.login);
-        if (existingUser) {
-          email = existingUser.email;
-        } else {
-          email = `${profile.login}@users.noreply.github.com`; // Fallback to a generated email if not provided
-        }
-      }
-
+      const email = profile.email;
       const existingUser = await findUserByEmail(email);
 
       if (existingUser) {
@@ -153,7 +132,7 @@ const options = {
       if (account.provider === "github") {
         console.log("GitHub profile:", profile);
         return registerUser({
-          email: email || `${profile.login}@users.noreply.github.com`, // Fallback to a generated email if not provided,
+          email: profile.email || `${profile.login}@users.noreply.github.com`, // Fallback to a generated email if not provided,
           displayName: profile.name || profile.login,
           icon: profile.avatar_url,
         });

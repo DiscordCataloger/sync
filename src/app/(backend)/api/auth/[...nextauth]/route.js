@@ -74,7 +74,9 @@ const options = {
         });
       }
 
-      const existingUser = await User.findOne({ email: user.email });
+      const existingUser =
+        (await User.findOne({ email: user.email })) ||
+        (await User.findOne({ icon: user.icon }));
       if (existingUser) {
         console.log("User already exists:", existingUser.email);
         return true; // User already exists, no need to register
@@ -141,6 +143,7 @@ const options = {
         token.id = user._id;
         token.email = user.email;
         token.name = user.name; // Corrected this line
+        token.icon = user.icon;
       }
       return token;
     },

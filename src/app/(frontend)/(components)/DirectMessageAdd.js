@@ -6,7 +6,7 @@ import { IoCloseCircle } from "react-icons/io5";
 import { FaUserFriends } from "react-icons/fa";
 import DirectMessageAddNew from "./DirectMessageAddNew";
 
-const DirectMessageAdd = ({ onClose }) => {
+const DirectMessageAdd = ({ onClose, handleDm }) => {
   const [currentUser, setCurrentUser] = useState({});
   const [friends, setFriends] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -100,7 +100,7 @@ const DirectMessageAdd = ({ onClose }) => {
       </button>
 
       {Array.isArray(friends) && friends.length > 0 ? (
-        <DirectMessageAddNew messages={friends} />
+        <DirectMessageAddNew messages={friends} handleDm={handleDm} />
       ) : (
         <div className="flex flex-col items-center mb-6">
           <div className="flex items-center justify-center w-40 h-16 mb-8 mt-7">

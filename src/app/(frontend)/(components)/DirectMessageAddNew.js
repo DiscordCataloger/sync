@@ -2,17 +2,16 @@
 import React from "react";
 import { IoCloseCircle } from "react-icons/io5";
 import { FaUserFriends } from "react-icons/fa";
-import { useRouter } from "next/navigation";
+import { PiChatsFill } from "react-icons/pi";
 
-const DirectMessageAddNew = ({ messages, onClose }) => {
-  const router = useRouter();
+const DirectMessageAddNew = ({ messages, handleDm }) => {
   const handleButtonClick = (message) => {
     console.log("Clicked on:", message.text);
   };
 
   return (
     <div>
-      <div className="bg-white py-2 px-3  max-h-60 overflow-y-auto custom-scrollbar">
+      <div className="bg-white py-2 px-3 w-60 max-h-60 overflow-y-auto custom-scrollbar">
         {messages &&
           messages.map((message, index) => (
             <button
@@ -30,7 +29,10 @@ const DirectMessageAddNew = ({ messages, onClose }) => {
                   {message.displayName}
                 </span>
               </div>
-              <span>+</span>
+              <PiChatsFill
+                onClick={handleDm}
+                className="text-blue-500 hover:text-blue-700 cursor-pointer w-6 h-6 md:w-7 md:h-7"
+              />
             </button>
           ))}
       </div>

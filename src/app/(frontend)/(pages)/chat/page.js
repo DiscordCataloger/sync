@@ -278,7 +278,10 @@ export default function Page() {
               />
             )}
             {popupComponent === "directMessageAdd" && (
-              <DirectMessageAdd onClose={() => setPopupComponent("")} />
+              <DirectMessageAdd
+                onClose={() => setPopupComponent("")}
+                handleDm={handleDmFriendClick}
+              />
             )}
           </div>
         )}

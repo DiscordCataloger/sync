@@ -66,6 +66,12 @@ const options = {
       console.log("signIn callback triggered for provider:", account.provider); // Log provider
       const registerUser = async (data) => {
         try {
+          const existingUser = await User.findOne({ email: data.email });
+          if (existingUser) {
+            console.log("User already exists:", existingUser.email);
+            return true; // User already exists, no need to register
+          }
+
           const res = await fetch(`${process.env.NEXTAUTH_URL}/api/register`, {
             method: "POST",
             headers: {

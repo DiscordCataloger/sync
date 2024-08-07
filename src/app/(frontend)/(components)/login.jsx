@@ -214,23 +214,6 @@ export function Login() {
   // Function to handle Google sign-in
   const handleGoogleSignIn = async () => {
     try {
-      // Check if the user already exists
-      const resUserCheck = await fetch("/api/accountExists", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }), // Assuming you have the email from Google sign-in
-      });
-
-      const { user } = await resUserCheck.json();
-
-      if (user) {
-        console.log("User already exists");
-        // Handle the case where the user already exists
-        return;
-      }
-
       const res = await signIn("google");
       if (res.ok) {
         if (isOn) {

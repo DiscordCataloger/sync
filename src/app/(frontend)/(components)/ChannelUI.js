@@ -12,6 +12,8 @@ import { v4 as uuidv4 } from "uuid"; // Import the uuid library
 import ServerContext from "../(context)/ServerContext";
 import { deleteServerChannel } from "../../../api/deleteServerChannel";
 import deleteServerChannelfromServer from "../../../api/deleteServerChannelfromServer";
+import { pusherclient } from "@/lib/pusher";
+import { toPusherKey } from "@/lib/utils";
 
 const font = Josefin_Sans({
   weight: "400",
@@ -24,6 +26,7 @@ const NUMBER_OF_MSG_TO_FETCH = 20;
 export default function ChannelUI({
   channelId,
   name,
+  serverChannels,
   setServerChannels,
   msg,
   setMsg,
@@ -34,7 +37,7 @@ export default function ChannelUI({
   const [input, setInput] = useState("");
   const [attachments, setAttachments] = useState([]);
   const [addMsg, setAddMsg] = useState(0);
-  // const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true); // Loading state
   const [isDragOver, setIsDragOver] = useState(false);
   const [serverMembersExceptCurrentUser, setServerMembersExceptCurrentUser] =
     useState([]);
@@ -52,6 +55,74 @@ export default function ChannelUI({
   //     }
   //   };
   // }, [selectedServer, channelId, currentUser]);
+
+  //messsage pusher
+  useEffect(() => {
+    pusherclient.subscribe(
+      toPusherKey(`channel:${channelId}:incoming_channel_msgs`)
+    );
+
+    const sendMsg = (addedMessage) => {
+      // console.log("addedMessage:", addedMessage);
+      setMsg((prevMsgs) => {
+        const messageIndex = prevMsgs.findIndex(
+          (msg) => msg.uid === addedMessage.uid
+        );
+        if (messageIndex !== -1) {
+          // Update existing message
+          const updatedMsgs = [...prevMsgs];
+          updatedMsgs[messageIndex] = addedMessage;
+          return updatedMsgs;
+        } else {
+          // Add new message
+          return [addedMessage, ...prevMsgs];
+        }
+      });
+      setOffset((prevOffset) => prevOffset + 1);
+      setAddMsg((prevCounter) => prevCounter + 1);
+    };
+
+    pusherclient.bind("incoming_channel_msgs", sendMsg);
+
+    return () => {
+      pusherclient.unsubscribe(
+        toPusherKey(`channel:${channelId}:incoming_channel_msgs`)
+      );
+      pusherclient.unbind("incoming_channel_msgs", sendMsg);
+    };
+  }, [channelId]);
+
+  // Badge Pusher
+  useEffect(() => {
+    pusherclient.subscribe(
+      toPusherKey(`server:${selectedServer._id}:incoming_channel_badges`)
+    );
+
+    const handleBadgeUpdate = (message) => {
+      console.log("Received badge update:", message);
+      setServerChannels((prevChannels) => {
+        return prevChannels.map((channel) => {
+          if (channel._id === message.channelId) {
+            console.log(`Updating channel: ${channel._id}`);
+            return {
+              ...channel,
+              channelMsgs: [...channel.channelMsgs, message],
+            };
+          }
+          return channel;
+        });
+      });
+    };
+
+    pusherclient.bind("incoming_channel_badges", handleBadgeUpdate);
+
+    return () => {
+      pusherclient.unsubscribe(
+        toPusherKey(`server:${selectedServer._id}:incoming_channel_badges`)
+      );
+      pusherclient.unbind("incoming_channel_badges", handleBadgeUpdate);
+    };
+  }, [channelId, selectedServer, setServerChannels]);
 
   useEffect(() => {
     if (selectedServer && currentUser._id) {
@@ -110,7 +181,7 @@ export default function ChannelUI({
 
   useEffect(() => {
     const fetchServerChannelMsgData = async () => {
-      // setLoading(true);
+      setLoading(true);
       try {
         const response = await getServerChannelMsgs(channelId);
         const { msgs } = response;
@@ -118,20 +189,10 @@ export default function ChannelUI({
       } catch (error) {
         console.error("Error fetching server channel messages:", error);
       } finally {
-        // setTimeout(() => {
-        // setLoading(false);
-        // }, 200);
+        setLoading(false);
       }
     };
     fetchServerChannelMsgData();
-
-    const intervalId = setInterval(fetchServerChannelMsgData, 100);
-
-    return () => {
-      // socket.off("receiveMessage");
-      // socket.off("receiveServerMessage");
-      clearInterval(intervalId);
-    };
   }, [channelId, selectedServer, setServerChannels]);
 
   const sendMessage = async () => {
@@ -151,11 +212,13 @@ export default function ChannelUI({
         "Nov",
         "Dec",
       ];
+
       const formattedTime = `${currentTime.getDate()} ${
         months[currentTime.getMonth()]
       } ${currentTime.getFullYear()}, ${currentTime.getHours()}:${String(
         currentTime.getMinutes()
       ).padStart(2, "0")}`;
+
       const newMsgLocal = {
         msgFrom: currentUser.displayName,
         msgIcon: currentUser.icon || "/chat_bot.png",
@@ -174,6 +237,20 @@ export default function ChannelUI({
       //   channelId, // Include the channelId in the message
       //   ...newMsgLocal,
       // });
+
+      // Trigger Pusher event by calling the new server-side endpoint
+      await fetch("/api/triggerPusher", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          channelId: channelId,
+          selectedServerId: selectedServer._id,
+          message: newMsgLocal,
+          triggerType: "channel",
+        }),
+      });
 
       // Clear the input field and make scroll to bottom
       setInput("");
@@ -202,19 +279,40 @@ export default function ChannelUI({
           //   channelId, // Include the channelId in the message
           //   ...updatedMsg,
           // });
+          await fetch("/api/triggerPusher", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              channelId: channelId,
+              selectedServerId: selectedServer._id,
+              message: updatedMsg,
+              triggerType: "server",
+            }),
+          });
 
-          const { uid, ...newMsg } = updatedMsg;
           setAddMsg((prevCounter) => prevCounter + 1);
-          return await addServerChannelMsg(channelId, newMsg);
+          return await addServerChannelMsg(channelId, updatedMsg);
         } catch (error) {
           console.log(error);
         }
       }
 
       const updatedMsg = { ...newMsgLocal, msgAttach: [] };
-      const { uid, ...newMsg } = updatedMsg;
-
-      return await addServerChannelMsg(channelId, newMsg);
+      await fetch("/api/triggerPusher", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          channelId: channelId,
+          selectedServerId: selectedServer._id,
+          message: updatedMsg,
+          triggerType: "server",
+        }),
+      });
+      return await addServerChannelMsg(channelId, updatedMsg);
     }
   };
 
@@ -228,8 +326,8 @@ export default function ChannelUI({
       } min-w-[400px] h-full bg-white rounded-2xl flex flex-col shadow-md shadow-sky-400/40`}
     >
       <ChannelHeader name={name} handleDeleteChannel={handleDeleteChannel} />
-      {/* {loading && ( */}
-      {/* <div className={`flex flex-col justify-center items-center h-full`}>
+      {loading && (
+        <div className={`flex flex-col justify-center items-center h-full`}>
           <Player
             autoplay
             loop
@@ -237,20 +335,20 @@ export default function ChannelUI({
             src="/loader_robot.json"
             style={{ height: "300px", width: "300px" }}
           />
-        </div> */}
-      {/* )} */}
-      {/* {!loading && ( */}
-      <MessageList
-        id={channelId}
-        msg={msg}
-        setMsg={setMsg}
-        addMsg={addMsg}
-        offset={offset}
-        setOffset={setOffset}
-        NUMBER_OF_MSG_TO_FETCH={NUMBER_OF_MSG_TO_FETCH}
-        currentUserId={currentUser._id}
-      />
-      {/* )} */}
+        </div>
+      )}
+      {!loading && (
+        <MessageList
+          id={channelId}
+          msg={msg}
+          setMsg={setMsg}
+          addMsg={addMsg}
+          offset={offset}
+          setOffset={setOffset}
+          NUMBER_OF_MSG_TO_FETCH={NUMBER_OF_MSG_TO_FETCH}
+          currentUserId={currentUser._id}
+        />
+      )}
       <InputMessage
         input={input}
         setInput={setInput}

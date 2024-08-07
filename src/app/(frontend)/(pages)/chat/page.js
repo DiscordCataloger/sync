@@ -117,7 +117,7 @@ export default function Page() {
   const handleChannelClick = async (name, id) => {
     setChannelName(name);
     setChannelId(id);
-    setSelectedMiddleComponent(name);
+    setSelectedMiddleComponent(id);
     setRightComponent("channel");
 
     // Call deleteMsgUnread to remove unread messages for the current user

@@ -240,7 +240,7 @@ const ChannelBar = ({
             <div
               key={channel?.channelName}
               className={`flex justify-between items-center py-2 px-2 cursor-pointer hover:bg-blue-100 rounded-xl ${
-                channel && selectedMiddleComponent === channel.channelName
+                channel && selectedMiddleComponent === channel._id
                   ? "bg-blue-100"
                   : "bg-white"
               }`}

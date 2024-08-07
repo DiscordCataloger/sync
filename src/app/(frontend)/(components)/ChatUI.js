@@ -12,6 +12,8 @@ import { v4 as uuidv4 } from "uuid"; // Import the uuid library
 import ServerContext from "../(context)/ServerContext";
 import { deleteMessages } from "../../../api/deleteMessages";
 import deleteMessagesfmUser from "../../../api/deleteMessagesfmUser";
+import { pusherclient } from "@/lib/pusher";
+import { toPusherKey } from "@/lib/utils";
 
 const font = Josefin_Sans({
   weight: "400",
@@ -40,18 +42,6 @@ export default function ChatUI({
   const [isDragOver, setIsDragOver] = useState(false);
   const [otherUser, setOtherUser] = useState(null);
   const [messages, setMessages] = useState(null);
-
-  // useEffect(() => {
-  //   if (messagesId) {
-  //     socket.emit("joinMessage", { messageId: messagesId });
-  //   }
-
-  //   return () => {
-  //     if (messagesId) {
-  //       socket.emit("leaveMessage", { messageId: messagesId });
-  //     }
-  //   };
-  // }, [messagesId]);
 
   // get message obj
   useEffect(() => {
@@ -110,48 +100,55 @@ export default function ChatUI({
         console.error("Error fetching messages:", error);
       }
       // setTimeout(() => {
-      //   setLoading(false);
+      setLoading(false);
       // }, 200);
     };
     fetchMessagesMsgData();
+  }, [messagesId, setUserMessages]);
 
-    // socket.on("receiveUserMessage", (newMessage) => {
-    //   // console.log("newMessage22222222: ", newMessage);
-    //   setMsg((prevMsgs) => {
-    //     const messageIndex = prevMsgs.findIndex(
-    //       (msg) => msg.uid === newMessage.uid
-    //     );
-    //     if (messageIndex !== -1) {
-    //       // Update existing message
-    //       const updatedMsgs = [...prevMsgs];
-    //       updatedMsgs[messageIndex] = newMessage;
-    //       return updatedMsgs;
-    //     } else {
-    //       // Add new message
-    //       return [newMessage, ...prevMsgs];
-    //     }
-    //   });
-    //   setOffset((prevOffset) => prevOffset + 1);
-    //   setAddMsg((prevCounter) => prevCounter + 1);
-    //   setUserMessages((prevUserMessages) => {
-    //     const updatedUserMessages = [...prevUserMessages];
-    //     const messageIndex = updatedUserMessages.findIndex(
-    //       (msg) => msg._id === newMessage.messageId
-    //     );
-    //     if (messageIndex !== -1) {
-    //       updatedUserMessages[messageIndex] = {
-    //         ...updatedUserMessages[messageIndex],
-    //         msgs: [...updatedUserMessages[messageIndex].msgs, newMessage],
-    //       };
-    //     }
-    //     return updatedUserMessages;
-    //   });
-    // });
+  useEffect(() => {
+    pusherclient.subscribe(toPusherKey(`dm:${messagesId}:incoming_dm_msgs`));
 
-    const intervalId = setInterval(fetchMessagesMsgData, 100);
+    const sendMsg = (newMessage) => {
+      // console.log("addedMessage:", addedMessage);
+      setMsg((prevMsgs) => {
+        const messageIndex = prevMsgs.findIndex(
+          (msg) => msg.uid === newMessage.uid
+        );
+        if (messageIndex !== -1) {
+          // Update existing message
+          const updatedMsgs = [...prevMsgs];
+          updatedMsgs[messageIndex] = newMessage;
+          return updatedMsgs;
+        } else {
+          // Add new message
+          return [newMessage, ...prevMsgs];
+        }
+      });
+      setOffset((prevOffset) => prevOffset + 1);
+      setAddMsg((prevCounter) => prevCounter + 1);
+      setUserMessages((prevUserMessages) => {
+        const updatedUserMessages = [...prevUserMessages];
+        const messageIndex = updatedUserMessages.findIndex(
+          (msg) => msg._id === newMessage.messageId
+        );
+        if (messageIndex !== -1) {
+          updatedUserMessages[messageIndex] = {
+            ...updatedUserMessages[messageIndex],
+            msgs: [...updatedUserMessages[messageIndex].msgs, newMessage],
+          };
+        }
+        return updatedUserMessages;
+      });
+    };
+
+    pusherclient.bind("incoming_dm_msgs", sendMsg);
+
     return () => {
-      // socket.off("receiveUserMessage");
-      clearInterval(intervalId);
+      pusherclient.unsubscribe(
+        toPusherKey(`dm:${messagesId}:incoming_dm_msgs`)
+      );
+      pusherclient.unbind("incoming_dm_msgs", sendMsg);
     };
   }, [messagesId, setUserMessages]);
 
@@ -203,9 +200,21 @@ export default function ChatUI({
       //   ...newMsgLocal,
       // });
 
+      // Trigger Pusher event by calling the new server-side endpoint
+      await fetch("/api/triggerPusher", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: newMsgLocal,
+          triggerType: "dm",
+          messageId: messagesId,
+        }),
+      });
+
       // Clear the input field and make scroll to bottom
       setInput("");
-      // setAddMsg((prevCounter) => prevCounter + 1);
 
       if (attachments.length > 0) {
         try {
@@ -234,11 +243,21 @@ export default function ChatUI({
           //   ...updatedMsg,
           // });
 
-          // Create newMsg without the uid
-          const { uid, ...newMsg } = updatedMsg;
-          // console.log("with attachments", newMsg);
+          // Trigger Pusher event by calling the new server-side endpoint
+          await fetch("/api/triggerPusher", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              message: newMsgLocal,
+              triggerType: "dm",
+              messageId: messagesId,
+            }),
+          });
+
           setAddMsg((prevCounter) => prevCounter + 1);
-          return await addMessagesMsg(messagesId, newMsg);
+          return await addMessagesMsg(messagesId, updatedMsg);
         } catch (error) {
           console.log(error);
         }
@@ -246,9 +265,9 @@ export default function ChatUI({
 
       // Create newMsg without the uid
       const updatedMsg = { ...newMsgLocal, msgAttach: [] };
-      const { uid, ...newMsg } = updatedMsg;
+      // const { uid, ...newMsg } = updatedMsg;
       // console.log("without attachments", newMsg);
-      return await addMessagesMsg(messagesId, newMsg);
+      return await addMessagesMsg(messagesId, updatedMsg);
     }
   };
 
@@ -262,7 +281,7 @@ export default function ChatUI({
       } min-w-[400px] h-full bg-white rounded-2xl flex flex-col shadow-md shadow-sky-400/40`}
     >
       <ChatHeader icon={icon} name={name} />
-      {/* {loading && (
+      {loading && (
         <div className={`flex flex-col justify-center items-center h-full`}>
           <Player
             autoplay
@@ -272,18 +291,19 @@ export default function ChatUI({
             style={{ height: "300px", width: "300px" }}
           />
         </div>
-      )} */}
-      {/* {!loading && ( */}
-      <MessageList
-        id={messagesId}
-        msg={msg}
-        setMsg={setMsg}
-        addMsg={addMsg}
-        offset={offset}
-        setOffset={setOffset}
-        NUMBER_OF_MSG_TO_FETCH={NUMBER_OF_MSG_TO_FETCH}
-        currentUserId={currentUser._id}
-      />
+      )}
+      {!loading && (
+        <MessageList
+          id={messagesId}
+          msg={msg}
+          setMsg={setMsg}
+          addMsg={addMsg}
+          offset={offset}
+          setOffset={setOffset}
+          NUMBER_OF_MSG_TO_FETCH={NUMBER_OF_MSG_TO_FETCH}
+          currentUserId={currentUser._id}
+        />
+      )}
 
       <InputMessage
         input={input}

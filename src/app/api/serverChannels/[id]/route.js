@@ -1,5 +1,7 @@
 import connectMongoDB from "../../../../../libs/mongodb";
 import ServerChannel from "../../../../../models/serverChannel";
+import { pusher } from "@/lib/pusher";
+import { toPusherKey } from "@/lib/utils";
 
 // GET request handler
 export async function GET(req, { params }) {
@@ -35,6 +37,13 @@ export async function PUT(req, { params }) {
       msgUnread: newMessage.msgUnread,
       userId: newMessage.userId,
     };
+
+    pusher.trigger(
+      toPusherKey(`channel:${id}:incoming_channel_msgs`),
+      "incoming_channel_msgs",
+      newMessage
+    );
+
     serverChannel.channelMsgs.push(addedMessage);
     await serverChannel.save();
     addedMessage._id =

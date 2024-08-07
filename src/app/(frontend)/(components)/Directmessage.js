@@ -3,94 +3,6 @@ import { BsFill1CircleFill } from "react-icons/bs";
 import { getUsers } from "../../../api/getUsers";
 import { useState, useEffect } from "react";
 
-// const userMessages = ["id1", "id2", "id3"];
-
-// const messages = [
-//   {
-//     _id: "id1",
-//     userIds: ["userid1", "userid2"],
-//     msgs: [
-//       {
-//         msgFrom: "User1",
-//         msgIcon: "/chat_bot.png",
-//         msgText: "April fool's day",
-//         msgTime: "Today, 9:52pm",
-//         msgAttach: [],
-//         msgUnread: ["userid2"],
-//       },
-//       {
-//         msgFrom: "User1",
-//         msgIcon: "/chat_bot.png",
-//         msgText: "April fool's day",
-//         msgTime: "Today, 9:52pm",
-//         msgAttach: [],
-//         msgUnread: ["userid2"],
-//       },
-//     ],
-//   },
-//   {
-//     _id: "id2",
-//     userIds: ["userid1", "userid3"],
-//     msgs: [
-//       {
-//         msgFrom: "User2",
-//         msgIcon: "/chat_bot.png",
-//         msgText: "April fool's day",
-//         msgTime: "Today, 9:52pm",
-//         msgAttach: [],
-//         msgUnread: ["userid1"],
-//       },
-//       {
-//         msgFrom: "User2",
-//         msgIcon: "/chat_bot.png",
-//         msgText: "April fool's day",
-//         msgTime: "Today, 9:52pm",
-//         msgAttach: [],
-//         msgUnread: ["userid1"],
-//       },
-//     ],
-//   },
-//   {
-//     _id: "id3",
-//     userIds: ["userid1", "userid4"],
-//     msgs: [
-//       {
-//         msgFrom: "User3",
-//         msgIcon: "/chat_bot.png",
-//         msgText: "April fool's day",
-//         msgTime: "Today, 9:52pm",
-//         msgAttach: [],
-//         msgUnread: ["userid1"],
-//       },
-//     ],
-//   },
-// ];
-
-// const users = [
-//   {
-//     _id: "userid1",
-//     userName: "User1",
-//     userIcon: "/chat_bot.png",
-//   },
-//   {
-//     _id: "userid2",
-//     userName: "User2",
-//     userIcon: "/chat_bot.png",
-//   },
-//   {
-//     _id: "userid3",
-//     userName: "User3",
-//     userIcon: "/chat_bot.png",
-//   },
-//   {
-//     _id: "userid4",
-//     userName: "User4",
-//     userIcon: "/chat_bot.png",
-//   },
-// ];
-
-// const currentUserId = "userid1";
-
 export default function DirectMessages({
   onclickDmUser,
   selectedMiddleComponent,
@@ -134,10 +46,6 @@ export default function DirectMessages({
     }
     fetchUserLibrary();
   }, []);
-
-  // useEffect(() => {
-  //   findUsers();
-  // }, []);
 
   return (
     <div className="bg-white p-2 rounded-3xl shadow-md shadow-sky-400/40 overflow-hidden flex-1">

@@ -74,9 +74,13 @@ const options = {
         });
       }
 
-      const existingUser =
-        (await User.findOne({ email: user.email })) ||
-        (await User.findOne({ icon: user.icon }));
+      let existingUser;
+      if (account.provider === "github") {
+        existingUser = await User.findOne({ githubId: profile.id });
+      } else {
+        existingUser = await User.findOne({ email: user.email });
+      }
+
       if (existingUser) {
         console.log("User already exists:", existingUser.email);
         return true; // User already exists, no need to register
@@ -134,6 +138,7 @@ const options = {
           email: profile.email || `${profile.login}@users.noreply.github.com`, // Fallback to a generated email if not provided,
           displayName: profile.name || profile.login,
           icon: profile.avatar_url,
+          githubId: profile.id, // Store GitHub ID for future checks
         });
       }
       return true;

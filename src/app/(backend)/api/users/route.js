@@ -21,13 +21,22 @@ export async function GET(req) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    // Extract the user ID from the token
-    let currentUserEmail = token.email; // Adjust this based on your token structure
-    console.log("Current User ID:", currentUserEmail);
+    // Extract the user email from the token
+    const currentUserEmail = token.email; // Adjust this based on your token structure
+    console.log("Current User Email:", currentUserEmail);
+
+    // Find the current user in the database using their email
+    const currentUser = await User.findOne({ email: currentUserEmail });
+    if (!currentUser) {
+      console.log("Current user not found in the database.");
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
+    console.log("Current User ID:", currentUser._id);
 
     console.log("Finding users...");
     // Find all users except the current user
-    const users = await User.find({ _id: { $ne: currentUserEmail } });
+    const users = await User.find({ _id: { $ne: currentUser._id } });
     console.log("Users:", users);
 
     return NextResponse.json(users, { status: 200 });

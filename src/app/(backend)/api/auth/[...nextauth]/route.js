@@ -6,6 +6,7 @@ import GithubProvider from "next-auth/providers/github";
 import server from "../../../../../../libs/mongodb/server";
 import User from "../../../../../../models/user";
 import bcrypt from "bcrypt";
+import mongoose from "mongoose";
 
 const options = {
   providers: [
@@ -63,10 +64,26 @@ const options = {
   },
   callbacks: {
     async signIn({ user, account, profile }) {
+      // Ensure MongoDB connection is established
+      if (mongoose.connection.readyState !== 1) {
+        await mongoose.connect(process.env.MONGODB_URI, {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+          serverSelectionTimeoutMS: 30000, // 30 seconds
+          socketTimeoutMS: 45000, // 45 seconds
+        });
+      }
+
+      const existingUser = await User.findOne({ email: user.email });
+      if (existingUser) {
+        console.log("User already exists:", existingUser.email);
+        return true; // User already exists, no need to register
+      }
+
       console.log("signIn callback triggered for provider:", account.provider); // Log provider
       const registerUser = async (data) => {
         try {
-          const res = await fetch(`/api/register`, {
+          const res = await fetch(`${process.env.NEXTAUTH_URL}/api/register`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -121,8 +138,9 @@ const options = {
     },
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
+        token.id = user._id;
         token.email = user.email;
+        token.name = user.name; // Corrected this line
       }
       return token;
     },

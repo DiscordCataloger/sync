@@ -3,8 +3,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 import GithubProvider from "next-auth/providers/github";
-import server from "../../../../../libs/mongodb/server";
-import User from "../../../../../models/user";
+import server from "../../../../../../libs/mongodb/server";
+import User from "../../../../../../models/user";
 import bcrypt from "bcrypt";
 
 const options = {

@@ -10,14 +10,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: "50mb", // Set desired size limit
-    },
-  },
-};
-
 export async function POST(req) {
   try {
     const formData = await req.formData();
@@ -79,3 +71,11 @@ export async function POST(req) {
     return NextResponse.json({ success: false, error: error.message });
   }
 }
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "50mb", // Set desired size limit
+    },
+  },
+};

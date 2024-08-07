@@ -5,7 +5,8 @@ import bcrypt from "bcryptjs";
 
 export async function POST(request) {
   try {
-    const { displayName, email, password, icon } = await request.json();
+    const { displayName, email, password, icon, githubId } =
+      await request.json();
     console.log("Received data:", { displayName, email, password, icon });
 
     await server();
@@ -22,6 +23,7 @@ export async function POST(request) {
       email,
       password: hashedPassword,
       icon,
+      githubId,
     });
     console.log("User created:", newUser);
 

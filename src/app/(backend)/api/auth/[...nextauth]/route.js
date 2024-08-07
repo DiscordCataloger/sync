@@ -56,10 +56,10 @@ const options = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/login",
+    signIn: "/chat",
     signOut: "/login",
     error: "/login",
-    newUser: "/login",
+    newUser: "/register",
   },
   callbacks: {
     async signIn({ user, account, profile }) {
@@ -120,7 +120,7 @@ const options = {
 
       if (await checkUserExists(email)) {
         console.log("User already registered:", email);
-        return "/chat";
+        return true;
       }
 
       if (account.provider === "google") {

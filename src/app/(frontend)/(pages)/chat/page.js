@@ -23,6 +23,7 @@ import addMessagesId from "../../../../api/addMessagesId";
 import { getMessages } from "../../../../api/getMessages";
 import deleteMsgUnreadDm from "../../../../api/deleteMsgUnreadDm";
 import { getUserById } from "../../../../api/getUserById";
+import Loading from "../../(components)/Loading";
 
 const font = Josefin_Sans({
   weight: "400",
@@ -48,6 +49,7 @@ export default function Page() {
   const [dmFriendName, setDmFriendName] = useState("");
   const [dmFriendIcon, setDmFriendIcon] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // useEffect(() => {
   //   const getUser = async () => {
@@ -84,6 +86,8 @@ export default function Page() {
         }
       } catch (error) {
         console.error("Error fetching user:", error);
+      } finally {
+        setIsLoading(false);
       }
     }
     fetchUser();
@@ -246,6 +250,7 @@ export default function Page() {
 
   return (
     <ServerProvider>
+      {isLoading && <Loading />}
       <div
         className={`${font.className} flex h-screen items-center justify-between p-3 bg-blue-100`}
       >

@@ -54,7 +54,6 @@ const ProfileCard = ({ onClose, username, onSave, onLogout }) => {
 
     // Sign out the user
     await signOut();
-    redirect("/");
   }
 
   const handleImageUploadClick = async (e) => {

@@ -140,7 +140,7 @@ const options = {
     },
     async jwt({ token, user }) {
       if (user) {
-        token.id = user._id;
+        token.id = user.id;
         token.email = user.email;
         token.name = user.name;
         token.picture = user.icon;

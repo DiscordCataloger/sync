@@ -126,15 +126,11 @@ const options = {
       }
       return true;
     },
-    async jwt({ token, user, account, profile }) {
+    async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         token.email = user.email;
         token.name = user.name;
-      }
-      if (account?.provider === "github" && profile) {
-        token.sub =
-          profile.email || `${profile.login}@users.noreply.github.com`; // Ensure email is in sub
       }
       return token;
     },

@@ -65,15 +65,15 @@ const options = {
   callbacks: {
     async signIn({ user, account, profile }) {
       // Ensure MongoDB connection is established
-      if (mongoose.connection.readyState !== 1) {
-        await mongoose.connect(process.env.MONGODB_URI, {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-          serverSelectionTimeoutMS: 30000, // 30 seconds
-          socketTimeoutMS: 45000, // 45 seconds
-        });
-      }
-
+      // if (mongoose.connection.readyState !== 1) {
+      //   await mongoose.connect(process.env.MONGODB_URI, {
+      //     useNewUrlParser: true,
+      //     useUnifiedTopology: true,
+      //     serverSelectionTimeoutMS: 30000, // 30 seconds
+      //     socketTimeoutMS: 45000, // 45 seconds
+      //   });
+      // }
+      await mongoose.connect(process.env.MONGODB_URI);
       let existingUser;
       if (account.provider === "github") {
         existingUser = await User.findOne({ githubId: profile.id });
